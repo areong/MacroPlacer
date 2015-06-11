@@ -1,0 +1,6 @@
+#ifndef TREE_BINARYTREE_BINARYTREE_TEST_H_
+#define TREE_BINARYTREE_BINARYTREE_TEST_H_
+
+void testBinaryTree();
+
+#endif

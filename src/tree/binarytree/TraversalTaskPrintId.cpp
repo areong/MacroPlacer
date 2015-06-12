@@ -11,5 +11,5 @@ TraversalTaskPrintId::~TraversalTaskPrintId() {
 }
 
 void TraversalTaskPrintId::doWhenTraversing(Node *node) {
-    std::cout << node->_getId() << " ";
+    std::cout << node->getId() << " ";
 }

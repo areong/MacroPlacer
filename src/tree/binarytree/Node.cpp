@@ -2,10 +2,11 @@
 #include "tree/binarytree/NextNodesBehavior.h"
 #include "tree/binarytree/NextNodesBehaviorLeftFirst.h"
 
-Node::Node() {
+Node::Node(int id) {
     parentNode = 0;
     leftNode = 0;
     rightNode = 0;
+    this->id = id;
     nextNodesBehavior = new NextNodesBehaviorLeftFirst();
 }
 
@@ -13,11 +14,11 @@ Node::~Node() {
     delete nextNodesBehavior;
 }
 
-void Node::_setId(int id) {
+void Node::setId(int id) {
     this->id = id;
 }
 
-int Node::_getId() {
+int Node::getId() {
     return id;
 }
 
@@ -59,11 +60,10 @@ bool Node::hasRightNode() {
 }
 
 Node *Node::copy() {
-    Node *node = new Node();
+    Node *node = new Node(id);
     node->setParentNode(parentNode);
     node->setLeftNode(leftNode);
     node->setRightNode(rightNode);
-    node->_setId(id);
     node->setNextNodesBehavior(nextNodesBehavior->copy());
     return node;
 }

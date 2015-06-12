@@ -5,7 +5,6 @@
 BinaryTree::BinaryTree() {
     nodes = new std::vector<Node *>();
     head = new Node();
-    addNode(head);
 }
 
 BinaryTree::~BinaryTree() {
@@ -15,11 +14,14 @@ BinaryTree::~BinaryTree() {
 }
 
 void BinaryTree::addNode(Node *node) {
-    node->_setId(nodes->size());
-    nodes->push_back(node);
+    if (node->getId() < 0)
+        node->setId(nodes->size());
+    if (node->getId() >= nodes->size())
+        nodes->resize(node->getId() + 1, 0);
+    nodes->at(node->getId()) = node;
 }
 
-Node *BinaryTree::_getNodeById(int id) {
+Node *BinaryTree::getNodeById(int id) {
     return nodes->at(id);
 }
 
@@ -31,6 +33,10 @@ void BinaryTree::setRoot(Node *node) {
         head->setLeftNode(node);
         node->setParentNode(head);
     }
+}
+
+void BinaryTree::setRoot(int nodeId) {
+    setRoot(getNodeById(nodeId));
 }
 
 Node *BinaryTree::getRoot() {
@@ -46,6 +52,10 @@ void BinaryTree::insertLeftNode(Node *node, Node *position) {
         oldLeft->setParentNode(node);
 }
 
+void BinaryTree::insertLeftNode(int nodeId, int positionId) {
+    insertLeftNode(getNodeById(nodeId), getNodeById(positionId));
+}
+
 void BinaryTree::insertRightNode(Node *node, Node *position) {
     Node *oldRight = position->getRightNode();
     node->setParentNode(position);
@@ -53,6 +63,10 @@ void BinaryTree::insertRightNode(Node *node, Node *position) {
     position->setRightNode(node);
     if (oldRight != 0)
         oldRight->setParentNode(node);
+}
+
+void BinaryTree::insertRightNode(int nodeId, int positionId) {
+    insertRightNode(getNodeById(nodeId), getNodeById(positionId));
 }
 
 void BinaryTree::removeNode(Node *node, bool replaceWithLeftNode) {
@@ -80,6 +94,10 @@ void BinaryTree::removeNode(Node *node, bool replaceWithLeftNode) {
     else
         node->getParentNode()->setRightNode(0);
     node->setParentNode(0);
+}
+
+void BinaryTree::removeNode(int nodeId, bool replaceWithLeftNode) {
+    removeNode(getNodeById(nodeId), replaceWithLeftNode);
 }
 
 void BinaryTree::swapNodes(Node *node1, Node *node2) {
@@ -154,6 +172,10 @@ void BinaryTree::swapNodes(Node *node1, Node *node2) {
     delete dummy;
 }
 
+void BinaryTree::swapNodes(int node1Id, int node2Id) {
+    swapNodes(getNodeById(node1Id), getNodeById(node2Id));
+}
+
 void BinaryTree::traverseDfs(Node *start, TraversalTask *task) {
     std::vector<Node *> *discovered = new std::vector<Node *>();
     discovered->push_back(start);
@@ -176,25 +198,32 @@ void BinaryTree::traverseDfs(Node *start, TraversalTask *task) {
     delete discovered;
 }
 
+void BinaryTree::traverseDfs(int startId, TraversalTask *task) {
+    traverseDfs(getNodeById(startId), task);
+}
+
 BinaryTree *BinaryTree::copy() {
     BinaryTree *binaryTree = new BinaryTree();
-    // The first Node is the head, which is already created and do not need to be copied.
-    for (int i = 1; i < nodes->size(); i++)
+    // Copy all Nodes.
+    for (int i = 0; i < nodes->size(); i++)
         // If the Node is actually a Node's subclass, then the subclass's copy() will be called.
         binaryTree->addNode(nodes->at(i)->copy());
+    // Set root.
+    Node *newRoot = binaryTree->getNodeById(getRoot()->getId());
+    binaryTree->setRoot(newRoot);
     // Connect the Nodes.
     for (int i = 0; i < nodes->size(); i++) {
         Node *oldNode = nodes->at(i);
-        Node *newNode = binaryTree->_getNodeById(i);    // i equals id
+        Node *newNode = binaryTree->getNodeById(i);    // i equals id
         // Do not use insert methods because it changes one of the child Node
         // of the inserted Node.
         if (oldNode->hasLeftNode()) {
-            Node *newLeftNode = binaryTree->_getNodeById(oldNode->getLeftNode()->_getId());
+            Node *newLeftNode = binaryTree->getNodeById(oldNode->getLeftNode()->getId());
             newNode->setLeftNode(newLeftNode);
             newLeftNode->setParentNode(newNode);
         }
         if (oldNode->hasRightNode()) {
-            Node *newRightNode = binaryTree->_getNodeById(oldNode->getRightNode()->_getId());
+            Node *newRightNode = binaryTree->getNodeById(oldNode->getRightNode()->getId());
             newNode->setRightNode(newRightNode);
             newRightNode->setParentNode(newNode);
         }

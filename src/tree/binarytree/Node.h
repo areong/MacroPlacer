@@ -7,18 +7,14 @@ class NextNodesBehavior;
 
 class Node {
 public:
-    Node();
+    Node(int id=-1);
     ~Node();
     /*
-    THE METHOD IS DESIGNED ONLY TO BE USED BY BINARYTREE.
     BinaryTree assign id to its Nodes to make copying and deleting BinaryTree
     more easier.
     */
-    void _setId(int id);
-    /*
-    THE METHOD IS DESIGNED ONLY TO BE USED BY BINARYTREE.
-    */
-    int _getId();
+    void setId(int id);
+    int getId();
     void setParentNode(Node *node);
     Node *getParentNode();
     void setLeftNode(Node *node);

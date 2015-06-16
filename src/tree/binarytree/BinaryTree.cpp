@@ -1,8 +1,11 @@
 #include "tree/binarytree/BinaryTree.h"
+#include <cstdlib>
+#include <ctime>
 #include "tree/binarytree/Node.h"
 #include "tree/binarytree/TraversalTask.h"
 
 BinaryTree::BinaryTree() {
+    srand(time(0));
     nodes = new std::vector<Node *>();
     head = new Node();
 }
@@ -23,6 +26,53 @@ void BinaryTree::addNode(Node *node) {
 
 Node *BinaryTree::getNodeById(int id) {
     return nodes->at(id);
+}
+
+Node *BinaryTree::getNodeRandomly() {
+    Node *node = nodes->at(randint(nodes->size()));
+    while (node == 0) {
+        // If the Nodes' id is not continuous, node might be null.
+        node = nodes->at(randint(nodes->size()));
+    }
+    return node;
+}
+
+void BinaryTree::initializeRandomly() {
+    // Copy nodes.
+    std::vector<Node *> *availableNodes = new std::vector<Node *>(nodes->begin(), nodes->end());
+    std::vector<Node *> *insertedNodes = new std::vector<Node *>();
+    // Set root.
+    int i = randint(availableNodes->size());
+    Node *node = availableNodes->at(i);
+    while (node == 0) {
+        availableNodes->erase(availableNodes->begin() + i);
+        i = randint(availableNodes->size());
+        node = availableNodes->at(i);
+    }
+    setRoot(node);
+    availableNodes->erase(availableNodes->begin() + i);
+    insertedNodes->push_back(node);
+    // Connect the rest.
+    Node *position;
+    while (availableNodes->size() > 0) {
+        i = randint(availableNodes->size());
+        node = availableNodes->at(i);
+        position = insertedNodes->at(randint(insertedNodes->size()));  // Never a null
+        while (node == 0) {
+            availableNodes->erase(availableNodes->begin() + i);
+            i = randint(availableNodes->size());
+            node = availableNodes->at(i);
+        }
+        // Insert as left or right Node.
+        if (randbool())
+            insertLeftNode(node, position);
+        else
+            insertRightNode(node, position);
+        availableNodes->erase(availableNodes->begin() + i);
+        insertedNodes->push_back(node);
+    }
+    delete availableNodes;
+    delete insertedNodes;
 }
 
 void BinaryTree::setRoot(Node *node) {
@@ -98,6 +148,26 @@ void BinaryTree::removeNode(Node *node, bool replaceWithLeftNode) {
 
 void BinaryTree::removeNode(int nodeId, bool replaceWithLeftNode) {
     removeNode(getNodeById(nodeId), replaceWithLeftNode);
+}
+
+void BinaryTree::removeAndInsertLeftNodeRandomly() {
+    Node *node = getNodeRandomly();
+    Node *position = getNodeRandomly();
+    while (position == node) {
+        position = getNodeRandomly();
+    }
+    removeNode(node, randbool());
+    insertLeftNode(node, position);
+}
+
+void BinaryTree::removeAndInsertRightNodeRandomly() {
+    Node *node = getNodeRandomly();
+    Node *position = getNodeRandomly();
+    while (position == node) {
+        position = getNodeRandomly();
+    }
+    removeNode(node, randbool());
+    insertRightNode(node, position);
 }
 
 void BinaryTree::swapNodes(Node *node1, Node *node2) {
@@ -176,6 +246,15 @@ void BinaryTree::swapNodes(int node1Id, int node2Id) {
     swapNodes(getNodeById(node1Id), getNodeById(node2Id));
 }
 
+void BinaryTree::swapNodesRandomly() {
+    Node *node1 = getNodeRandomly();
+    Node *node2 = getNodeRandomly();
+    while (node2 == node1) {
+        node2 = getNodeRandomly();
+    }
+    swapNodes(node1, node2);
+}
+
 void BinaryTree::traverseDfs(Node *start, TraversalTask *task) {
     std::vector<Node *> *discovered = new std::vector<Node *>();
     discovered->push_back(start);
@@ -229,4 +308,16 @@ BinaryTree *BinaryTree::copy() {
         }
     }
     return binaryTree;
+}
+
+int BinaryTree::randint(int range) {
+    return (int) ((double) rand() / ((double) RAND_MAX + 1) * range);
+}
+
+bool BinaryTree::randbool() {
+    double result = (double) rand() / ((double) RAND_MAX + 1);
+    if (result >= 0.5)
+        return true;
+    else
+        return false;
 }

@@ -25,6 +25,11 @@ public:
     @param  id  An integer not smaller than zero.
     */
     Node *getNodeById(int id);
+    Node *getNodeRandomly();
+    /*
+    Randomly connect the added Nodes to form a binary tree.
+    */
+    void initializeRandomly();
     void setRoot(Node *node);
     void setRoot(int nodeId);
     Node *getRoot();
@@ -46,8 +51,23 @@ public:
     */
     void removeNode(Node *node, bool replaceWithLeftNode);
     void removeNode(int nodeId, bool replaceWithLeftNode);
+    /*
+    Remove a Node randomly and insert it as another randomly selected Node's
+    left Node.
+    WARNING: If the BinaryTree has only one Node, the method will run into an
+    infinite loop.
+    */
+    void removeAndInsertLeftNodeRandomly();
+    /*
+    Remove a Node randomly and insert it as another randomly selected Node's
+    left Node.
+    WARNING: If the BinaryTree has only one Node, the method will run into an
+    infinite loop.
+    */
+    void removeAndInsertRightNodeRandomly();
     void swapNodes(Node *node1, Node *node2);
     void swapNodes(int node1Id, int node2Id);
+    void swapNodesRandomly();
     /*
     Traverse the Nodes in dfs order. How the Nodes return their next Nodes
     and what to do when traversing each Node are determined by the NodeBehavior
@@ -66,6 +86,15 @@ public:
 private:
     std::vector<Node *> *nodes;
     Node *head;
+
+    /*
+    Return random integer in [0, range).
+    */
+    int randint(int range);
+    /*
+    Return true or false randomly.
+    */
+    bool randbool();
 };
 
 #endif

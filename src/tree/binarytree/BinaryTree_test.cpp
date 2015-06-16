@@ -91,4 +91,30 @@ void testBinaryTree() {
     std::cout << "Copy, delete the original, and traverse the copy\n\tExpected: 3 6 7 8 9 2 1 5 0 4\n\tResult:   ";
     copiedBinaryTree->traverseDfs(copiedBinaryTree->getRoot(), taskPrintId);
     std::cout << "\n";
+
+    binaryTree = new BinaryTree();
+    for (int i = 0; i < 10; i++)
+        binaryTree->addNode(new Node());
+    binaryTree->initializeRandomly();
+    std::cout << "Create a new BinaryTree and initialize randomly\n\tResult:   ";
+    binaryTree->traverseDfs(binaryTree->getRoot(), taskPrintId);
+    std::cout << "\n";
+
+    std::cout << "Get a node randomly\n\tResult:   ";
+    std::cout << binaryTree->getNodeRandomly()->getId() << "\n";
+
+    binaryTree->removeAndInsertLeftNodeRandomly();
+    std::cout << "Remove and insert left Node randomly\n\tResult:   ";
+    binaryTree->traverseDfs(binaryTree->getRoot(), taskPrintId);
+    std::cout << "\n";
+
+    binaryTree->removeAndInsertRightNodeRandomly();
+    std::cout << "Remove and insert right Node randomly\n\tResult:   ";
+    binaryTree->traverseDfs(binaryTree->getRoot(), taskPrintId);
+    std::cout << "\n";
+
+    binaryTree->swapNodesRandomly();
+    std::cout << "Swap Nodes randomly\n\tResult:   ";
+    binaryTree->traverseDfs(binaryTree->getRoot(), taskPrintId);
+    std::cout << "\n";
 }

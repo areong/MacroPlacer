@@ -39,7 +39,7 @@ public:
     void setNextNodesBehavior(NextNodesBehavior *behavior);
     /*
     Used in BinaryTree.traverseDfs().
-    The behavior of this method can be set by calling Node.setN
+    The behavior of this method can be set by calling Node.setNextNodesBehavior().
     */
     std::vector<Node *> *getNextNodes();
 

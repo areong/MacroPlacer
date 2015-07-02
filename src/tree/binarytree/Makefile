@@ -25,6 +25,10 @@ HEADERS_NEXTNODESBEHAVIORRIGHTFIRST = \
 	${PATH_TO_SRC}tree/binarytree/NextNodesBehaviorRightFirst.h\
 	${PATH_TO_SRC}tree/binarytree/Node.h
 
+HEADERS_NEXTNODESBEHAVIORRIGHTONLY = \
+	${PATH_TO_SRC}tree/binarytree/NextNodesBehaviorRightOnly.h\
+	${PATH_TO_SRC}tree/binarytree/Node.h
+
 HEADERS_NODE = \
 	${PATH_TO_SRC}tree/binarytree/Node.h\
 	${PATH_TO_SRC}tree/binarytree/NextNodesBehavior.h\
@@ -40,6 +44,7 @@ all:
 	make NextNodesBehaviorLeftFirst.o
 	make NextNodesBehaviorNoNext.o
 	make NextNodesBehaviorRightFirst.o
+	make NextNodesBehaviorRightOnly.o
 	make Node.o
 	make TraversalTaskPrintId.o
 BinaryTree.o: BinaryTree.cpp ${HEADERS_BINARYTREE}
@@ -52,6 +57,8 @@ NextNodesBehaviorNoNext.o: NextNodesBehaviorNoNext.cpp ${HEADERS_NEXTNODESBEHAVI
 	${CC} -c NextNodesBehaviorNoNext.cpp ${INC}
 NextNodesBehaviorRightFirst.o: NextNodesBehaviorRightFirst.cpp ${HEADERS_NEXTNODESBEHAVIORRIGHTFIRST}
 	${CC} -c NextNodesBehaviorRightFirst.cpp ${INC}
+NextNodesBehaviorRightOnly.o: NextNodesBehaviorRightOnly.cpp ${HEADERS_NEXTNODESBEHAVIORRIGHTONLY}
+	${CC} -c NextNodesBehaviorRightOnly.cpp ${INC}
 Node.o: Node.cpp ${HEADERS_NODE}
 	${CC} -c Node.cpp ${INC}
 TraversalTaskPrintId.o: TraversalTaskPrintId.cpp ${HEADERS_TRAVERSALTASKPRINTID}

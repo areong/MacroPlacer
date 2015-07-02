@@ -29,19 +29,29 @@ public:
     /*
     Randomly connect the added Nodes to form a binary tree.
     */
-    void initializeRandomly();
+    virtual void initializeRandomly();
     void setRoot(Node *node);
     void setRoot(int nodeId);
     Node *getRoot();
     /*
     Insert node between position and position.getLeftNode().
+
+    CAUTION: In derived class of BinaryTree, if dynamic_cast is performed
+             on the input Nodes, please check whether the cast pointer is 0
+             because BinaryTree also use this method while the input Nodes
+             are not derived class of Node.
     */
-    void insertLeftNode(Node *node, Node *position);
+    virtual void insertLeftNode(Node *node, Node *position);
     void insertLeftNode(int nodeId, int positionId);
     /*
     Insert node between position and position.getRightNode().
+
+    CAUTION: In derived class of BinaryTree, if dynamic_cast is performed
+             on the input Nodes, please check whether the cast pointer is 0
+             because BinaryTree also use this method while the input Nodes
+             are not derived class of Node.
     */
-    void insertRightNode(Node *node, Node *position);
+    virtual void insertRightNode(Node *node, Node *position);
     void insertRightNode(int nodeId, int positionId);
     /*
     Remove a Node by swapping with its leftNode or rightNode recursively
@@ -65,7 +75,13 @@ public:
     infinite loop.
     */
     void removeAndInsertRightNodeRandomly();
-    void swapNodes(Node *node1, Node *node2);
+    /*
+    CAUTION: In derived class of BinaryTree, if dynamic_cast is performed
+             on the input Nodes, please check whether the cast pointer is 0
+             because BinaryTree also use this method while the input Nodes
+             are not derived class of Node.
+    */
+    virtual void swapNodes(Node *node1, Node *node2);
     void swapNodes(int node1Id, int node2Id);
     void swapNodesRandomly();
     /*

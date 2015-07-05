@@ -92,12 +92,23 @@ public:
     void traverseDfs(Node *start, TraversalTask *task);
     void traverseDfs(int startId, TraversalTask *task);
     /*
+    A factory method that creates an object of BinaryTree.
+    A subclass of BinaryTree SHOULD override it such that it returns an object of
+    the subclass.
+    The method is used in copy() to create an object of the right class.
+    */
+    virtual BinaryTree *createBinaryTree();
+    /*
     Copy the tree and the Nodes added to the tree.
     For a subclass of BinaryTree, call BinaryTree::copy() inside copy().
     If an object of a BinaryTree's subclass is composed of objects of Node's subclass, the Node's
     subclass's copy will be called.
     */
     virtual BinaryTree *copy();
+    /*
+    FOR DEBUG
+    */
+    std::vector<Node *> *getNodes();
 
 private:
     std::vector<Node *> *nodes;
@@ -111,6 +122,10 @@ private:
     Return true or false randomly.
     */
     bool randbool();
+    /*
+    Get the index of node in nodes. Return -1 if not found.
+    */
+    int getIndexOf(std::vector<Node *> *nodes, Node *node);
 };
 
 #endif

@@ -59,8 +59,13 @@ bool Node::hasRightNode() {
     return rightNode != 0;
 }
 
+Node *Node::createNode() {
+    return new Node();
+}
+
 Node *Node::copy() {
-    Node *node = new Node(id);
+    Node *node = createNode();
+    node->setId(id);
     node->setParentNode(parentNode);
     node->setLeftNode(leftNode);
     node->setRightNode(rightNode);

@@ -3,9 +3,14 @@
 
 #include "tree/binarytree/Node.h"
 
+class Macro;
+
 class MacroNode : public Node {
 public:
     MacroNode();
+    /*
+    If it is an empty Node, delete its Macro; else do not delete.
+    */
     ~MacroNode();
     enum Identity {
         NORMAL_NODE,
@@ -31,6 +36,23 @@ public:
     */
     void setEmpty();
     bool isEmptyNode();
+    void setMacro(Macro *macro);
+    Macro *getMacro();
+    /*
+    @Override
+    */
+    Node *createNode();
+    /*
+    @Override
+    If it is an empty Node, copy its Macro; else set to the old Macro.
+    */
+    Node *copy();
+    /*
+    Used in MacroNode::copy(). Using the original setters invokes
+    other setters like setAsBranchNode, which might create new object
+    and cause memory leaks. This method simply copy the attributes.
+    */
+    void setAttributes(bool packingForward, MacroNode::Identity identity, bool empty);
     /*
     Create a MacroNode, set it empty and return it.
     */
@@ -45,6 +67,8 @@ private:
     bool packingForward;
     MacroNode::Identity identity;
     bool empty;
+
+    Macro *macro;
 
     void updateBranchNodeNextNodesBehavior();
 };

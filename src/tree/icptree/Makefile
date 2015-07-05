@@ -9,6 +9,8 @@ HEADERS_ICPTREE = \
 	${PATH_TO_SRC}utils/Utils.h
 
 HEADERS_ICPTREE_TEST = \
+	${PATH_TO_SRC}tree/icptree/ICPTree_test.h\
+	${PATH_TO_SRC}model/Macro.h\
 	${PATH_TO_SRC}tree/icptree/ICPTree.h\
 	${PATH_TO_SRC}tree/icptree/MacroNode.h\
 	${PATH_TO_SRC}tree/icptree/TraversalTaskPrintIdAndIdentity.h
@@ -16,6 +18,7 @@ HEADERS_ICPTREE_TEST = \
 HEADERS_MACRONODE = \
 	${PATH_TO_SRC}tree/binarytree/Node.h\
 	${PATH_TO_SRC}tree/icptree/MacroNode.h\
+	${PATH_TO_SRC}model/Macro.h\
 	${PATH_TO_SRC}tree/binarytree/NextNodesBehaviorLeftFirst.h\
 	${PATH_TO_SRC}tree/binarytree/NextNodesBehaviorRightFirst.h\
 	${PATH_TO_SRC}tree/binarytree/NextNodesBehaviorRightOnly.h

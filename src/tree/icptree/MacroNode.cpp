@@ -1,4 +1,5 @@
 #include "tree/icptree/MacroNode.h"
+#include "model/Macro.h"
 #include "tree/binarytree/NextNodesBehaviorLeftFirst.h"
 #include "tree/binarytree/NextNodesBehaviorRightFirst.h"
 #include "tree/binarytree/NextNodesBehaviorRightOnly.h"
@@ -7,10 +8,12 @@ MacroNode::MacroNode() {
     setAsNormalNode();
     setPackingDirection(true);
     empty = false;
+    macro = 0;
 }
 
 MacroNode::~MacroNode() {
-
+    if (empty)
+        delete macro;
 }
 
 void MacroNode::setIdentity(MacroNode::Identity identity) {
@@ -105,6 +108,37 @@ void MacroNode::setEmpty() {
 
 bool MacroNode::isEmptyNode() {
     return empty;
+}
+
+void MacroNode::setMacro(Macro *macro) {
+    this->macro = macro;
+}
+
+Macro *MacroNode::getMacro() {
+    return macro;
+}
+
+Node *MacroNode::createNode() {
+    return new MacroNode();
+}
+
+Node *MacroNode::copy() {
+    MacroNode *node = dynamic_cast<MacroNode *>(Node::copy());
+    node->setAttributes(packingForward, identity, empty);
+    if (empty) {
+        if (macro != 0) {
+            node->setMacro(macro->copy());
+        }   // Do not delete these braces or the if else statement changes.
+    } else {
+        node->setMacro(macro);
+    }
+    return node;
+}
+
+void MacroNode::setAttributes(bool packingForward, MacroNode::Identity identity, bool empty) {
+    this->packingForward = packingForward;
+    this->identity = identity;
+    this->empty = empty;
 }
 
 MacroNode *MacroNode::createEmptyNode() {

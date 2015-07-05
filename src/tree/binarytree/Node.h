@@ -25,6 +25,13 @@ public:
     bool hasLeftNode();
     bool hasRightNode();
     /*
+    A factory method that creates an object of Node.
+    A subclass of Node SHOULD override it such that it returns an object of
+    the subclass.
+    The method is used in copy() to create an object of the right class.
+    */
+    virtual Node *createNode();
+    /*
     Create a copy of the Node. This method is called when calling BinaryTree.copy().
     For a subclass of Node, call Node::copy() inside copy().
     If implement this method by a copy constructor, the copy constructor of a Node's subclass

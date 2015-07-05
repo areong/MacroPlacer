@@ -367,6 +367,10 @@ void ICPTree::traverseAll(TraversalTask *task) {
     }
 }
 
+BinaryTree *ICPTree::createBinaryTree() {
+    return new ICPTree();
+}
+
 void ICPTree::swapMacroNodesIdentity(MacroNode *node1, MacroNode *node2) {
     MacroNode::Identity node1Identity = node1->getIdentity();
     node1->setIdentity(node2->getIdentity());

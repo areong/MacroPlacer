@@ -1,5 +1,6 @@
 CC = g++
 OBJ = \
+	model/*.o\
 	tree/binarytree/*.o\
 	tree/icptree/*.o\
 	utils/*.o
@@ -11,6 +12,7 @@ HEADERS_MAIN = \
 	utils/Utils_test.h
 
 all:
+	cd model; make all
 	cd tree/binarytree; make all
 	cd tree/icptree; make all
 	cd utils; make all

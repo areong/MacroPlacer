@@ -1,6 +1,7 @@
 #include "tree/icptree/ICPTree_test.h"
 #include <iostream>
 #include <vector>
+#include "model/Macro.h"
 #include "tree/icptree/ICPTree.h"
 #include "tree/icptree/MacroNode.h"
 #include "tree/icptree/TraversalTaskPrintIdAndIdentity.h"
@@ -43,9 +44,15 @@ void testICPTree_intialize01() {
 
 void testICPTree_intialize02() {
     ICPTree *tree = new ICPTree();
-    std::vector<MacroNode *> *nodes = new std::vector<MacroNode *>();
+    std::vector<Macro *> *macros = new std::vector<Macro *>();
     for (int i = 0; i < 10; i++)
-        nodes->push_back(new MacroNode());
+        macros->push_back(new Macro());
+    std::vector<MacroNode *> *nodes = new std::vector<MacroNode *>();
+    for (int i = 0; i < 10; i++) {
+        MacroNode *macroNode = new MacroNode();
+        macroNode->setMacro(macros->at(i));
+        nodes->push_back(macroNode);
+    }
     for (int i = 0; i < 10; i++)
         tree->addNode(nodes->at(i));
 
@@ -260,7 +267,32 @@ void testICPTree_intialize02() {
     tree->traverseAll(task);
     std::cout << "\n";
 
+    // Copy and delete an ICPTree without MacroNode added.
+    ICPTree *newTree = new ICPTree();
+    ICPTree *copiedNewTree = dynamic_cast<ICPTree *>(newTree->copy());
+    delete newTree;
+    delete copiedNewTree;
+
+    // Copy the existing ICPTree, delete the existing and traverse the copied.
+    ICPTree *copiedTree = dynamic_cast<ICPTree *>(tree->copy());
     delete tree;
+    std::cout << "copy, delete the old and print the copied:\n\tResult:   ";
+    copiedTree->traverseAll(task);
+    std::cout << "\n";
+
+    // Check whether the macros of the copied ICPTree's MacroNodes remain the same.
+    bool result = true;
+    for (int i = 0; i < copiedTree->getNodes()->size(); i++) {
+        MacroNode *macroNode = dynamic_cast<MacroNode *>(copiedTree->getNodes()->at(i));
+        if (macroNode->getMacro() != macros->at(i)) {
+            result = false;
+            break;
+        }
+    }
+    std::cout << "are the macros remain the same, not being copied?\n";
+    std::cout << "\tResult: " << result << "\n";
+
+    //delete tree;  // Double delete causes undefined behaviors.
     delete nodes;
 }
 

@@ -128,6 +128,10 @@ public:
     Traverse all MacroNodes in ICPTree manner.
     */
     void traverseAll(TraversalTask *task);
+    /*
+    @Override
+    */
+    BinaryTree *createBinaryTree();
 
 private:
     void swapMacroNodesIdentity(MacroNode *node1, MacroNode *node2);

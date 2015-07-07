@@ -5,7 +5,10 @@ INC = -I ${PATH_TO_SRC}
 HEADERS_BINARYTREE = \
 	${PATH_TO_SRC}tree/binarytree/BinaryTree.h\
 	${PATH_TO_SRC}tree/binarytree/Node.h\
-	${PATH_TO_SRC}tree/binarytree/TraversalTask.h
+	${PATH_TO_SRC}tree/binarytree/TraversalTask.h\
+	${PATH_TO_SRC}tree/binarytree/TraversalTaskCollectAllNodes.h\
+	${PATH_TO_SRC}tree/binarytree/TraversalTaskCollectNonAddedNodes.h\
+	${PATH_TO_SRC}utils/Utils.h
 
 HEADERS_BINARYTREE_TEST = \
 	${PATH_TO_SRC}tree/binarytree/BinaryTree_test.h\

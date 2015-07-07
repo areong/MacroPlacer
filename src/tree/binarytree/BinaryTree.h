@@ -115,14 +115,6 @@ private:
     Node *head;
 
     /*
-    Return random integer in [0, range).
-    */
-    int randint(int range);
-    /*
-    Return true or false randomly.
-    */
-    bool randbool();
-    /*
     Get the index of node in nodes. Return -1 if not found.
     */
     int getIndexOf(std::vector<Node *> *nodes, Node *node);

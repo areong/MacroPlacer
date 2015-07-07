@@ -4,9 +4,9 @@
 #include "utils/Utils_test.h"
 
 int main(int argc, char **argv) {
-    //testBinaryTree();
     Utils::run_srand();
+    testBinaryTree();
     //testUtils();
-    testICPTree();
+    //testICPTree();
     return 0;
 }

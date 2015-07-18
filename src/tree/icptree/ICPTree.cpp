@@ -106,6 +106,9 @@ void ICPTree::swapNodes(Node *node1, Node *node2) {
     MacroNode *mn_node2 = dynamic_cast<MacroNode *>(node2);
     if (mn_node1 != 0 && mn_node2 != 0) {   // BinaryTree uses this method with Node.
         swapMacroNodesIdentity(mn_node1, mn_node2);
+        int verticalDisplacement1 = mn_node1->getVerticalDisplacement();
+        mn_node1->setVerticalDisplacement(mn_node2->getVerticalDisplacement());
+        mn_node2->setVerticalDisplacement(verticalDisplacement1);
     }
 }
 

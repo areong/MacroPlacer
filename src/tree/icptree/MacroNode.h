@@ -3,11 +3,13 @@
 
 #include "tree/binarytree/Node.h"
 
+class Edge;
 class Macro;
 
 class MacroNode : public Node {
 public:
     MacroNode();
+    MacroNode(Macro *macro);
     /*
     If it is an empty Node, delete its Macro; else do not delete.
     */
@@ -38,6 +40,14 @@ public:
     bool isEmptyNode();
     void setMacro(Macro *macro);
     Macro *getMacro();
+    void setVerticalDisplacement(int displacement);
+    /*
+    Add the displacement to the current verticalDisplacement.
+    */
+    void addToVerticalDisplacement(int displacement);
+    int getVerticalDisplacement();
+    void setCovered();
+    bool isCovered();
     /*
     @Override
     */
@@ -63,14 +73,39 @@ public:
     */
     static MacroNode *createEmptyNode(MacroNode *node);
 
+    // Edges
+
+    Edge *createTopEdge();
+    Edge *getTopEdge();
+    Edge *createRightEdge();
+    Edge *getRightEdge();
+    Edge *createBottomEdge();
+    Edge *getBottomEdge();
+    Edge *createLeftEdge();
+    Edge *getLeftEdge();
+
 private:
     bool packingForward;
     MacroNode::Identity identity;
     bool empty;
 
     Macro *macro;
+    int verticalDisplacement;
 
     void updateBranchNodeNextNodesBehavior();
+
+    // The following will not be copied when calling MacroNode.copy().
+
+    /*
+    It is true if another Macro is placed on top of its Macro such that
+    its Edge is removed from the Contour.
+    */
+    bool covered;
+
+    Edge *topEdge;
+    Edge *rightEdge;
+    Edge *bottomEdge;
+    Edge *leftEdge;
 };
 
 #endif

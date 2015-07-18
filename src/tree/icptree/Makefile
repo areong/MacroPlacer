@@ -21,7 +21,8 @@ HEADERS_MACRONODE = \
 	${PATH_TO_SRC}model/Macro.h\
 	${PATH_TO_SRC}tree/binarytree/NextNodesBehaviorLeftFirst.h\
 	${PATH_TO_SRC}tree/binarytree/NextNodesBehaviorRightFirst.h\
-	${PATH_TO_SRC}tree/binarytree/NextNodesBehaviorRightOnly.h
+	${PATH_TO_SRC}tree/binarytree/NextNodesBehaviorRightOnly.h\
+	${PATH_TO_SRC}tree/icptree/contour/Edge.h
 
 HEADERS_TRAVERSALTASKPRINTIDANDIDENTITY = \
 	${PATH_TO_SRC}tree/binarytree/TraversalTask.h\

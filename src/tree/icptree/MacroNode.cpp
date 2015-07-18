@@ -3,17 +3,32 @@
 #include "tree/binarytree/NextNodesBehaviorLeftFirst.h"
 #include "tree/binarytree/NextNodesBehaviorRightFirst.h"
 #include "tree/binarytree/NextNodesBehaviorRightOnly.h"
+#include "tree/icptree/contour/Edge.h"
 
 MacroNode::MacroNode() {
     setAsNormalNode();
     setPackingDirection(true);
     empty = false;
     macro = 0;
+    verticalDisplacement = 0;
+    covered = false;
+    topEdge = 0;
+    rightEdge = 0;
+    bottomEdge = 0;
+    leftEdge = 0;
+}
+
+MacroNode::MacroNode(Macro *macro) : MacroNode() {
+    this->macro = macro;
 }
 
 MacroNode::~MacroNode() {
     if (empty)
         delete macro;
+    delete topEdge;
+    delete rightEdge;
+    delete bottomEdge;
+    delete leftEdge;
 }
 
 void MacroNode::setIdentity(MacroNode::Identity identity) {
@@ -118,6 +133,26 @@ Macro *MacroNode::getMacro() {
     return macro;
 }
 
+void MacroNode::setVerticalDisplacement(int displacement) {
+    verticalDisplacement = displacement;
+}
+
+void MacroNode::addToVerticalDisplacement(int displacement) {
+    verticalDisplacement += displacement;
+}
+
+int MacroNode::getVerticalDisplacement() {
+    return verticalDisplacement;
+}
+
+void MacroNode::setCovered() {
+    covered = true;
+}
+
+bool MacroNode::isCovered() {
+    return covered;
+}
+
 Node *MacroNode::createNode() {
     return new MacroNode();
 }
@@ -125,6 +160,7 @@ Node *MacroNode::createNode() {
 Node *MacroNode::copy() {
     MacroNode *node = dynamic_cast<MacroNode *>(Node::copy());
     node->setAttributes(packingForward, identity, empty);
+    node->setVerticalDisplacement(verticalDisplacement);
     if (empty) {
         if (macro != 0) {
             node->setMacro(macro->copy());
@@ -160,4 +196,48 @@ void MacroNode::updateBranchNodeNextNodesBehavior() {
         setNextNodesBehavior(new NextNodesBehaviorLeftFirst());
     else
         setNextNodesBehavior(new NextNodesBehaviorRightFirst());
+}
+
+Edge *MacroNode::createTopEdge() {
+    delete topEdge;
+    topEdge = Edge::createTopEdge(macro->getXStart(), macro->getXEnd(), macro->getYEnd());
+    topEdge->setMacroNode(this);
+    return topEdge;
+}
+
+Edge *MacroNode::getTopEdge() {
+    return topEdge;
+}
+
+Edge *MacroNode::createRightEdge() {
+    delete rightEdge;
+    rightEdge = Edge::createRightEdge(macro->getYEnd(), macro->getYStart(), macro->getXEnd());
+    rightEdge->setMacroNode(this);
+    return rightEdge;
+}
+
+Edge *MacroNode::getRightEdge() {
+    return rightEdge;
+}
+
+Edge *MacroNode::createBottomEdge() {
+    delete bottomEdge;
+    bottomEdge = Edge::createBottomEdge(macro->getXEnd(), macro->getXStart(), macro->getYStart());
+    bottomEdge->setMacroNode(this);
+    return bottomEdge;
+}
+
+Edge *MacroNode::getBottomEdge() {
+    return bottomEdge;
+}
+
+Edge *MacroNode::createLeftEdge() {
+    delete leftEdge;
+    leftEdge = Edge::createLeftEdge(macro->getYStart(), macro->getYEnd(), macro->getXStart());
+    leftEdge->setMacroNode(this);
+    return leftEdge;
+}
+
+Edge *MacroNode::getLeftEdge() {
+    return leftEdge;
 }

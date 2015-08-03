@@ -148,7 +148,10 @@ public:
     virtual void setMacroXEnd(Macro *macro, int xEnd) = 0;
     virtual void setMacroYStart(Macro *macro, int yStart) = 0;
     virtual void setMacroYEnd(Macro *macro, int yEnd) = 0;
+    virtual int getMacroXStart(Macro *macro) = 0;
+    virtual int getMacroXEnd(Macro *macro) = 0;
     virtual int getMacroYStart(Macro *macro) = 0;
+    virtual int getMacroYEnd(Macro *macro) = 0;
     virtual int getMacroWidth(Macro *macro) = 0;
     virtual int getMacroHeight(Macro *macro) = 0;
     virtual Edge *createTopEdge(int xStart, int xEnd, int y) = 0;

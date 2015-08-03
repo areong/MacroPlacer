@@ -1,11 +1,26 @@
 #include "tree/icptree/ICPTree.h"
 #include "tree/icptree/MacroNode.h"
+#include "tree/icptree/TraversalTaskPlaceNormalMacros.h"
+#include "tree/icptree/TraversalTaskSetNotCovered.h"
+#include "tree/icptree/contour/TopContour.h"
+#include "tree/icptree/contour/BottomContour.h"
+#include "tree/icptree/contour/RightContour.h"
+#include "tree/icptree/contour/LeftContour.h"
 #include "utils/Utils.h"
 
 #include <iostream>
 
 ICPTree::ICPTree() {
-
+    corner0XStart = 0;
+    corner0YStart = 0;
+    exteriorTopContour = 0;
+    exteriorRightContour = 0;
+    exteriorBottomContour = 0;
+    exteriorLeftContour = 0;
+    interiorBottomContour = 0;
+    interiorLeftContour = 0;
+    interiorTopContour = 0;
+    interiorRightContour = 0;
 }
 
 ICPTree::~ICPTree() {
@@ -51,10 +66,8 @@ void ICPTree::initializeMacroNodesOnBranchesRandomly() {
         current = dynamic_cast<MacroNode *>(root->getLeftNode());
         int whichIth = 0;
         for (int i = 1; i < numNonEmptyMacroNodesOnBranches; i++) {
-            if (i == iths->at(whichIth)) {
+            if (whichIth < 3 && i == iths->at(whichIth)) {
                 current->setAsCornerNode();
-                if (whichIth >= 2)
-                    break;
                 whichIth += 1;
             } else {
                 current->setAsBranchNode();
@@ -110,6 +123,11 @@ void ICPTree::swapNodes(Node *node1, Node *node2) {
         mn_node1->setVerticalDisplacement(mn_node2->getVerticalDisplacement());
         mn_node2->setVerticalDisplacement(verticalDisplacement1);
     }
+}
+
+int ICPTree::setCorner0Position(int x, int y) {
+    corner0XStart = x;
+    corner0YStart = y;
 }
 
 MacroNode *ICPTree::getCornerNode(int ith) {
@@ -347,7 +365,7 @@ bool ICPTree::removeEmptyNodeRandomly() {
 }
 
 void ICPTree::traverseAll(TraversalTask *task) {
-    // The packing direction migh have changed.
+    // The packing direction might have changed.
     updatePackingDirectionOfMacroNodesOnBranches();
     // First, push all CornerNodes and SwitchNodes into a vector.
     // Push root first.
@@ -368,6 +386,122 @@ void ICPTree::traverseAll(TraversalTask *task) {
         if (start->hasLeftNode())
             traverseDfs(starts->at(i)->getLeftNode(), task);
     }
+    // Traverse corner 0.
+    traverseDfs(getRoot(), task);
+}
+
+void ICPTree::placeMacrosAssumingNoSwitch() {
+    // Initialize Contours.
+    initializeContours();
+    // Set all MacroNodes not covered.
+    setAllMacroNodesNotCovered();
+    // Place Macros on branches.
+    // TopContour
+    exteriorTopContour->initialize(corner0XStart, corner0YStart);
+    interiorBottomContour->initialize(corner0XStart, corner0YStart);
+    std::vector<MacroNode *> *cornerNodes = getCornerNodes();
+    MacroNode *currentNode = dynamic_cast<MacroNode *>(cornerNodes->at(0)->getLeftNode());
+    exteriorTopContour->placeMacroOnEdgeWithPackingForward(cornerNodes->at(0), exteriorTopContour->getTail());
+    interiorBottomContour->placeMacroOnHeadWithoutChangingMacroYStartWithPackingBackward(cornerNodes->at(0));
+    while (true) {
+        exteriorTopContour->placeMacroOnTailByVerticalDisplacementWithPackingForward(currentNode);
+        interiorBottomContour->placeMacroOnHeadWithoutChangingMacroYStartWithPackingBackward(currentNode);
+        if (currentNode->isCornerNode()) {
+            break;
+        }
+        currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+    }
+    exteriorTopContour->setTailYToTheLastMacroYStart();
+    // RightContour
+    Macro *corner1Macro = currentNode->getMacro();
+    int corner1XStart = exteriorRightContour->getMacroYStart(corner1Macro);
+    int corner1YStart = exteriorRightContour->getMacroXEnd(corner1Macro);
+    exteriorRightContour->initialize(corner1XStart, corner1YStart);
+    interiorLeftContour->initialize(corner1XStart, corner1YStart);
+    currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+    while (true) {
+        exteriorRightContour->placeMacroOnTailByVerticalDisplacementWithPackingForward(currentNode);
+        interiorLeftContour->placeMacroOnHeadWithoutChangingMacroYStartWithPackingBackward(currentNode);
+        if (currentNode->isCornerNode()) {
+            break;
+        }
+        currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+    }
+    // Legalize interiorLeftContour.
+    interiorLeftContour->legalizeMacrosToALeftContour(interiorBottomContour);
+    exteriorRightContour->setTailYToTheLastMacroYStart();
+    // BottomContour
+    Macro *corner2Macro = currentNode->getMacro();
+    int corner2XStart = exteriorBottomContour->getMacroXEnd(corner2Macro);
+    int corner2YEnd = exteriorBottomContour->getMacroYStart(corner2Macro);
+    exteriorBottomContour->initialize(corner2XStart, corner2YEnd);
+    interiorTopContour->initialize(corner2XStart, corner2YEnd);
+    currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+    while (true) {
+        exteriorBottomContour->placeMacroOnTailByVerticalDisplacementWithPackingForward(currentNode);
+        interiorTopContour->placeMacroOnHeadWithoutChangingMacroYStartWithPackingBackward(currentNode);
+        if (currentNode->isCornerNode()) {
+            break;
+        }
+        currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+    }
+    // Legalize interiorTopContour.
+    interiorTopContour->legalizeMacrosToALeftContour(interiorLeftContour);
+    interiorTopContour->legalizeMacrosToABottomContour(interiorBottomContour);
+    exteriorBottomContour->setTailYToTheLastMacroYStart();
+    // LeftContour
+    Macro *corner3Macro = currentNode->getMacro();
+    int corner3XEnd = exteriorLeftContour->getMacroYStart(corner3Macro);
+    int corner3YEnd = exteriorLeftContour->getMacroXEnd(corner3Macro);
+    exteriorLeftContour->initialize(corner3XEnd, corner3YEnd);
+    interiorRightContour->initialize(corner3XEnd, corner3YEnd);
+    // Check if corner 3 has any leftNode. If there are only four Macros
+    // on branches, corner 3 will have no leftNode.
+    if (currentNode->hasLeftNode()) {
+        currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+        while (true) {
+            exteriorLeftContour->placeMacroOnTailByVerticalDisplacementWithPackingForward(currentNode);
+            interiorRightContour->placeMacroOnHeadWithoutChangingMacroYStartWithPackingBackward(currentNode);
+            if (!currentNode->hasLeftNode()) {  // No more CornerNode
+                break;
+            }
+            currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+        }
+        // Legalize interiorRightContour.
+        interiorRightContour->legalizeMacrosToARightContour(interiorBottomContour);
+        interiorRightContour->legalizeMacrosToALeftContour(interiorTopContour);
+        interiorRightContour->legalizeMacrosToABottomContour(interiorLeftContour);
+    }
+    // Legalize exteriorLeftContour.tail to corner0.xStart.
+    if (exteriorLeftContour->getEdgeYEnd(exteriorLeftContour->getTail()) > corner0XStart) {
+        exteriorLeftContour->setEdgeYEnd(exteriorLeftContour->getTail(), corner0XStart);
+    }
+    // Place Normal Macros.
+    TraversalTaskPlaceNormalMacros *task = new TraversalTaskPlaceNormalMacros();
+    task->setPackingForward(true);
+    // Left
+    task->setExteriorContour(exteriorLeftContour);
+    if (cornerNodes->at(3)->hasLeftNode()) {
+        traverseDfs(cornerNodes->at(3)->getLeftNode(), task);
+    }
+    // Bottom
+    task->setExteriorContour(exteriorBottomContour);
+    if (cornerNodes->at(2)->hasLeftNode()) {
+        traverseDfs(cornerNodes->at(2)->getLeftNode(), task);
+    }
+    // Right
+    task->setExteriorContour(exteriorRightContour);
+    if (cornerNodes->at(1)->hasLeftNode()) {
+        traverseDfs(cornerNodes->at(1)->getLeftNode(), task);
+    }
+    // Top
+    task->setExteriorContour(exteriorTopContour);
+    if (cornerNodes->at(0)->hasLeftNode()) {
+        traverseDfs(cornerNodes->at(0)->getLeftNode(), task);
+    }
+    // Corner 0
+    traverseDfs(cornerNodes->at(0), task);
+    delete cornerNodes;
 }
 
 BinaryTree *ICPTree::createBinaryTree() {
@@ -415,4 +549,31 @@ void ICPTree::updatePackingDirectionOfMacroNodesOnBranches() {
             packingForward ^= true;
         current = dynamic_cast<MacroNode *>(current->getLeftNode());
     }
+}
+
+void ICPTree::initializeContours() {
+    delete exteriorTopContour;
+    delete exteriorRightContour;
+    delete exteriorBottomContour;
+    delete exteriorLeftContour;
+    delete interiorBottomContour;
+    delete interiorLeftContour;
+    delete interiorTopContour;
+    delete interiorRightContour;
+    exteriorTopContour = new TopContour();
+    exteriorRightContour = new RightContour();
+    exteriorBottomContour = new BottomContour();
+    exteriorLeftContour = new LeftContour();
+    interiorBottomContour = new BottomContour();
+    interiorLeftContour = new LeftContour();
+    interiorTopContour = new TopContour();
+    interiorRightContour = new RightContour();
+}
+
+void ICPTree::setAllMacroNodesNotCovered() {
+    TraversalTask *task = new TraversalTaskSetNotCovered();
+    traverseAll(task);
+    // Set corner 0 ant its right Nodes not covered.
+    traverseDfs(getRoot(), task);
+    delete task;
 }

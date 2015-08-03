@@ -6,6 +6,12 @@ HEADERS_ICPTREE = \
 	${PATH_TO_SRC}tree/binarytree/BinaryTree.h\
 	${PATH_TO_SRC}tree/icptree/ICPTree.h\
 	${PATH_TO_SRC}tree/icptree/MacroNode.h\
+	${PATH_TO_SRC}tree/icptree/TraversalTaskPlaceNormalMacros.h\
+	${PATH_TO_SRC}tree/icptree/TraversalTaskSetNotCovered.h\
+	${PATH_TO_SRC}tree/icptree/contour/TopContour.h\
+	${PATH_TO_SRC}tree/icptree/contour/BottomContour.h\
+	${PATH_TO_SRC}tree/icptree/contour/RightContour.h\
+	${PATH_TO_SRC}tree/icptree/contour/LeftContour.h\
 	${PATH_TO_SRC}utils/Utils.h
 
 HEADERS_ICPTREE_TEST = \
@@ -13,7 +19,8 @@ HEADERS_ICPTREE_TEST = \
 	${PATH_TO_SRC}model/Macro.h\
 	${PATH_TO_SRC}tree/icptree/ICPTree.h\
 	${PATH_TO_SRC}tree/icptree/MacroNode.h\
-	${PATH_TO_SRC}tree/icptree/TraversalTaskPrintIdAndIdentity.h
+	${PATH_TO_SRC}tree/icptree/TraversalTaskPrintIdAndIdentity.h\
+	${PATH_TO_SRC}utils/Utils.h
 
 HEADERS_MACRONODE = \
 	${PATH_TO_SRC}tree/binarytree/Node.h\
@@ -24,21 +31,39 @@ HEADERS_MACRONODE = \
 	${PATH_TO_SRC}tree/binarytree/NextNodesBehaviorRightOnly.h\
 	${PATH_TO_SRC}tree/icptree/contour/Edge.h
 
+HEADERS_TRAVERSALTASKPLACENORMALMACROS = \
+	${PATH_TO_SRC}tree/binarytree/TraversalTask.h\
+	${PATH_TO_SRC}tree/icptree/TraversalTaskPlaceNormalMacros.h\
+	${PATH_TO_SRC}tree/icptree/MacroNode.h\
+	${PATH_TO_SRC}tree/icptree/contour/Contour.h\
+	${PATH_TO_SRC}tree/icptree/contour/Edge.h
+
 HEADERS_TRAVERSALTASKPRINTIDANDIDENTITY = \
 	${PATH_TO_SRC}tree/binarytree/TraversalTask.h\
 	${PATH_TO_SRC}tree/icptree/TraversalTaskPrintIdAndIdentity.h\
+	${PATH_TO_SRC}tree/icptree/MacroNode.h
+
+HEADERS_TRAVERSALTASKSETNOTCOVERED = \
+	${PATH_TO_SRC}tree/binarytree/TraversalTask.h\
+	${PATH_TO_SRC}tree/icptree/TraversalTaskSetNotCovered.h\
 	${PATH_TO_SRC}tree/icptree/MacroNode.h
 
 all:
 	make ICPTree.o
 	make ICPTree_test.o
 	make MacroNode.o
+	make TraversalTaskPlaceNormalMacros.o
 	make TraversalTaskPrintIdAndIdentity.o
+	make TraversalTaskSetNotCovered.o
 ICPTree.o: ICPTree.cpp ${HEADERS_ICPTREE}
 	${CC} -c ICPTree.cpp ${INC}
 ICPTree_test.o: ICPTree_test.cpp ${HEADERS_ICPTREE}
 	${CC} -c ICPTree_test.cpp ${INC}
 MacroNode.o: MacroNode.cpp ${HEADERS_MACRONODE}
 	${CC} -c MacroNode.cpp ${INC}
+TraversalTaskPlaceNormalMacros.o: TraversalTaskPlaceNormalMacros.cpp ${HEADERS_TRAVERSALTASKPLACENORMALMACROS}
+	${CC} -c TraversalTaskPlaceNormalMacros.cpp ${INC}
 TraversalTaskPrintIdAndIdentity.o: TraversalTaskPrintIdAndIdentity.cpp ${HEADERS_TRAVERSALTASKPRINTIDANDIDENTITY}
 	${CC} -c TraversalTaskPrintIdAndIdentity.cpp ${INC}
+TraversalTaskSetNotCovered.o: TraversalTaskSetNotCovered.cpp ${HEADERS_TRAVERSALTASKSETNOTCOVERED}
+	${CC} -c TraversalTaskSetNotCovered.cpp ${INC}

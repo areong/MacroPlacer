@@ -48,8 +48,20 @@ void LeftContour::setMacroYEnd(Macro *macro, int yEnd) {
     macro->setXStart(yEnd);
 }
 
+int LeftContour::getMacroXStart(Macro *macro) {
+    return macro->getYStart();
+}
+
+int LeftContour::getMacroXEnd(Macro *macro) {
+    return macro->getYEnd();
+}
+
 int LeftContour::getMacroYStart(Macro *macro) {
     return macro->getXEnd();
+}
+
+int LeftContour::getMacroYEnd(Macro *macro) {
+    return macro->getXStart();
 }
 
 int LeftContour::getMacroWidth(Macro *macro) {

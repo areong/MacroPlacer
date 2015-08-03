@@ -5,6 +5,7 @@
 #include <vector>
 
 class MacroNode;
+class Contour;
 
 /*
 CAUTION: The Nodes used in ICPTree methods are actually MacroNodes.
@@ -40,6 +41,7 @@ public:
     @Override
     */
     void swapNodes(Node *node1, Node *node2);
+    int setCorner0Position(int x, int y);
     /*
     Get the ith CornerNode. ith = 0, 1, 2, or 3.
     Get CornerNode by traversing from the root.
@@ -125,15 +127,34 @@ public:
     bool removeEmptyNode(MacroNode *node);
     bool removeEmptyNodeRandomly();
     /*
-    Traverse all MacroNodes in ICPTree manner.
+    Traverse all MacroNodes in ICPTree manner:
+    Collect all CornerNodes and SwitchNodes, add each their leftNode into a list.
+    Call traverseDfs() with starting Node picked up from the list in the
+    reverse order. Then traverse corner 0 by traverseDfs.
     */
     void traverseAll(TraversalTask *task);
+    /*
+    A simpler version of placeMacros. It assume there is no Switch exists.
+    */
+    void placeMacrosAssumingNoSwitch();
     /*
     @Override
     */
     BinaryTree *createBinaryTree();
 
 private:
+    int corner0XStart;
+    int corner0YStart;
+
+    Contour *exteriorTopContour;
+    Contour *exteriorRightContour;
+    Contour *exteriorBottomContour;
+    Contour *exteriorLeftContour;
+    Contour *interiorBottomContour;
+    Contour *interiorLeftContour;
+    Contour *interiorTopContour;
+    Contour *interiorRightContour;
+
     void swapMacroNodesIdentity(MacroNode *node1, MacroNode *node2);
     void swapMacroNodesPackingDirection(MacroNode *node1, MacroNode *node2);
     /*
@@ -154,6 +175,14 @@ private:
     However this would require more code and make those methods more complicated.
     */
     void updatePackingDirectionOfMacroNodesOnBranches();
+    /*
+    Delete and create Contours.
+    */
+    void initializeContours();
+    /*
+    Call MacroNode.isCovered(false) for all MacroNodes.
+    */
+    void setAllMacroNodesNotCovered();
 };
 
 #endif

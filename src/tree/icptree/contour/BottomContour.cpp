@@ -48,8 +48,20 @@ void BottomContour::setMacroYEnd(Macro *macro, int yEnd) {
     macro->setYStart(yEnd);
 }
 
+int BottomContour::getMacroXStart(Macro *macro) {
+    return macro->getXEnd();
+}
+
+int BottomContour::getMacroXEnd(Macro *macro) {
+    return macro->getXStart();
+}
+
 int BottomContour::getMacroYStart(Macro *macro) {
     return macro->getYEnd();
+}
+
+int BottomContour::getMacroYEnd(Macro *macro) {
+    return macro->getYStart();
 }
 
 int BottomContour::getMacroWidth(Macro *macro) {

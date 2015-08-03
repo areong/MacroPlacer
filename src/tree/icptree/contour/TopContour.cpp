@@ -40,8 +40,20 @@ void TopContour::setMacroYEnd(Macro *macro, int yEnd) {
     macro->setYEnd(yEnd);
 }
 
+int TopContour::getMacroXStart(Macro *macro) {
+    return macro->getXStart();
+}
+
+int TopContour::getMacroXEnd(Macro *macro) {
+    return macro->getXEnd();
+}
+
 int TopContour::getMacroYStart(Macro *macro) {
     return macro->getYStart();
+}
+
+int TopContour::getMacroYEnd(Macro *macro) {
+    return macro->getYEnd();
 }
 
 int TopContour::getMacroWidth(Macro *macro) {

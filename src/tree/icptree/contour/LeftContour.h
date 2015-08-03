@@ -38,7 +38,19 @@ public:
     /*
     @Override
     */
+    int getMacroXStart(Macro *macro);
+    /*
+    @Override
+    */
+    int getMacroXEnd(Macro *macro);
+    /*
+    @Override
+    */
     int getMacroYStart(Macro *macro);
+    /*
+    @Override
+    */
+    int getMacroYEnd(Macro *macro);
     /*
     @Override
     */

@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
     Utils::run_srand();
     //testBinaryTree();
     //testUtils();
-    //testICPTree();
-    testContour();
+    testICPTree();
+    //testContour();
     return 0;
 }

@@ -46,7 +46,7 @@ public:
     */
     void addToVerticalDisplacement(int displacement);
     int getVerticalDisplacement();
-    void setCovered();
+    void setCovered(bool covered);
     bool isCovered();
     /*
     @Override

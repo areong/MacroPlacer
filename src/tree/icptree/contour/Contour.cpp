@@ -4,6 +4,8 @@
 #include "tree/icptree/contour/Edge.h"
 
 Contour::Contour() {
+    head = 0;
+    tail = 0;
     edgesToBeDeleted = new std::vector<Edge *>();
 }
 
@@ -340,7 +342,7 @@ void Contour::placeMacroOnEdgeWithPackingForward(MacroNode *macroNode, Edge *onE
         // The Edge's MacroNode is now totally covered.
         MacroNode *edgeMacroNode = edgeToBeRemoved->getMacroNode();
         if (edgeMacroNode != 0) {
-            edgeMacroNode->setCovered();
+            edgeMacroNode->setCovered(true);
         }
     }
     delete edgesToBeRemoved;
@@ -385,7 +387,7 @@ void Contour::placeMacroOnEdgeWithPackingBackward(MacroNode *macroNode, Edge *on
         // The Edge's MacroNode is now totally covered.
         MacroNode *edgeMacroNode = edgeToBeRemoved->getMacroNode();
         if (edgeMacroNode != 0) {
-            edgeMacroNode->setCovered();
+            edgeMacroNode->setCovered(true);
         }
     }
     delete edgesToBeRemoved;

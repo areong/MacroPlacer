@@ -145,8 +145,8 @@ int MacroNode::getVerticalDisplacement() {
     return verticalDisplacement;
 }
 
-void MacroNode::setCovered() {
-    covered = true;
+void MacroNode::setCovered(bool covered) {
+    this->covered = covered;
 }
 
 bool MacroNode::isCovered() {
@@ -184,10 +184,12 @@ MacroNode *MacroNode::createEmptyNode() {
 }
 
 MacroNode *MacroNode::createEmptyNode(MacroNode *node) {
-    // It will copy the width, height and verticalDisplacement of node's Macro.
-    // For now since the Macro is not ready, do the same as createEmptyNode().
     MacroNode *emptyNode = new MacroNode();
     emptyNode->setEmpty();
+    emptyNode->setVerticalDisplacement(node->getVerticalDisplacement());
+    if (node->getMacro() != 0) {
+        emptyNode->setMacro(node->getMacro()->copy());
+    }
     return emptyNode;
 }
 

@@ -3,6 +3,7 @@
 #include "tree/icptree/contour/Contour_test.h"
 #include "utils/Utils.h"
 #include "utils/Utils_test.h"
+#include "view/FloorplanWindow_test.h"
 
 int main(int argc, char **argv) {
     Utils::run_srand();
@@ -10,5 +11,6 @@ int main(int argc, char **argv) {
     //testUtils();
     testICPTree();
     //testContour();
+    //testFloorplanWindow();
     return 0;
 }

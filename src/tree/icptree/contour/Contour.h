@@ -133,6 +133,15 @@ public:
     void placeMacroAtXWithPackingForward(MacroNode *macroNode, int x);
     void placeMacroAtXWithPackingBackward(MacroNode *macroNode, int x);
     /*
+    Calculate maxY by traversing all Edges.
+    "All Edges" excludes head and tail.
+    */
+    void calculateMaxY();
+    int getMaxX();
+    int getMinX();
+    int getMaxY();
+    int getMinY();
+    /*
     Print all Edges into lines of "(xStart, xEnd, y)"
     by calling Contour.getEdgeXStart(), getEdgeXEnd() and getEdgeY().
     */
@@ -169,6 +178,7 @@ public:
     virtual void initializeLocalMaxY() = 0; // localMaxY is a protected attribute.
     virtual void addToLocalMaxY(int value) = 0;
     virtual void initializeMaxMinXY() = 0;  // min max x y are protected attributes.
+    virtual void initializeMaxY() = 0;
     virtual bool isX1Larger(int x1, int x2) = 0;        // x1 >  x2
     virtual bool isX1NotSmaller(int x1, int x2) = 0;    // x1 >= x2
     virtual bool isX1Smaller(int x1, int x2) = 0;       // x1 <  x2
@@ -187,6 +197,12 @@ protected:
     int originX;
     int originY;
     int localMaxY;
+
+    /*
+    These four attributes are polymophised. For example, maxX
+    represents max x, min y, min x and max y of TopContour,
+    RightContour, BottomContour and LeftContour.
+    */
     int maxX;
     int minX;
     int maxY;

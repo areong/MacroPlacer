@@ -21,6 +21,10 @@ ICPTree::ICPTree() {
     interiorLeftContour = 0;
     interiorTopContour = 0;
     interiorRightContour = 0;
+    maxX = 1;
+    minX = 0;
+    maxY = 1;
+    minY = 0;
 }
 
 ICPTree::~ICPTree() {
@@ -212,7 +216,7 @@ MacroNode *ICPTree::getEmptyNodeInsertableMacroNodeRandomly() {
     return result;
 }
 
-MacroNode *ICPTree::getEmptyNodeRandomly() {
+std::vector<MacroNode *> *ICPTree::getEmptyNodes() {
     std::vector<MacroNode *> *emptyNodes = new std::vector<MacroNode *>();
     MacroNode *root = dynamic_cast<MacroNode *>(getRoot());
     MacroNode *current = root;
@@ -221,6 +225,11 @@ MacroNode *ICPTree::getEmptyNodeRandomly() {
             emptyNodes->push_back(current);
         current = dynamic_cast<MacroNode *>(current->getLeftNode());
     }
+    return emptyNodes;
+}
+
+MacroNode *ICPTree::getEmptyNodeRandomly() {
+    std::vector<MacroNode *> *emptyNodes = getEmptyNodes();
     MacroNode *result = 0;
     if (emptyNodes->size() > 0)
         result = emptyNodes->at(Utils::randint(0, emptyNodes->size()));
@@ -430,6 +439,8 @@ void ICPTree::placeMacrosAssumingNoSwitch() {
     // Legalize interiorLeftContour.
     interiorLeftContour->legalizeMacrosToALeftContour(interiorBottomContour);
     exteriorRightContour->setTailYToTheLastMacroYStart();
+    interiorLeftContour->calculateMaxY(); // maxY may change after legalization.
+    exteriorRightContour->calculateMaxY();
     // BottomContour
     Macro *corner2Macro = currentNode->getMacro();
     int corner2XStart = exteriorBottomContour->getMacroXEnd(corner2Macro);
@@ -449,6 +460,8 @@ void ICPTree::placeMacrosAssumingNoSwitch() {
     interiorTopContour->legalizeMacrosToALeftContour(interiorLeftContour);
     interiorTopContour->legalizeMacrosToABottomContour(interiorBottomContour);
     exteriorBottomContour->setTailYToTheLastMacroYStart();
+    interiorTopContour->calculateMaxY(); // maxY may change after legalization.
+    exteriorBottomContour->calculateMaxY();
     // LeftContour
     Macro *corner3Macro = currentNode->getMacro();
     int corner3XEnd = exteriorLeftContour->getMacroYStart(corner3Macro);
@@ -471,10 +484,13 @@ void ICPTree::placeMacrosAssumingNoSwitch() {
         interiorRightContour->legalizeMacrosToARightContour(interiorBottomContour);
         interiorRightContour->legalizeMacrosToALeftContour(interiorTopContour);
         interiorRightContour->legalizeMacrosToABottomContour(interiorLeftContour);
+        interiorRightContour->calculateMaxY(); // maxY may change after legalization.
+        exteriorLeftContour->calculateMaxY();
     }
     // Legalize exteriorLeftContour.tail to corner0.xStart.
     if (exteriorLeftContour->getEdgeYEnd(exteriorLeftContour->getTail()) > corner0XStart) {
         exteriorLeftContour->setEdgeYEnd(exteriorLeftContour->getTail(), corner0XStart);
+        interiorRightContour->setEdgeYEnd(interiorRightContour->getHead(), corner0XStart);
     }
     // Place Normal Macros.
     TraversalTaskPlaceNormalMacros *task = new TraversalTaskPlaceNormalMacros();
@@ -502,7 +518,26 @@ void ICPTree::placeMacrosAssumingNoSwitch() {
     // Corner 0
     traverseDfs(cornerNodes->at(0), task);
     delete cornerNodes;
+    // Calculate max min x y.
+    calculateMaxMinXYAssumingNoSwitch();
 }
+
+int ICPTree::getMaxX() {
+    return maxX;
+}
+
+int ICPTree::getMinX() {
+    return minX;
+}
+
+int ICPTree::getMaxY() {
+    return maxY;
+}
+
+int ICPTree::getMinY() {
+    return minY;
+}
+
 
 BinaryTree *ICPTree::createBinaryTree() {
     return new ICPTree();
@@ -576,4 +611,54 @@ void ICPTree::setAllMacroNodesNotCovered() {
     // Set corner 0 ant its right Nodes not covered.
     traverseDfs(getRoot(), task);
     delete task;
+}
+
+void ICPTree::calculateMaxMinXYAssumingNoSwitch() {
+    maxX = -1e8;
+    minX = 1e8;
+    maxY = -1e8;
+    minX = 1e8;
+    // maxX
+    if (maxX < exteriorRightContour->getMaxY()) {
+        maxX = exteriorRightContour->getMaxY();
+    }
+    if (maxX < exteriorTopContour->getMaxX()) {
+        maxX = exteriorTopContour->getMaxX();
+    }
+    if (maxX < interiorRightContour->getMaxY()) {
+        maxX = interiorRightContour->getMaxY();
+    }
+    // minX
+    if (minX > exteriorTopContour->getMinX()) {
+        minX = exteriorTopContour->getMinX();
+    }
+    if (minX > exteriorLeftContour->getMaxY()) {
+        minX = exteriorLeftContour->getMaxY();
+    }
+    if (minX > exteriorBottomContour->getMaxX()) {
+        minX = exteriorBottomContour->getMaxX();
+    }
+    if (minX > interiorLeftContour->getMaxY()) {
+        minX = interiorLeftContour->getMaxY();
+    }
+    // maxY
+    if (maxY < exteriorTopContour->getMaxY()) {
+        maxY = exteriorTopContour->getMaxY();
+    }
+    if (maxY < exteriorLeftContour->getMaxX()) {
+        maxY = exteriorLeftContour->getMaxX();
+    }
+    if (maxY < interiorTopContour->getMaxY()) {
+        maxY = interiorTopContour->getMaxY();
+    }
+    // minY
+    if (minY > exteriorBottomContour->getMaxY()) {
+        minY = exteriorBottomContour->getMaxY();
+    }
+    if (minY > exteriorRightContour->getMaxX()) {
+        minY = exteriorRightContour->getMaxX();
+    }
+    if (minY > interiorBottomContour->getMaxY()) {
+        minY = interiorBottomContour->getMaxY();
+    }
 }

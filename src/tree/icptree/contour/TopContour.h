@@ -122,6 +122,10 @@ public:
     /*
     @Override
     */
+    void initializeMaxY();
+    /*
+    @Override
+    */
     bool isX1Larger(int x1, int x2);
     /*
     @Override

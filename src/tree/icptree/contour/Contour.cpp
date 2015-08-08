@@ -472,6 +472,31 @@ void Contour::placeMacroAtXWithPackingBackward(MacroNode *macroNode, int x) {
     placeMacroOnEdgeWithPackingBackward(macroNode, currentEdge);
 }
 
+void Contour::calculateMaxY() {
+    initializeMaxY();
+    Edge *currentEdge = head->getBackEdge();
+    while (currentEdge != tail) {
+        updateMaxY(getEdgeYEnd(currentEdge));
+        currentEdge = currentEdge->getBackEdge();
+    }
+}
+
+int Contour::getMaxX() {
+    return maxX;
+}
+
+int Contour::getMinX() {
+    return minX;
+}
+
+int Contour::getMaxY() {
+    return maxY;
+}
+
+int Contour::getMinY() {
+    return minY;
+}
+
 void Contour::printEdges() {
     Edge *current = head;
     while (true) {
@@ -507,6 +532,6 @@ void Contour::updateMaxY(int y) {
 }
 
 void Contour::updateMinY(int y) {
-    if (isY1Smaller(y, maxY))
-        maxY = y;
+    if (isY1Smaller(y, minY))
+        minY = y;
 }

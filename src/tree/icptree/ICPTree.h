@@ -75,6 +75,12 @@ public:
     */
     MacroNode *getEmptyNodeInsertableMacroNodeRandomly();
     /*
+    Get a vector of all empty Nodes.
+    PLEASE DELETE the returned vector.
+    Get empty Nodes by traversing from the root.
+    */
+    std::vector<MacroNode *> *getEmptyNodes();
+    /*
     Get an empty Node randomly.
 
     @return Return 0 if no empty Node exists.
@@ -137,6 +143,10 @@ public:
     A simpler version of placeMacros. It assume there is no Switch exists.
     */
     void placeMacrosAssumingNoSwitch();
+    int getMaxX();
+    int getMinX();
+    int getMaxY();
+    int getMinY();
     /*
     @Override
     */
@@ -154,6 +164,11 @@ private:
     Contour *interiorLeftContour;
     Contour *interiorTopContour;
     Contour *interiorRightContour;
+
+    int maxX;
+    int minX;
+    int maxY;
+    int minY;
 
     void swapMacroNodesIdentity(MacroNode *node1, MacroNode *node2);
     void swapMacroNodesPackingDirection(MacroNode *node1, MacroNode *node2);
@@ -183,6 +198,11 @@ private:
     Call MacroNode.isCovered(false) for all MacroNodes.
     */
     void setAllMacroNodesNotCovered();
+    /*
+    Called at the end of placing Macros to calculate the x y range of Macros.
+    Assume no Switch is used (calculation is a little bit simpler than with Switch).
+    */
+    void calculateMaxMinXYAssumingNoSwitch();
 };
 
 #endif

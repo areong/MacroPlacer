@@ -135,6 +135,10 @@ void RightContour::initializeMaxMinXY() {
     minY = 1e8;
 }
 
+void RightContour::initializeMaxY() {
+    maxY = -1e8;
+}
+
 bool RightContour::isX1Larger(int x1, int x2) {
     return x1 < x2;
 }

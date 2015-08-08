@@ -17,10 +17,12 @@ HEADERS_ICPTREE = \
 HEADERS_ICPTREE_TEST = \
 	${PATH_TO_SRC}tree/icptree/ICPTree_test.h\
 	${PATH_TO_SRC}model/Macro.h\
+	${PATH_TO_SRC}model/Floorplan.h\
 	${PATH_TO_SRC}tree/icptree/ICPTree.h\
 	${PATH_TO_SRC}tree/icptree/MacroNode.h\
 	${PATH_TO_SRC}tree/icptree/TraversalTaskPrintIdAndIdentity.h\
-	${PATH_TO_SRC}utils/Utils.h
+	${PATH_TO_SRC}utils/Utils.h\
+	${PATH_TO_SRC}view/FloorplanWindow.h
 
 HEADERS_MACRONODE = \
 	${PATH_TO_SRC}tree/binarytree/Node.h\

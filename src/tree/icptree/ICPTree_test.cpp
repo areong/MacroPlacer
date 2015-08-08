@@ -2,10 +2,14 @@
 #include <iostream>
 #include <vector>
 #include "model/Macro.h"
+#include "model/Floorplan.h"
 #include "tree/icptree/ICPTree.h"
 #include "tree/icptree/MacroNode.h"
 #include "tree/icptree/TraversalTaskPrintIdAndIdentity.h"
 #include "utils/Utils.h"
+#include "view/FloorplanWindow.h"
+
+void displayFloorplan(Floorplan *floorplan);
 
 void deleteMacrosMacroNodesAndTree(std::vector<Macro *> *macros, 
     std::vector<MacroNode *> *macroNodes, ICPTree *tree);
@@ -409,6 +413,14 @@ void testICPTree_placeMacrosNoNormalNorSwitch() {
                   << "\t" << macroNodes->at(i)->getVerticalDisplacement() << "\n";
     }
 
+    std::cout << "maxX, minX, maxY, minY: " << tree->getMaxX() << ", "
+              << tree->getMinX() << ", " << tree->getMaxY() << ", "
+              << tree->getMinY() << "\n";
+
+    // Display
+    Floorplan *floorplan = new Floorplan(macros, macroNodes, tree);
+    displayFloorplan(floorplan);
+
     deleteMacrosMacroNodesAndTree(macros, macroNodes, tree);
 }
 
@@ -428,12 +440,17 @@ void testICPTree_placeMacrosRandomlyNoSwitch() {
     tree->initializeRandomly();
     tree->setCorner0Position(0, 0);
 
-    tree->insertEmptyNodeRandomly();
+    //tree->insertEmptyNodeRandomly();
 
     TraversalTaskPrintIdAndIdentity *task = new TraversalTaskPrintIdAndIdentity();
     tree->traverseAll(task);
 
     tree->placeMacrosAssumingNoSwitch();
+
+    // Display
+    Floorplan *floorplan = new Floorplan(macros, macroNodes, tree);
+    displayFloorplan(floorplan);
+
     deleteMacrosMacroNodesAndTree(macros, macroNodes, tree);
 }
 
@@ -445,6 +462,14 @@ void testICPTree() {
 }
 
 // private
+
+void displayFloorplan(Floorplan *floorplan) {
+    FloorplanWindow *window = FloorplanWindow::createInstance(floorplan);
+    window->setWindowSize(1024, 768);
+    window->setXYRangeByFloorplan();
+    window->initialize();
+    window->runMainLoop();
+}
 
 void deleteMacrosMacroNodesAndTree(std::vector<Macro *> *macros, 
     std::vector<MacroNode *> *macroNodes, ICPTree *tree) {

@@ -127,6 +127,10 @@ void TopContour::initializeMaxMinXY() {
     minY = 1e8;
 }
 
+void TopContour::initializeMaxY() {
+    maxY = -1e8;
+}
+
 bool TopContour::isX1Larger(int x1, int x2) {
     return x1 > x2;
 }

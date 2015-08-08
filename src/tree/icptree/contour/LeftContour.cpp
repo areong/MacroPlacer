@@ -135,6 +135,10 @@ void LeftContour::initializeMaxMinXY() {
     minY = -1e8;
 }
 
+void LeftContour::initializeMaxY() {
+    maxY = 1e8;
+}
+
 bool LeftContour::isX1Larger(int x1, int x2) {
     return x1 > x2;
 }

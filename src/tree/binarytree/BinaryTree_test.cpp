@@ -6,7 +6,7 @@
 #include "tree/binarytree/NextNodesBehaviorRightFirst.h"
 #include "tree/binarytree/TraversalTaskPrintId.h"
 
-void testBinaryTree() {
+void testBinaryTree_basic() {
     // Create Nodes.
     std::vector<Node *> *nodes = new std::vector<Node *>();
     for (int i = 0; i < 10; i++)
@@ -117,4 +117,27 @@ void testBinaryTree() {
     std::cout << "Swap Nodes randomly\n\tResult:   ";
     binaryTree->traverseDfs(binaryTree->getRoot(), taskPrintId);
     std::cout << "\n";
+}
+
+void testBinaryTree_swapRandomly() {
+    // Create Nodes.
+    std::vector<Node *> *nodes = new std::vector<Node *>();
+    for (int i = 0; i < 40; i++)
+        nodes->push_back(new Node());
+    // Create BinaryTree.
+    BinaryTree *binaryTree = new BinaryTree();
+    // Add Nodes.
+    // Since the id 0 is BinaryTree.head, ignore it.
+    for (int i = 0; i < nodes->size(); i++)
+        binaryTree->addNode(nodes->at(i));
+
+    binaryTree->initializeRandomly();
+
+    while (true) {
+        binaryTree->swapNodesRandomly();
+    }
+}
+
+void testBinaryTree() {
+    testBinaryTree_swapRandomly();
 }

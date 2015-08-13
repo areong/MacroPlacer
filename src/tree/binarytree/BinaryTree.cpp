@@ -128,7 +128,7 @@ void BinaryTree::insertRightNode(int nodeId, int positionId) {
     insertRightNode(getNodeById(nodeId), getNodeById(positionId));
 }
 
-void BinaryTree::removeNode(Node *node, bool replaceWithLeftNode) {
+bool BinaryTree::removeNode(Node *node, bool replaceWithLeftNode) {
     if (replaceWithLeftNode) {
         while (true) {
             if (node->hasLeftNode())
@@ -153,30 +153,39 @@ void BinaryTree::removeNode(Node *node, bool replaceWithLeftNode) {
     else
         node->getParentNode()->setRightNode(0);
     node->setParentNode(0);
+    return true;
 }
 
-void BinaryTree::removeNode(int nodeId, bool replaceWithLeftNode) {
-    removeNode(getNodeById(nodeId), replaceWithLeftNode);
+bool BinaryTree::removeNode(int nodeId, bool replaceWithLeftNode) {
+    return removeNode(getNodeById(nodeId), replaceWithLeftNode);
 }
 
-void BinaryTree::removeAndInsertLeftNodeRandomly() {
+bool BinaryTree::removeAndInsertLeftNodeRandomly() {
     Node *node = getNodeRandomly();
     Node *position = getNodeRandomly();
     while (position == node) {
         position = getNodeRandomly();
     }
-    removeNode(node, Utils::randbool());
-    insertLeftNode(node, position);
+    if (removeNode(node, Utils::randbool())) {
+        insertLeftNode(node, position);
+        return true;
+    } else {
+        return false;
+    }
 }
 
-void BinaryTree::removeAndInsertRightNodeRandomly() {
+bool BinaryTree::removeAndInsertRightNodeRandomly() {
     Node *node = getNodeRandomly();
     Node *position = getNodeRandomly();
     while (position == node) {
         position = getNodeRandomly();
     }
-    removeNode(node, Utils::randbool());
-    insertRightNode(node, position);
+    if (removeNode(node, Utils::randbool())) {
+        insertRightNode(node, position);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void BinaryTree::swapNodes(Node *node1, Node *node2) {

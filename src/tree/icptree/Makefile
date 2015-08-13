@@ -5,6 +5,7 @@ INC = -I ${PATH_TO_SRC}
 HEADERS_ICPTREE = \
 	${PATH_TO_SRC}tree/binarytree/BinaryTree.h\
 	${PATH_TO_SRC}tree/icptree/ICPTree.h\
+	${PATH_TO_SRC}model/Macro.h\
 	${PATH_TO_SRC}tree/icptree/MacroNode.h\
 	${PATH_TO_SRC}tree/icptree/TraversalTaskPlaceNormalMacros.h\
 	${PATH_TO_SRC}tree/icptree/TraversalTaskSetNotCovered.h\

@@ -19,7 +19,8 @@ public:
     /*
     @Override
     First call BinaryTree.initializeRandomly(), then call
-    ICPTree.initializeMacroNodesOnBranchesRandomly().
+    ICPTree.initializeMacroNodesOnBranchesRandomly() and
+    ICPTree.updateMacroNodesOnBranchesBranchNumber().
     */
     void initializeRandomly();
     /*
@@ -37,6 +38,11 @@ public:
     @Override
     */
     void insertRightNode(Node *node, Node *position);
+    /*
+    @Override
+    Check if the MacroNode can be removed or not.
+    */
+    bool removeNode(Node *node, bool replaceWithLeftNode);
     /*
     @Override
     */
@@ -61,6 +67,12 @@ public:
     @return Return 0 if no non-empty BranchNode exists.
     */
     MacroNode *getNonEmptyBranchNodeRandomly();
+    /*
+    Get a non-empty MacroNode on branches randomly.
+    Used by changing verticalDisplacement.
+    Corner 0 is excluded.
+    */
+    MacroNode *getNonEmptyMacroNodeOnBranchesRandomly();
     /*
     Get a SwitchNode randomly. SwitchNodes are all non-empty.
 
@@ -95,6 +107,11 @@ public:
     @return     If the Corner cannot be moved, return false; else return true.
     */
     bool moveCorner(int ith, bool forward);
+    /*
+    The same as moveCorner(int, bool) except for the input is a CornerNode.
+    @param cornerNode must be a CornerNode.
+    */
+    bool moveCorner(MacroNode *cornerNode, bool forward);
     bool moveCornerRandomly();
     /*
     Node must be a BranchNode.
@@ -133,6 +150,32 @@ public:
     bool removeEmptyNode(MacroNode *node);
     bool removeEmptyNodeRandomly();
     /*
+    When calling ICPTree.changeRandomEmptyNodeWidth(), the chosen
+    MacroNode's Macro's width will change by ±changeRange.
+    */
+    void setChangeRangeOfEmptyNodeWidth(int changeRange);
+    /*
+    When calling ICPTree.changeRandomMacroNodeVerticalDisplacementRandomly(),
+    the chosen MacroNode's verticalDisplacement will change by ±changeRange.
+    */
+    void setChangeRangeOfVerticalDisplacement(int changeRange);
+    /*
+    When calling ICPTree.changeCorner0PositionRandomly(),
+    corner 0's x and y will change by ±changeRange.
+    */
+    void setChangeRangeOfCorner0Position(int changeRange);
+    void changeRandomEmptyNodeWidth();
+    /*
+    Choose a non-empty MacroNode on branches (exluding corner 0)
+    and set its verticalDisplacement.
+    If its leftNode is an empty Node, also set the leftNode's
+    verticalDisplacement to the same value; if the chosen MacroNode
+    is a CornerNode, set to zero.
+    */
+    void changeRandomMacroNodeVerticalDisplacementRandomly();
+    void changeCorner0PositionRandomly();
+    void rotateRandomMacroRandomly();
+    /*
     Traverse all MacroNodes in ICPTree manner:
     Collect all CornerNodes and SwitchNodes, add each their leftNode into a list.
     Call traverseDfs() with starting Node picked up from the list in the
@@ -147,6 +190,7 @@ public:
     int getMinX();
     int getMaxY();
     int getMinY();
+    int getInteriorRegionArea();
     /*
     @Override
     */
@@ -155,6 +199,10 @@ public:
 private:
     int corner0XStart;
     int corner0YStart;
+
+    int changeRangeOfEmptyNodeWidth;
+    int changeRangeOfVerticalDisplacement;
+    int changeRangeOfCorner0Position;
 
     Contour *exteriorTopContour;
     Contour *exteriorRightContour;
@@ -169,6 +217,7 @@ private:
     int minX;
     int maxY;
     int minY;
+    int interiorRegionArea;
 
     void swapMacroNodesIdentity(MacroNode *node1, MacroNode *node2);
     void swapMacroNodesPackingDirection(MacroNode *node1, MacroNode *node2);
@@ -193,7 +242,18 @@ private:
     /*
     Delete and create Contours.
     */
-    void initializeContours();
+    void createContours();
+    /*
+    Update the branchNumber of the MacroNodes on branches.
+    It is called in ICPTree.placeMacros...() before placing Macros.
+    */
+    void updateMacroNodesOnBranchesBranchNumber();
+    /*
+    Merge empty BranchNodes to one empty BranchNode if they connect with
+    each other on a branch.
+    Call it after ICPTree.updateMacroNodesOnBranchesBranchNumber().
+    */
+    void mergeContiguousEmptyBranchNodes();
     /*
     Call MacroNode.isCovered(false) for all MacroNodes.
     */
@@ -203,6 +263,7 @@ private:
     Assume no Switch is used (calculation is a little bit simpler than with Switch).
     */
     void calculateMaxMinXYAssumingNoSwitch();
+    void calculateInteriorRegionArea();
 };
 
 #endif

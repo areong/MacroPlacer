@@ -22,8 +22,16 @@ Macro::~Macro() {
 
 }
 
+void Macro::setWidth(int width) {
+    this->width = width;
+}
+
 int Macro::getWidth() {
     return width;
+}
+
+void Macro::setHeight(int height) {
+    this->height = height;
 }
 
 int Macro::getHeight() {

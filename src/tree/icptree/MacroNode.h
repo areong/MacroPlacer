@@ -14,6 +14,25 @@ public:
     If it is an empty Node, delete its Macro; else do not delete.
     */
     ~MacroNode();
+    /*
+    Inidicate which branch the MacroNode is on. It is meaningful only when
+    the MacroNode is on a branch.
+    */
+    enum BranchNumber {
+        TOP_BRANCH,
+        RIGHT_BRANCH,
+        BOTTOM_BRANCH,
+        LEFT_BRANCH
+    };
+    /*
+    To iterate the BranchNumber. If the input is TOP_BRANCH, returns RIGHT_BRANCH.
+    Input LEFT_BRANCH returns TOP_BRANCH so be careful.
+    */
+    static MacroNode::BranchNumber getNextBranchNumber(MacroNode::BranchNumber branchNumber);
+    void setBranchNumber(MacroNode::BranchNumber branchNumber);
+    void setMacroWidthByBranchNumber(int width);
+    int getMacroWidthByBranchNumber();
+    MacroNode::BranchNumber getBranchNumber();
     enum Identity {
         NORMAL_NODE,
         BRANCH_NODE,
@@ -85,8 +104,9 @@ public:
     Edge *getLeftEdge();
 
 private:
-    bool packingForward;
+    MacroNode::BranchNumber branchNumber;
     MacroNode::Identity identity;
+    bool packingForward;
     bool empty;
 
     Macro *macro;

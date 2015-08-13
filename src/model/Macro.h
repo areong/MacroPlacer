@@ -9,7 +9,9 @@ public:
     Macro();
     Macro(int width, int height);
     ~Macro();
+    void setWidth(int width);
     int getWidth();
+    void setHeight(int height);
     int getHeight();
     void setXStart(int xStart);
     int getXStart();

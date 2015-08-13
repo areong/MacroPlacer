@@ -29,6 +29,7 @@ void FloorplanWindow::setXYRangeByFloorplan() {
 }
 
 void FloorplanWindow::display() {
+    glutReshapeWindow(windowWidth, windowHeight);
     glClear(GL_COLOR_BUFFER_BIT);
     floorplanView->display();
     glFlush();

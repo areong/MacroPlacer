@@ -58,23 +58,29 @@ public:
     until no child exists, and then detaching the Node.
     @param  replaceWithRightNode    If true, swap with leftNode, or swap with
                                     rightNode unless there is no leftNode.
+    @return True if remove successfully; false if unsuccessfully.
+            In BinaryTree, this method always returns true.
     */
-    void removeNode(Node *node, bool replaceWithLeftNode);
-    void removeNode(int nodeId, bool replaceWithLeftNode);
+    virtual bool removeNode(Node *node, bool replaceWithLeftNode);
+    bool removeNode(int nodeId, bool replaceWithLeftNode);
     /*
     Remove a Node randomly and insert it as another randomly selected Node's
     left Node.
     WARNING: If the BinaryTree has only one Node, the method will run into an
     infinite loop.
+    @return True if remove successfully; false if unsuccessfully.
+            In BinaryTree, this method always returns true.
     */
-    void removeAndInsertLeftNodeRandomly();
+    bool removeAndInsertLeftNodeRandomly();
     /*
     Remove a Node randomly and insert it as another randomly selected Node's
     left Node.
     WARNING: If the BinaryTree has only one Node, the method will run into an
     infinite loop.
+    @return True if remove successfully; false if unsuccessfully.
+            In BinaryTree, this method always returns true.
     */
-    void removeAndInsertRightNodeRandomly();
+    bool removeAndInsertRightNodeRandomly();
     /*
     CAUTION: In derived class of BinaryTree, if dynamic_cast is performed
              on the input Nodes, please check whether the cast pointer is 0

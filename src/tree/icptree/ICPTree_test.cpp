@@ -417,6 +417,17 @@ void testICPTree_placeMacrosNoNormalNorSwitch() {
               << tree->getMinX() << ", " << tree->getMaxY() << ", "
               << tree->getMinY() << "\n";
 
+    tree->swapNodes(macroNodes->at(2), macroNodes->at(3));
+    tree->removeNode(macroNodes->at(1), true);
+    tree->insertRightNode(macroNodes->at(1), macroNodes->at(0));
+    tree->swapNodes(macroNodes->at(1), macroNodes->at(4));
+    tree->placeMacrosAssumingNoSwitch();
+    while (false) {
+        tree->removeAndInsertLeftNodeRandomly();
+        tree->removeAndInsertRightNodeRandomly();
+        tree->swapNodesRandomly();
+    }
+
     // Display
     Floorplan *floorplan = new Floorplan(macros, macroNodes, tree);
     displayFloorplan(floorplan);
@@ -433,14 +444,16 @@ void testICPTree_placeMacrosRandomlyNoSwitch() {
     std::vector<MacroNode *> *macroNodes = new std::vector<MacroNode *>();
     for (int i = 0; i < macros->size(); i++) {
         MacroNode *macroNode = new MacroNode(macros->at(i));
-        macroNode->setVerticalDisplacement(Utils::randint(-50, 51));
+        macroNode->setVerticalDisplacement(0);//Utils::randint(-50, 51));
         macroNodes->push_back(macroNode);
         tree->addNode(macroNode);
     }
     tree->initializeRandomly();
     tree->setCorner0Position(0, 0);
 
-    //tree->insertEmptyNodeRandomly();
+    for (int i = 0; i < 0; i++) {
+        tree->insertEmptyNodeRandomly();
+    }
 
     TraversalTaskPrintIdAndIdentity *task = new TraversalTaskPrintIdAndIdentity();
     tree->traverseAll(task);
@@ -449,7 +462,30 @@ void testICPTree_placeMacrosRandomlyNoSwitch() {
 
     // Display
     Floorplan *floorplan = new Floorplan(macros, macroNodes, tree);
-    displayFloorplan(floorplan);
+    //displayFloorplan(floorplan);
+    FloorplanWindow *window = FloorplanWindow::createInstance(floorplan);
+    window->setWindowSize(1024, 768);
+    window->setXYRangeByFloorplan();
+    window->initialize();
+    while (true) {
+        int dummy = 0;
+        for (int i = 0; i < 100000; i++) {
+            dummy += 1;
+        }
+        tree->removeAndInsertLeftNodeRandomly();
+        tree->removeAndInsertRightNodeRandomly();
+        //tree->swapNodesRandomly();
+        tree->moveCornerRandomly();
+        //tree->insertEmptyNodeRandomly();
+        //tree->removeEmptyNodeRandomly();
+        //tree->changeRandomEmptyNodeWidth();
+        //tree->changeRandomMacroNodeVerticalDisplacementRandomly();
+        //tree->changeCorner0PositionRandomly();
+        tree->placeMacrosAssumingNoSwitch();
+        //std::cout << " " << macros->at(0)->getXStart() << "\n";
+        //std::cout << " " << floorplan->getMacros()->at(0)->getXStart() << ".\n";
+        window->runMainLoopEvent();
+    }
 
     deleteMacrosMacroNodesAndTree(macros, macroNodes, tree);
 }

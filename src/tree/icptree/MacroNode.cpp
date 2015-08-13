@@ -6,6 +6,7 @@
 #include "tree/icptree/contour/Edge.h"
 
 MacroNode::MacroNode() {
+    branchNumber = MacroNode::TOP_BRANCH;
     setAsNormalNode();
     setPackingDirection(true);
     empty = false;
@@ -29,6 +30,69 @@ MacroNode::~MacroNode() {
     delete rightEdge;
     delete bottomEdge;
     delete leftEdge;
+}
+
+MacroNode::BranchNumber MacroNode::getNextBranchNumber(MacroNode::BranchNumber branchNumber) {
+    switch (branchNumber) {
+    case MacroNode::TOP_BRANCH:
+        return MacroNode::RIGHT_BRANCH;
+    case MacroNode::RIGHT_BRANCH:
+        return MacroNode::BOTTOM_BRANCH;
+    case MacroNode::BOTTOM_BRANCH:
+        return MacroNode::LEFT_BRANCH;
+    case MacroNode::LEFT_BRANCH:
+        return MacroNode::TOP_BRANCH;
+    default:
+        return MacroNode::RIGHT_BRANCH;
+    }
+}
+
+void MacroNode::setBranchNumber(MacroNode::BranchNumber branchNumber) {
+    this->branchNumber = branchNumber;
+}
+
+MacroNode::BranchNumber MacroNode::getBranchNumber() {
+    return branchNumber;
+}
+
+void MacroNode::setMacroWidthByBranchNumber(int width) {
+    if (macro == 0) {
+        return;
+    }
+    switch (branchNumber) {
+    case MacroNode::TOP_BRANCH:
+        macro->setWidth(width);
+        break;
+    case MacroNode::RIGHT_BRANCH:
+        macro->setHeight(width);
+        break;
+    case MacroNode::BOTTOM_BRANCH:
+        macro->setWidth(width);
+        break;
+    case MacroNode::LEFT_BRANCH:
+        macro->setHeight(width);
+        break;
+    default:
+        break;
+    }
+}
+
+int MacroNode::getMacroWidthByBranchNumber() {
+    if (macro == 0) {
+        return 0;
+    }
+    switch (branchNumber) {
+    case MacroNode::TOP_BRANCH:
+        return macro->getWidth();
+    case MacroNode::RIGHT_BRANCH:
+        return macro->getHeight();
+    case MacroNode::BOTTOM_BRANCH:
+        return macro->getWidth();
+    case MacroNode::LEFT_BRANCH:
+        return macro->getHeight();
+    default:
+        return macro->getWidth();
+    }
 }
 
 void MacroNode::setIdentity(MacroNode::Identity identity) {

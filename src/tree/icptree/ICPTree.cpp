@@ -1,4 +1,5 @@
 #include "tree/icptree/ICPTree.h"
+#include "model/Macro.h"
 #include "tree/icptree/MacroNode.h"
 #include "tree/icptree/TraversalTaskPlaceNormalMacros.h"
 #include "tree/icptree/TraversalTaskSetNotCovered.h"
@@ -13,6 +14,9 @@
 ICPTree::ICPTree() {
     corner0XStart = 0;
     corner0YStart = 0;
+    changeRangeOfEmptyNodeWidth = 10;
+    changeRangeOfVerticalDisplacement = 10;
+    changeRangeOfCorner0Position = 10;
     exteriorTopContour = 0;
     exteriorRightContour = 0;
     exteriorBottomContour = 0;
@@ -34,6 +38,7 @@ ICPTree::~ICPTree() {
 void ICPTree::initializeRandomly() {
     BinaryTree::initializeRandomly();
     initializeMacroNodesOnBranchesRandomly();
+    updateMacroNodesOnBranchesBranchNumber();
 }
 
 void ICPTree::initializeMacroNodesOnBranchesRandomly() {
@@ -85,24 +90,24 @@ void ICPTree::initializeMacroNodesOnBranchesRandomly() {
 void ICPTree::insertLeftNode(Node *node, Node *position) {
     BinaryTree::insertLeftNode(node, position);
     // Set idenitiy.
-    MacroNode *mn_node = dynamic_cast<MacroNode *>(node);
-    MacroNode *mn_position = dynamic_cast<MacroNode *>(position);
-    if (mn_node != 0 && mn_position != 0) {     // BinaryTree uses this method with Node.
-        switch (mn_position->getIdentity()) {
+    MacroNode *macroNode = dynamic_cast<MacroNode *>(node);
+    MacroNode *macroNodePosition = dynamic_cast<MacroNode *>(position);
+    if (macroNode != 0 && macroNodePosition != 0) { // BinaryTree uses this method with Node.
+        switch (macroNodePosition->getIdentity()) {
             case MacroNode::NORMAL_NODE:
-                mn_node->setAsNormalNode();
+                macroNode->setAsNormalNode();
                 break;
             case MacroNode::BRANCH_NODE:
-                mn_node->setAsBranchNode();
+                macroNode->setAsBranchNode();
                 break;
             case MacroNode::SWITCH_NODE:
-                mn_node->setAsBranchNode();
+                macroNode->setAsBranchNode();
                 break;
             case MacroNode::CORNER_NODE:
-                mn_node->setAsBranchNode();
+                macroNode->setAsBranchNode();
                 break;
             default:
-                mn_node->setAsNormalNode();
+                macroNode->setAsNormalNode();
                 break;
         }
     }
@@ -111,21 +116,52 @@ void ICPTree::insertLeftNode(Node *node, Node *position) {
 void ICPTree::insertRightNode(Node *node, Node *position) {
     BinaryTree::insertRightNode(node, position);
     // Set as a Normal Node.
-    MacroNode *mn_node = dynamic_cast<MacroNode *>(node);
-    if (mn_node != 0)   // BinaryTree uses this method with Node.
-        mn_node->setAsNormalNode();
+    MacroNode *macroNode = dynamic_cast<MacroNode *>(node);
+    if (macroNode != 0)   // BinaryTree uses this method with Node.
+        macroNode->setAsNormalNode();
+}
+
+bool ICPTree::removeNode(Node *node, bool replaceWithLeftNode) {
+    MacroNode *macroNode = dynamic_cast<MacroNode *>(node);
+    if (macroNode->isCornerNode()) {
+        // If it is root, only can replaceWithLeftNode.
+        if (node == getRoot()) {
+            if (!replaceWithLeftNode) {
+                return false;
+            } else if (!moveCorner(macroNode, false)) {
+                return false;
+            }
+        } else {
+            // Try to move the CornerNode.
+            if (!moveCorner(macroNode, true)) {
+                if (!moveCorner(macroNode, false)) {
+                    return false;
+                }
+            }
+        }
+    }
+    // If the node can be removed, remove it.
+    return BinaryTree::removeNode(node, replaceWithLeftNode);
 }
 
 void ICPTree::swapNodes(Node *node1, Node *node2) {
     BinaryTree::swapNodes(node1, node2);
     // Exchange identity.
-    MacroNode *mn_node1 = dynamic_cast<MacroNode *>(node1);
-    MacroNode *mn_node2 = dynamic_cast<MacroNode *>(node2);
-    if (mn_node1 != 0 && mn_node2 != 0) {   // BinaryTree uses this method with Node.
-        swapMacroNodesIdentity(mn_node1, mn_node2);
-        int verticalDisplacement1 = mn_node1->getVerticalDisplacement();
-        mn_node1->setVerticalDisplacement(mn_node2->getVerticalDisplacement());
-        mn_node2->setVerticalDisplacement(verticalDisplacement1);
+    MacroNode *macroNode1 = dynamic_cast<MacroNode *>(node1);
+    MacroNode *macroNode2 = dynamic_cast<MacroNode *>(node2);
+    if (macroNode1 != 0 && macroNode2 != 0) {   // BinaryTree uses this method with Node.
+        bool toSwapIdentity = false;
+        if (macroNode1->isNormalNode() || macroNode2->isNormalNode()) {
+            toSwapIdentity = true;
+        } else if (macroNode1->getLeftNode() != macroNode2 && macroNode2->getLeftNode() != macroNode1) {
+            toSwapIdentity = true;
+        }
+        if (toSwapIdentity) {
+            swapMacroNodesIdentity(macroNode1, macroNode2);
+            int verticalDisplacement1 = macroNode1->getVerticalDisplacement();
+            macroNode1->setVerticalDisplacement(macroNode2->getVerticalDisplacement());
+            macroNode2->setVerticalDisplacement(verticalDisplacement1);
+        }
     }
 }
 
@@ -177,6 +213,21 @@ MacroNode *ICPTree::getNonEmptyBranchNodeRandomly() {
     if (nonEmptyBranchNodes->size() > 0)
         result = nonEmptyBranchNodes->at(Utils::randint(0, nonEmptyBranchNodes->size()));
     delete nonEmptyBranchNodes;
+    return result;
+}
+
+MacroNode *ICPTree::getNonEmptyMacroNodeOnBranchesRandomly() {
+    std::vector<MacroNode *> *nonEmptyMacroNodes = new std::vector<MacroNode *>();
+    MacroNode *current = dynamic_cast<MacroNode *>(getRoot()->getLeftNode()); // Exclude corner 0.
+    while (current != 0) {
+        if (!current->isEmptyNode())
+            nonEmptyMacroNodes->push_back(current);
+        current = dynamic_cast<MacroNode *>(current->getLeftNode());
+    }
+    MacroNode *result = 0;
+    if (nonEmptyMacroNodes->size() > 0)
+        result = nonEmptyMacroNodes->at(Utils::randint(0, nonEmptyMacroNodes->size()));
+    delete nonEmptyMacroNodes;
     return result;
 }
 
@@ -238,6 +289,10 @@ MacroNode *ICPTree::getEmptyNodeRandomly() {
 }
 
 bool ICPTree::moveCorner(int ith, bool forward) {
+    return moveCorner(getCornerNode(ith), forward);
+}
+
+bool ICPTree::moveCorner(MacroNode *cornerNode, bool forward) {
     // Forward
     // C-C: do nothing.
     // B-C: set B Corner, set C Branch.
@@ -246,18 +301,17 @@ bool ICPTree::moveCorner(int ith, bool forward) {
     // C-C: do nothing.
     // C-B: set B Corner, set C Branch.
     // C-S: set S Corner, set C Branch.
-    MacroNode *corner = getCornerNode(ith);
-    MacroNode *target;
+    MacroNode *targetNode;
     if (forward)
-        target = dynamic_cast<MacroNode *>(corner->getParentNode());   // Always exists.
+        targetNode = dynamic_cast<MacroNode *>(cornerNode->getParentNode());   // Always exists.
     else
-        target = dynamic_cast<MacroNode *>(corner->getLeftNode());     // Might not exists.
-    if (target == 0)
+        targetNode = dynamic_cast<MacroNode *>(cornerNode->getLeftNode());     // Might not exists.
+    if (targetNode == 0)
         return false;
-    else if (target->isCornerNode())
+    else if (targetNode->isCornerNode())
         return false;
-    corner->setAsBranchNode();
-    target->setAsCornerNode();
+    cornerNode->setAsBranchNode();
+    targetNode->setAsCornerNode();
     return true;
 }
 
@@ -373,6 +427,64 @@ bool ICPTree::removeEmptyNodeRandomly() {
         return false;
 }
 
+void ICPTree::setChangeRangeOfEmptyNodeWidth(int changeRange) {
+    changeRangeOfEmptyNodeWidth = changeRange;
+}
+
+void ICPTree::setChangeRangeOfVerticalDisplacement(int changeRange) {
+    changeRangeOfVerticalDisplacement = changeRange;
+}
+
+void ICPTree::setChangeRangeOfCorner0Position(int changeRange) {
+    changeRangeOfCorner0Position = changeRange;
+}
+
+void ICPTree::changeRandomEmptyNodeWidth() {
+    MacroNode *emptyNode = getEmptyNodeRandomly();
+    if (emptyNode == 0) {
+        return;
+    }
+    int width = emptyNode->getMacroWidthByBranchNumber();
+    int maxWidth = width + changeRangeOfEmptyNodeWidth;
+    int minWidth = width - changeRangeOfEmptyNodeWidth;
+    if (minWidth < 1) {
+        minWidth = 1;
+    }
+    int newWidth = Utils::randint(minWidth, maxWidth);
+    emptyNode->setMacroWidthByBranchNumber(newWidth);
+}
+
+void ICPTree::changeRandomMacroNodeVerticalDisplacementRandomly() {
+    MacroNode *macroNode = getNonEmptyMacroNodeOnBranchesRandomly();
+    if (macroNode == 0) {
+        return;
+    }
+    int verticalDisplacement = macroNode->getVerticalDisplacement();
+    verticalDisplacement += Utils::randint(-1 * changeRangeOfVerticalDisplacement, changeRangeOfVerticalDisplacement);
+    macroNode->setVerticalDisplacement(verticalDisplacement);
+    // Update leftNode if the leftNode is an empty Node.
+    if (macroNode->hasLeftNode()) {
+        MacroNode *leftNode = dynamic_cast<MacroNode *>(macroNode->getLeftNode());
+        if (leftNode->isEmptyNode()) {
+            if (macroNode->isCornerNode()) {
+                leftNode->setVerticalDisplacement(0);
+            } else {
+                leftNode->setVerticalDisplacement(verticalDisplacement);
+            }
+        }
+    }
+}
+
+void ICPTree::changeCorner0PositionRandomly() {
+    corner0XStart += Utils::randint(-1 * changeRangeOfCorner0Position, changeRangeOfCorner0Position);
+    corner0YStart += Utils::randint(-1 * changeRangeOfCorner0Position, changeRangeOfCorner0Position);
+}
+
+void ICPTree::rotateRandomMacroRandomly() {
+
+}
+
+
 void ICPTree::traverseAll(TraversalTask *task) {
     // The packing direction might have changed.
     updatePackingDirectionOfMacroNodesOnBranches();
@@ -400,10 +512,13 @@ void ICPTree::traverseAll(TraversalTask *task) {
 }
 
 void ICPTree::placeMacrosAssumingNoSwitch() {
-    // Initialize Contours.
-    initializeContours();
+    // Create Contours.
+    createContours();
     // Set all MacroNodes not covered.
     setAllMacroNodesNotCovered();
+    // Merge contiguous empty Nodes.
+    updateMacroNodesOnBranchesBranchNumber();
+    mergeContiguousEmptyBranchNodes();
     // Place Macros on branches.
     // TopContour
     exteriorTopContour->initialize(corner0XStart, corner0YStart);
@@ -518,8 +633,9 @@ void ICPTree::placeMacrosAssumingNoSwitch() {
     // Corner 0
     traverseDfs(cornerNodes->at(0), task);
     delete cornerNodes;
-    // Calculate max min x y.
+    // Calculate max min x y and interior region area.
     calculateMaxMinXYAssumingNoSwitch();
+    calculateInteriorRegionArea();
 }
 
 int ICPTree::getMaxX() {
@@ -538,6 +654,9 @@ int ICPTree::getMinY() {
     return minY;
 }
 
+int ICPTree::getInteriorRegionArea() {
+    return interiorRegionArea;
+}
 
 BinaryTree *ICPTree::createBinaryTree() {
     return new ICPTree();
@@ -586,7 +705,7 @@ void ICPTree::updatePackingDirectionOfMacroNodesOnBranches() {
     }
 }
 
-void ICPTree::initializeContours() {
+void ICPTree::createContours() {
     delete exteriorTopContour;
     delete exteriorRightContour;
     delete exteriorBottomContour;
@@ -605,11 +724,68 @@ void ICPTree::initializeContours() {
     interiorRightContour = new RightContour();
 }
 
+void ICPTree::updateMacroNodesOnBranchesBranchNumber() {
+    MacroNode *currentNode = dynamic_cast<MacroNode *>(getRoot());
+    MacroNode::BranchNumber branchNumber = MacroNode::TOP_BRANCH;
+    currentNode->setBranchNumber(branchNumber); // Corner 0 is on the top branch.
+    currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+    while (true) {
+        currentNode->setBranchNumber(branchNumber);
+        if (currentNode->isCornerNode()) {
+            branchNumber = MacroNode::getNextBranchNumber(branchNumber);
+        }
+        if (currentNode->hasLeftNode()) {
+            currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+        } else {
+            break;
+        }
+    }
+}
+
+void ICPTree::mergeContiguousEmptyBranchNodes() {
+    std::vector<MacroNode *> *emptyNodes = getEmptyNodes();
+    if (emptyNodes->size() == 0) {
+        delete emptyNodes;
+        return;
+    }
+    int reservedNodeIth = 0;
+    MacroNode *reservedNode;
+    int totalWidth = emptyNodes->at(reservedNodeIth)->getMacroWidthByBranchNumber();
+    MacroNode *currentNode;
+    MacroNode *previousNode;
+    for (int i = 1; i < emptyNodes->size(); i++) {
+        currentNode = emptyNodes->at(i);
+        previousNode = emptyNodes->at(i - 1);
+        if (currentNode->isCornerNode()) {
+            continue;
+        }
+        if (previousNode->getLeftNode() == currentNode) {
+            totalWidth += currentNode->getMacroWidthByBranchNumber();
+        } else {
+            if (i > reservedNodeIth + 1) {
+                // Set reservedNode.macro's width.
+                reservedNode = emptyNodes->at(reservedNodeIth);
+                reservedNode->setMacroWidthByBranchNumber(totalWidth);
+                // Remove empty Nodes.
+                // Do not use BinaryTree.removeNode()
+                // because an empty Node has no rightNode.
+                Node *theNodeAfterContiguousEmptyNodes = previousNode->getLeftNode();
+                reservedNode->setLeftNode(theNodeAfterContiguousEmptyNodes);
+                theNodeAfterContiguousEmptyNodes->setParentNode(reservedNode);
+                for (int j = reservedNodeIth + 1; j < i; j++) {    
+                    delete emptyNodes->at(j);
+                }
+            }
+            reservedNodeIth = i;
+            totalWidth = currentNode->getMacroWidthByBranchNumber();
+        }
+    }
+    delete emptyNodes;
+}
+
 void ICPTree::setAllMacroNodesNotCovered() {
     TraversalTask *task = new TraversalTaskSetNotCovered();
     traverseAll(task);
-    // Set corner 0 ant its right Nodes not covered.
-    traverseDfs(getRoot(), task);
     delete task;
 }
 
@@ -660,5 +836,96 @@ void ICPTree::calculateMaxMinXYAssumingNoSwitch() {
     }
     if (minY > interiorBottomContour->getMaxY()) {
         minY = interiorBottomContour->getMaxY();
+    }
+}
+
+void ICPTree::calculateInteriorRegionArea() {
+    interiorRegionArea = (maxX - minX) * (maxY - minY);
+    // Corner 0
+    MacroNode *root = dynamic_cast<MacroNode *>(getRoot());
+    MacroNode *currentNode = root;
+    Macro *macro = currentNode->getMacro();
+    int extendedMacroArea = (macro->getXEnd() - minX) * (maxY - macro->getYStart());
+    interiorRegionArea -= extendedMacroArea;
+    // Top branch
+    currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+    macro = currentNode->getMacro();
+    while (!currentNode->isCornerNode()) {
+        if (!currentNode->isEmptyNode()) {
+            extendedMacroArea = macro->getWidth() * (maxY - macro->getYStart());
+        } else {
+            extendedMacroArea = macro->getWidth() * (maxY - macro->getYEnd());
+        }
+        interiorRegionArea -= extendedMacroArea;
+        currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+        macro = currentNode->getMacro();
+    }
+    // Corner 1
+    extendedMacroArea = (maxX - macro->getXStart()) * (maxY - macro->getYStart());
+    if (currentNode->isEmptyNode()) {
+        extendedMacroArea -= macro->getWidth() * macro->getHeight();
+    }
+    interiorRegionArea -= extendedMacroArea;
+    // Right branch
+    currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+    macro = currentNode->getMacro();
+    while (!currentNode->isCornerNode()) {
+        if (!currentNode->isEmptyNode()) {
+            extendedMacroArea = macro->getHeight() * (maxX - macro->getXStart());
+        } else {
+            extendedMacroArea = macro->getHeight() * (maxX - macro->getXEnd());
+        }
+        interiorRegionArea -= extendedMacroArea;
+        currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+        macro = currentNode->getMacro();
+    }
+    // Corner 2
+    extendedMacroArea = (macro->getYEnd() - minY) * (maxX - macro->getXStart());
+    if (currentNode->isEmptyNode()) {
+        extendedMacroArea -= macro->getWidth() * macro->getHeight();
+    }
+    interiorRegionArea -= extendedMacroArea;
+    // Bottom branch
+    currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+    macro = currentNode->getMacro();
+    while (!currentNode->isCornerNode()) {
+        if (!currentNode->isEmptyNode()) {
+            extendedMacroArea = macro->getWidth() * (macro->getYEnd() - minY);
+        } else {
+            extendedMacroArea = macro->getWidth() * (macro->getYStart() - minY);
+        }
+        interiorRegionArea -= extendedMacroArea;
+        currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+        macro = currentNode->getMacro();
+    }
+    // Corner 3
+    extendedMacroArea = (macro->getXEnd() - minX) * (macro->getYEnd() - minY);
+    if (currentNode->isEmptyNode()) {
+        extendedMacroArea -= macro->getWidth() * macro->getHeight();
+    }
+    interiorRegionArea -= extendedMacroArea;
+    // Left branch
+    if (currentNode->hasLeftNode()) {
+        currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+        macro = currentNode->getMacro();
+        int corner0YStart = root->getMacro()->getYStart();
+        while (macro->getYStart() < corner0YStart) {
+            int macroHeight = macro->getHeight();
+            if (macro->getYEnd() > corner0XStart) {
+                macroHeight = corner0XStart - macro->getYStart();
+            }
+            if (!currentNode->isEmptyNode()) {
+                extendedMacroArea = macroHeight * (macro->getXEnd() - minX);
+            } else {
+                extendedMacroArea = macroHeight * (macro->getXStart() - minX);
+            }
+            interiorRegionArea -= extendedMacroArea;
+            if (currentNode->hasLeftNode()) {
+                currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+                macro = currentNode->getMacro();    
+            } else {
+                break;
+            }
+        }
     }
 }

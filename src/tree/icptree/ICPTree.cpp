@@ -450,7 +450,7 @@ void ICPTree::changeRandomEmptyNodeWidth() {
     if (minWidth < 1) {
         minWidth = 1;
     }
-    int newWidth = Utils::randint(minWidth, maxWidth);
+    int newWidth = Utils::randint(minWidth, maxWidth + 1);
     emptyNode->setMacroWidthByBranchNumber(newWidth);
 }
 
@@ -460,7 +460,7 @@ void ICPTree::changeRandomMacroNodeVerticalDisplacementRandomly() {
         return;
     }
     int verticalDisplacement = macroNode->getVerticalDisplacement();
-    verticalDisplacement += Utils::randint(-1 * changeRangeOfVerticalDisplacement, changeRangeOfVerticalDisplacement);
+    verticalDisplacement += Utils::randint(-1 * changeRangeOfVerticalDisplacement, changeRangeOfVerticalDisplacement + 1);
     macroNode->setVerticalDisplacement(verticalDisplacement);
     // Update leftNode if the leftNode is an empty Node.
     if (macroNode->hasLeftNode()) {
@@ -476,8 +476,8 @@ void ICPTree::changeRandomMacroNodeVerticalDisplacementRandomly() {
 }
 
 void ICPTree::changeCorner0PositionRandomly() {
-    corner0XStart += Utils::randint(-1 * changeRangeOfCorner0Position, changeRangeOfCorner0Position);
-    corner0YStart += Utils::randint(-1 * changeRangeOfCorner0Position, changeRangeOfCorner0Position);
+    corner0XStart += Utils::randint(-1 * changeRangeOfCorner0Position, changeRangeOfCorner0Position + 1);
+    corner0YStart += Utils::randint(-1 * changeRangeOfCorner0Position, changeRangeOfCorner0Position + 1);
 }
 
 void ICPTree::rotateRandomMacroRandomly() {

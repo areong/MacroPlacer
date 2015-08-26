@@ -24,7 +24,7 @@ public:
 
 private:
     Floorplan *floorplan;
-    std::vector<MacroView *> *macroViews;
+    //std::vector<MacroView *> *macroViews;
 };
 
 #endif

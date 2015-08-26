@@ -14,6 +14,7 @@ public:
     ~Floorplan();
     std::vector<Macro *> *getMacros();
     std::vector<MacroNode *> *getMacroNodes();
+    void setICPTree(ICPTree *icpTree);
     ICPTree *getICPTree();
     int getMaxX();
     int getMinX();

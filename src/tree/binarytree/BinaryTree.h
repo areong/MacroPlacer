@@ -98,6 +98,13 @@ public:
     void traverseDfs(Node *start, TraversalTask *task);
     void traverseDfs(int startId, TraversalTask *task);
     /*
+    The method is guaranteed to traverse all Nodes of the BinaryTree.
+    It is used to collect all Nodes when deleting a BinaryTree.
+    In BinaryTree, it simply calls traverseDfs(getRoot(), task).
+    The subclasses of BinaryTree should override this method if necessary.
+    */
+    virtual void traverseAll(TraversalTask *task);
+    /*
     A factory method that creates an object of BinaryTree.
     A subclass of BinaryTree SHOULD override it such that it returns an object of
     the subclass.

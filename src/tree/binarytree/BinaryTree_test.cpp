@@ -133,9 +133,16 @@ void testBinaryTree_swapRandomly() {
 
     binaryTree->initializeRandomly();
 
-    while (true) {
-        binaryTree->swapNodesRandomly();
+    // Test memory leak.
+    for (int i = 0; i < 100000; i++) {
+        BinaryTree *newBinaryTree = binaryTree->copy();
+        delete binaryTree;
+        binaryTree = newBinaryTree;
     }
+
+    //while (true) {
+    //    binaryTree->swapNodesRandomly();
+    //}
 }
 
 void testBinaryTree() {

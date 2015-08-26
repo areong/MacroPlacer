@@ -1,13 +1,16 @@
 CC = g++
 OBJ = \
 	model/*.o\
+	sa/*.o\
 	tree/binarytree/*.o\
 	tree/icptree/*.o\
 	tree/icptree/contour/*.o\
+	tree/icptree/sa/*.o\
 	utils/*.o\
 	view/*.o
 
 HEADERS_MAIN = \
+	sa/SimulatedAnnealing_test.h\
 	tree/binarytree/BinaryTree_test.h\
 	tree/icptree/ICPTree_test.h\
 	tree/icptree/contour/Contour_test.h\
@@ -19,9 +22,11 @@ LIBS = -lGL -lglut
 
 all:
 	cd model; make all
+	cd sa; make all
 	cd tree/binarytree; make all
 	cd tree/icptree; make all
 	cd tree/icptree/contour; make all
+	cd tree/icptree/sa; make all
 	cd utils; make all
 	cd view; make all
 	make placer

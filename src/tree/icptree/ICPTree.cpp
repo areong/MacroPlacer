@@ -29,10 +29,19 @@ ICPTree::ICPTree() {
     minX = 0;
     maxY = 1;
     minY = 0;
+    boundingBoxArea = 1;
+    interiorRegionArea = 0;
 }
 
 ICPTree::~ICPTree() {
-
+    delete exteriorTopContour;
+    delete exteriorRightContour;
+    delete exteriorBottomContour;
+    delete exteriorLeftContour;
+    delete interiorBottomContour;
+    delete interiorLeftContour;
+    delete interiorTopContour;
+    delete interiorRightContour;
 }
 
 void ICPTree::initializeRandomly() {
@@ -126,7 +135,10 @@ bool ICPTree::removeNode(Node *node, bool replaceWithLeftNode) {
     if (macroNode->isCornerNode()) {
         // If it is root, only can replaceWithLeftNode.
         if (node == getRoot()) {
+            MacroNode *macroNodeLeft = dynamic_cast<MacroNode *>(node->getLeftNode());
             if (!replaceWithLeftNode) {
+                return false;
+            } else if (macroNodeLeft->isEmptyNode()) {
                 return false;
             } else if (!moveCorner(macroNode, false)) {
                 return false;
@@ -138,6 +150,16 @@ bool ICPTree::removeNode(Node *node, bool replaceWithLeftNode) {
                     return false;
                 }
             }
+        }
+        MacroNode *leftMostNode = getLeftMostMacroNode();
+        if (leftMostNode->isCornerNode() && leftMostNode->hasRightNode()) {
+            return false;
+        }
+    }
+    if (macroNode->isBranchNode()) {
+        MacroNode *leftMostNode = getLeftMostMacroNode();
+        if (leftMostNode->isCornerNode() && leftMostNode->hasRightNode()) {
+            return false;
         }
     }
     // If the node can be removed, remove it.
@@ -405,13 +427,16 @@ bool ICPTree::removeEmptyNode(MacroNode *node) {
         moveCornerSuccessfully = moveCorner(ith, forward);
     }
     if (moveCornerSuccessfully) {
-        // Do not need removeNode() because an empty Node does not have
-        // right Node.
-        Node *parent = node->getParentNode();
-        Node *leftNode = node->getLeftNode();
-        parent->setLeftNode(leftNode);
-        if (leftNode != 0)
-            leftNode->setParentNode(parent);
+        // Remove the empty Node by removeNode() since empty Nodes can have
+        // right Nodes caused by removing MacroNodes on branches.
+        removeNode(node, true);
+        //// Do not need removeNode() because an empty Node does not have
+        //// right Node.
+        //Node *parent = node->getParentNode();
+        //Node *leftNode = node->getLeftNode();
+        //parent->setLeftNode(leftNode);
+        //if (leftNode != 0)
+        //    leftNode->setParentNode(parent);
         delete node;
         return true;
     } else {
@@ -439,7 +464,7 @@ void ICPTree::setChangeRangeOfCorner0Position(int changeRange) {
     changeRangeOfCorner0Position = changeRange;
 }
 
-void ICPTree::changeRandomEmptyNodeWidth() {
+void ICPTree::changeRandomEmptyNodeWidthRandomly() {
     MacroNode *emptyNode = getEmptyNodeRandomly();
     if (emptyNode == 0) {
         return;
@@ -509,6 +534,7 @@ void ICPTree::traverseAll(TraversalTask *task) {
     }
     // Traverse corner 0.
     traverseDfs(getRoot(), task);
+    delete starts;
 }
 
 void ICPTree::placeMacrosAssumingNoSwitch() {
@@ -518,7 +544,7 @@ void ICPTree::placeMacrosAssumingNoSwitch() {
     setAllMacroNodesNotCovered();
     // Merge contiguous empty Nodes.
     updateMacroNodesOnBranchesBranchNumber();
-    mergeContiguousEmptyBranchNodes();
+    //mergeContiguousEmptyBranchNodes();
     // Place Macros on branches.
     // TopContour
     exteriorTopContour->initialize(corner0XStart, corner0YStart);
@@ -633,8 +659,10 @@ void ICPTree::placeMacrosAssumingNoSwitch() {
     // Corner 0
     traverseDfs(cornerNodes->at(0), task);
     delete cornerNodes;
+    delete task;
     // Calculate max min x y and interior region area.
     calculateMaxMinXYAssumingNoSwitch();
+    calculateBoundingBoxArea();
     calculateInteriorRegionArea();
 }
 
@@ -654,12 +682,29 @@ int ICPTree::getMinY() {
     return minY;
 }
 
+int ICPTree::getBoundingBoxArea() {
+    return boundingBoxArea;
+}
+
 int ICPTree::getInteriorRegionArea() {
     return interiorRegionArea;
 }
 
+int ICPTree::getBoundingBoxAspectRatio() {
+    return (double) (maxY - minY) / (double) (maxX - minX);
+}
+
 BinaryTree *ICPTree::createBinaryTree() {
     return new ICPTree();
+}
+
+BinaryTree *ICPTree::copy() {
+    ICPTree *icpTree = dynamic_cast<ICPTree *>(BinaryTree::copy());
+    icpTree->setCorner0Position(corner0XStart, corner0YStart);
+    icpTree->setChangeRangeOfCorner0Position(changeRangeOfCorner0Position);
+    icpTree->setChangeRangeOfVerticalDisplacement(changeRangeOfVerticalDisplacement);
+    icpTree->setChangeRangeOfEmptyNodeWidth(changeRangeOfEmptyNodeWidth);
+    return icpTree;
 }
 
 void ICPTree::swapMacroNodesIdentity(MacroNode *node1, MacroNode *node2) {
@@ -675,7 +720,11 @@ void ICPTree::swapMacroNodesPackingDirection(MacroNode *node1, MacroNode *node2)
 }
 
 MacroNode *ICPTree::getLeftMostMacroNode() {
-
+    MacroNode *macroNode = dynamic_cast<MacroNode *>(getRoot());
+    while (macroNode->hasLeftNode()) {
+        macroNode = dynamic_cast<MacroNode *>(macroNode->getLeftNode());
+    }
+    return macroNode;
 }
 
 int ICPTree::getWhichCornerNodeIs(MacroNode *node) {
@@ -839,8 +888,12 @@ void ICPTree::calculateMaxMinXYAssumingNoSwitch() {
     }
 }
 
+void ICPTree::calculateBoundingBoxArea() {
+    boundingBoxArea = (maxX - minX) * (maxY - minY);
+}
+
 void ICPTree::calculateInteriorRegionArea() {
-    interiorRegionArea = (maxX - minX) * (maxY - minY);
+    interiorRegionArea = boundingBoxArea;
     // Corner 0
     MacroNode *root = dynamic_cast<MacroNode *>(getRoot());
     MacroNode *currentNode = root;

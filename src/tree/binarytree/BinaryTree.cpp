@@ -15,7 +15,7 @@ BinaryTree::~BinaryTree() {
     // collect all Nodes by traversing from the root and delete them.
     if (nodes->size() > 0) {
         TraversalTaskCollectAllNodes *task = new TraversalTaskCollectAllNodes();
-        traverseDfs(getRoot(), task);
+        traverseAll(task);
         std::vector<Node *> *allNodes = task->getNodes();
         for (int i = 0; i < allNodes->size(); i++) {
             delete allNodes->at(i);
@@ -23,6 +23,7 @@ BinaryTree::~BinaryTree() {
         delete task;
     }
     delete nodes;
+    delete head;
 }
 
 void BinaryTree::addNode(Node *node) {
@@ -299,6 +300,10 @@ void BinaryTree::traverseDfs(int startId, TraversalTask *task) {
     traverseDfs(getNodeById(startId), task);
 }
 
+void BinaryTree::traverseAll(TraversalTask *task) {
+    traverseDfs(getRoot(), task);
+}
+
 BinaryTree *BinaryTree::createBinaryTree() {
     return new BinaryTree();
 }
@@ -339,14 +344,14 @@ BinaryTree *BinaryTree::copy() {
         }
     }
     // Collect all non-added Nodes (Node.id < 0)
-    // by traversing from the root.
+    // by traversingAll().
     // It is possible that some Nodes in the tree is not added by BinaryTree.addNode()
     // so this step is necessary.
     // ASSUME the root is added by BinaryTree.addNode(),
     // or the following "Connect" part will fail, since the parentNode of the root
     // cannot be get by BinaryTree.getNodeById().
     TraversalTaskCollectNonAddedNodes *task = new TraversalTaskCollectNonAddedNodes();
-    traverseDfs(getRoot(), task);
+    traverseAll(task);
     std::vector<Node *> *oldNonAddedNodes = task->getNodes();
     // Copy
     std::vector<Node *> *newNonAddedNodes = new std::vector<Node *>();

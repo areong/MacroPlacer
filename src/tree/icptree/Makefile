@@ -19,9 +19,27 @@ HEADERS_ICPTREE_TEST = \
 	${PATH_TO_SRC}tree/icptree/ICPTree_test.h\
 	${PATH_TO_SRC}model/Macro.h\
 	${PATH_TO_SRC}model/Floorplan.h\
+	${PATH_TO_SRC}sa/AnnealingScheduleRatioDecrease.h\
+	${PATH_TO_SRC}sa/CostFunctionGroup.h\
+	${PATH_TO_SRC}sa/OperationSet.h\
+	${PATH_TO_SRC}sa/SimulatedAnnealing.h\
 	${PATH_TO_SRC}tree/icptree/ICPTree.h\
 	${PATH_TO_SRC}tree/icptree/MacroNode.h\
 	${PATH_TO_SRC}tree/icptree/TraversalTaskPrintIdAndIdentity.h\
+	${PATH_TO_SRC}tree/icptree/sa/AspectRatio.h\
+	${PATH_TO_SRC}tree/icptree/sa/BoundingBoxArea.h\
+	${PATH_TO_SRC}tree/icptree/sa/ChangeCorner0PositionRandomly.h\
+	${PATH_TO_SRC}tree/icptree/sa/ChangeRandomEmptyNodeWidthRandomly.h\
+	${PATH_TO_SRC}tree/icptree/sa/ChangeRandomMacroNodeVerticalDisplacementRandomly.h\
+	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h\
+	${PATH_TO_SRC}tree/icptree/sa/InsertEmptyNodeRandomly.h\
+	${PATH_TO_SRC}tree/icptree/sa/InteriorRegionArea.h\
+	${PATH_TO_SRC}tree/icptree/sa/MoveCornerRandomly.h\
+	${PATH_TO_SRC}tree/icptree/sa/RefreshWindow.h\
+	${PATH_TO_SRC}tree/icptree/sa/RemoveAndInsertLeftNodeRandomly.h\
+	${PATH_TO_SRC}tree/icptree/sa/RemoveAndInsertRightNodeRandomly.h\
+	${PATH_TO_SRC}tree/icptree/sa/RemoveEmptyNodeRandomly.h\
+	${PATH_TO_SRC}tree/icptree/sa/SwapNodesRandomly.h\
 	${PATH_TO_SRC}utils/Utils.h\
 	${PATH_TO_SRC}view/FloorplanWindow.h
 

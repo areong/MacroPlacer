@@ -150,7 +150,7 @@ public:
     bool removeEmptyNode(MacroNode *node);
     bool removeEmptyNodeRandomly();
     /*
-    When calling ICPTree.changeRandomEmptyNodeWidth(), the chosen
+    When calling ICPTree.changeRandomEmptyNodeWidthRandomly(), the chosen
     MacroNode's Macro's width will change by ±changeRange.
     */
     void setChangeRangeOfEmptyNodeWidth(int changeRange);
@@ -164,7 +164,7 @@ public:
     corner 0's x and y will change by ±changeRange.
     */
     void setChangeRangeOfCorner0Position(int changeRange);
-    void changeRandomEmptyNodeWidth();
+    void changeRandomEmptyNodeWidthRandomly();
     /*
     Choose a non-empty MacroNode on branches (exluding corner 0)
     and set its verticalDisplacement.
@@ -190,11 +190,26 @@ public:
     int getMinX();
     int getMaxY();
     int getMinY();
+    /*
+    Please call ICPTree.placeMacrosAssumingNoSwitch() beforehand.
+    */
+    int getBoundingBoxArea();
+    /*
+    Please call ICPTree.placeMacrosAssumingNoSwitch() beforehand.
+    */
     int getInteriorRegionArea();
+    /*
+    Please call ICPTree.placeMacrosAssumingNoSwitch() beforehand.
+    */
+    int getBoundingBoxAspectRatio();
     /*
     @Override
     */
     BinaryTree *createBinaryTree();
+    /*
+    @Override
+    */
+    BinaryTree *copy();
 
 private:
     int corner0XStart;
@@ -217,6 +232,7 @@ private:
     int minX;
     int maxY;
     int minY;
+    int boundingBoxArea;
     int interiorRegionArea;
 
     void swapMacroNodesIdentity(MacroNode *node1, MacroNode *node2);
@@ -263,6 +279,10 @@ private:
     Assume no Switch is used (calculation is a little bit simpler than with Switch).
     */
     void calculateMaxMinXYAssumingNoSwitch();
+    void calculateBoundingBoxArea();
+    /*
+    Assume ICPTree.calculateBoundingBoxArea() is called beforehand.
+    */
     void calculateInteriorRegionArea();
 };
 

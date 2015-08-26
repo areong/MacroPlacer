@@ -3,11 +3,34 @@
 #include <vector>
 #include "model/Macro.h"
 #include "model/Floorplan.h"
+#include "sa/AnnealingScheduleRatioDecrease.h"
+#include "sa/CostFunctionGroup.h"
+#include "sa/OperationSet.h"
+#include "sa/SimulatedAnnealing.h"
 #include "tree/icptree/ICPTree.h"
 #include "tree/icptree/MacroNode.h"
 #include "tree/icptree/TraversalTaskPrintIdAndIdentity.h"
+#include "tree/icptree/sa/AspectRatio.h"
+#include "tree/icptree/sa/BoundingBoxArea.h"
+#include "tree/icptree/sa/ChangeCorner0PositionRandomly.h"
+#include "tree/icptree/sa/ChangeRandomEmptyNodeWidthRandomly.h"
+#include "tree/icptree/sa/ChangeRandomMacroNodeVerticalDisplacementRandomly.h"
+#include "tree/icptree/sa/FloorplanState.h"
+#include "tree/icptree/sa/InsertEmptyNodeRandomly.h"
+#include "tree/icptree/sa/InteriorRegionArea.h"
+#include "tree/icptree/sa/MoveCornerRandomly.h"
+#include "tree/icptree/sa/RefreshWindow.h"
+#include "tree/icptree/sa/RemoveAndInsertLeftNodeRandomly.h"
+#include "tree/icptree/sa/RemoveAndInsertRightNodeRandomly.h"
+#include "tree/icptree/sa/RemoveEmptyNodeRandomly.h"
+#include "tree/icptree/sa/SwapNodesRandomly.h"
 #include "utils/Utils.h"
 #include "view/FloorplanWindow.h"
+
+/*
+Create a Floorplan with random Macros, MacroNodes and ICPTree.
+*/
+Floorplan *createFloorplanRandomly();
 
 void displayFloorplan(Floorplan *floorplan);
 
@@ -417,25 +440,220 @@ void testICPTree_placeMacrosNoNormalNorSwitch() {
               << tree->getMinX() << ", " << tree->getMaxY() << ", "
               << tree->getMinY() << "\n";
 
-    tree->swapNodes(macroNodes->at(2), macroNodes->at(3));
-    tree->removeNode(macroNodes->at(1), true);
-    tree->insertRightNode(macroNodes->at(1), macroNodes->at(0));
-    tree->swapNodes(macroNodes->at(1), macroNodes->at(4));
+    //tree->swapNodes(macroNodes->at(2), macroNodes->at(3));
+    //tree->removeNode(macroNodes->at(1), true);
+    //tree->insertRightNode(macroNodes->at(1), macroNodes->at(0));
+    //tree->swapNodes(macroNodes->at(1), macroNodes->at(4));
+    tree->insertEmptyNode(macroNodes->at(0));
+    tree->insertEmptyNode(macroNodes->at(1));
+    tree->insertEmptyNode(macroNodes->at(2));
+    //tree->removeNode(macroNodes->at(0), true);
+    for (int i = 0; i < 0; i++) {
+        tree->insertEmptyNodeRandomly();
+    }
     tree->placeMacrosAssumingNoSwitch();
+    //std::cout << tree->getEmptyNodeInsertableMacroNodeRandomly()->getId() << "\n";
     while (false) {
         tree->removeAndInsertLeftNodeRandomly();
         tree->removeAndInsertRightNodeRandomly();
         tree->swapNodesRandomly();
     }
 
+    // Test memory leak.
+    for (int i = 0; i < 00000; i++) {//00000; i++) {
+        ICPTree *newICPTree = dynamic_cast<ICPTree *>(tree->copy());
+        //TraversalTaskPrintIdAndIdentity *task = new TraversalTaskPrintIdAndIdentity();
+        //newICPTree->traverseAll(task);
+        //std::cout << "\n";
+        //delete task;
+        //newICPTree->placeMacrosAssumingNoSwitch();
+        //newICPTree->insertEmptyNodeRandomly();
+        delete tree;
+        tree = newICPTree;
+    }
+
     // Display
     Floorplan *floorplan = new Floorplan(macros, macroNodes, tree);
-    displayFloorplan(floorplan);
+    //displayFloorplan(floorplan);
+    FloorplanWindow *window = FloorplanWindow::createInstance(floorplan);
+    window->setWindowSize(1024, 768);
+    window->setXYRangeByFloorplan();
+    window->initialize();
+    while (true) {
+        int dummy = 0;
+        for (int i = 0; i < 1000000; i++) {
+            dummy += 1;
+        }
+        ICPTree *newICPTree = dynamic_cast<ICPTree *>(tree->copy());
+        delete tree;
+        tree = newICPTree;
+        floorplan->setICPTree(tree);
+        tree->removeAndInsertLeftNodeRandomly();
+        tree->removeAndInsertRightNodeRandomly();
+        //tree->swapNodesRandomly();
+        tree->moveCornerRandomly();
+        //tree->insertEmptyNodeRandomly();
+        //tree->removeEmptyNodeRandomly();
+        //tree->changeRandomEmptyNodeWidthRandomly();
+        //tree->changeRandomMacroNodeVerticalDisplacementRandomly();
+        //tree->changeCorner0PositionRandomly();
+        tree->placeMacrosAssumingNoSwitch();
+        //std::cout << " " << macros->at(0)->getXStart() << "\n";
+        //std::cout << " " << floorplan->getMacros()->at(0)->getXStart() << ".\n";
+        window->runMainLoopEvent();
+    }
 
     deleteMacrosMacroNodesAndTree(macros, macroNodes, tree);
 }
 
 void testICPTree_placeMacrosRandomlyNoSwitch() {
+    Floorplan *floorplan = createFloorplanRandomly();
+    std::vector<Macro *> *macros = floorplan->getMacros();
+    ICPTree *tree = floorplan->getICPTree();
+    std::vector<MacroNode *> *macroNodes = floorplan->getMacroNodes();
+
+    for (int i = 0; i < 0; i++) {
+        tree->insertEmptyNodeRandomly();
+    }
+
+    TraversalTaskPrintIdAndIdentity *task = new TraversalTaskPrintIdAndIdentity();
+    tree->traverseAll(task);
+
+    tree->placeMacrosAssumingNoSwitch();
+
+    // Display
+    //displayFloorplan(floorplan);
+    FloorplanWindow *window = FloorplanWindow::createInstance(floorplan);
+    window->setWindowSize(1024, 768);
+    window->setXYRangeByFloorplan();
+    window->initialize();
+    while (true) {
+        int dummy = 0;
+        for (int i = 0; i < 10000000; i++) {
+            dummy += 1;
+        }
+        tree->removeAndInsertLeftNodeRandomly();
+        tree->removeAndInsertRightNodeRandomly();
+        //tree->swapNodesRandomly();
+        tree->moveCornerRandomly();
+        //tree->insertEmptyNodeRandomly();
+        //tree->removeEmptyNodeRandomly();
+        //tree->changeRandomEmptyNodeWidthRandomly();
+        //tree->changeRandomMacroNodeVerticalDisplacementRandomly();
+        //tree->changeCorner0PositionRandomly();
+        tree->placeMacrosAssumingNoSwitch();
+        //std::cout << " " << macros->at(0)->getXStart() << "\n";
+        //std::cout << " " << floorplan->getMacros()->at(0)->getXStart() << ".\n";
+        window->runMainLoopEvent();
+    }
+
+    deleteMacrosMacroNodesAndTree(macros, macroNodes, tree);
+}
+
+void testICPTree_anneal() {
+    Floorplan *floorplan = createFloorplanRandomly();
+    floorplan->getICPTree()->placeMacrosAssumingNoSwitch(); // Place at first to calculate cost.
+    FloorplanState *floorplanState = new FloorplanState(floorplan);
+    std::cout << "boundingBoxArea: " << floorplanState->getICPTree()->getBoundingBoxArea() << "\n";
+
+    // Operations
+    RemoveAndInsertLeftNodeRandomly *removeAndInsertLeftNodeRandomly = new RemoveAndInsertLeftNodeRandomly();
+    RemoveAndInsertRightNodeRandomly *removeAndInsertRightNodeRandomly = new RemoveAndInsertRightNodeRandomly();
+    MoveCornerRandomly *moveCornerRandomly = new MoveCornerRandomly();
+    InsertEmptyNodeRandomly *insertEmptyNodeRandomly = new InsertEmptyNodeRandomly();
+    RemoveEmptyNodeRandomly *removeEmptyNodeRandomly = new RemoveEmptyNodeRandomly();
+    ChangeRandomEmptyNodeWidthRandomly *changeRandomEmptyNodeWidthRandomly = new ChangeRandomEmptyNodeWidthRandomly();
+    ChangeRandomMacroNodeVerticalDisplacementRandomly *changeRandomMacroNodeVerticalDisplacementRandomly = new ChangeRandomMacroNodeVerticalDisplacementRandomly();
+    floorplan->getICPTree()->setChangeRangeOfEmptyNodeWidth(1);
+    floorplan->getICPTree()->setChangeRangeOfVerticalDisplacement(1);
+    OperationSet *operationSet = new OperationSet();
+    operationSet->addOperation(removeAndInsertLeftNodeRandomly);
+    operationSet->addOperation(removeAndInsertRightNodeRandomly);
+    operationSet->addOperation(moveCornerRandomly);
+    //operationSet->addOperation(insertEmptyNodeRandomly);
+    operationSet->addOperation(removeEmptyNodeRandomly);
+    //operationSet->addOperation(changeRandomEmptyNodeWidthRandomly);
+    operationSet->addOperation(changeRandomMacroNodeVerticalDisplacementRandomly);
+
+    //for (int i = 0; i < 1000; i++) {
+    //    operationSet->operate(floorplanState);
+    //}
+
+    // CostFunctions
+    BoundingBoxArea *boundingBoxArea = new BoundingBoxArea();
+    InteriorRegionArea *interiorRegionArea = new InteriorRegionArea(2000);
+    AspectRatio *aspectRatio = new AspectRatio(1);
+    CostFunctionGroup *costFunctionGroup = new CostFunctionGroup();
+    costFunctionGroup->addCostFunction(boundingBoxArea, 1);
+    costFunctionGroup->addCostFunction(interiorRegionArea, 1);
+    costFunctionGroup->addCostFunction(aspectRatio, 1);
+    costFunctionGroup->normalizeWeights();
+    costFunctionGroup->normalizeCosts(floorplanState, operationSet, 1000);
+
+    AnnealingScheduleRatioDecrease *annealingScheduleRatioDecrease = new AnnealingScheduleRatioDecrease(0.9);
+    SimulatedAnnealing *simulatedAnnealing = new SimulatedAnnealing();
+    simulatedAnnealing->setOperation(operationSet);
+    simulatedAnnealing->setCostFunction(costFunctionGroup);
+    simulatedAnnealing->setAnnealingSchedule(annealingScheduleRatioDecrease);
+
+    annealingScheduleRatioDecrease->initializeTemperature(floorplanState, 1000, 0.85);
+    std::cout << "initialTemperature: " << annealingScheduleRatioDecrease->getTemperature() << "\n";
+
+    //// Test memory leak.
+    //ICPTree *icpTree = floorplan->getICPTree();
+    //for (int i = 0; i < 200000; i++) {//00000; i++) {
+    //    ICPTree *newICPTree = dynamic_cast<ICPTree *>(icpTree->copy());
+    //    //TraversalTaskPrintIdAndIdentity *task = new TraversalTaskPrintIdAndIdentity();
+    //    //newICPTree->traverseAll(task);
+    //    //std::cout << "\n";
+    //    //delete task;
+    //    //newICPTree->placeMacrosAssumingNoSwitch();
+    //    delete icpTree;
+    //    icpTree = newICPTree;
+    //}
+
+    // Window
+    FloorplanWindow *window = FloorplanWindow::createInstance(floorplan);
+    window->setWindowSize(1024, 768);
+    window->setXYRangeByFloorplan();
+    window->initialize();
+    window->runMainLoopEvent();
+    RefreshWindow *refreshWindow = new RefreshWindow(window, floorplan);
+    simulatedAnnealing->addTemperatureListener(refreshWindow);
+
+    //for (int i = 0; i < 100000; i++) {
+    //    //for (int j = 0; j < 1000000; j++) {
+    //    //    int n = 1 + 1;
+    //    //}
+    //    FloorplanState *newFloorplanState = dynamic_cast<FloorplanState *>(floorplanState->copy());
+    //    //std::cout << "\n";
+    //    //TraversalTaskPrintIdAndIdentity *task = new TraversalTaskPrintIdAndIdentity();
+    //    //newFloorplanState->getICPTree()->traverseAll(task);
+    //    //delete task;
+    //    operationSet->operate(newFloorplanState);
+    //    delete floorplanState;
+    //    floorplanState = newFloorplanState;
+    //    window->runMainLoopEvent();
+    //}
+
+    simulatedAnnealing->anneal(floorplanState, 1000, 0.000001, 0.95, 6);
+    FloorplanState *bestFloorplanState = dynamic_cast<FloorplanState *>(simulatedAnnealing->getBestState());
+    std::cout << "finalTemperature: " << annealingScheduleRatioDecrease->getTemperature() << "\n";
+    std::cout << "boundingBoxArea: " << bestFloorplanState->getICPTree()->getBoundingBoxArea() << "\n";
+    std::cout << "interiorRegionArea: " << bestFloorplanState->getICPTree()->getInteriorRegionArea() << "\n";
+}
+
+void testICPTree() {
+    //testICPTree_intialize01();
+    //testICPTree_intialize02();
+    //testICPTree_placeMacrosNoNormalNorSwitch();
+    //testICPTree_placeMacrosRandomlyNoSwitch();
+    testICPTree_anneal();
+}
+
+// private
+
+Floorplan *createFloorplanRandomly() {
     std::vector<Macro *> *macros = new std::vector<Macro *>();
     for (int i = 0; i < 40; i++) {
         macros->push_back(new Macro(Utils::randint(1, 20), Utils::randint(1, 20)));
@@ -450,54 +668,8 @@ void testICPTree_placeMacrosRandomlyNoSwitch() {
     }
     tree->initializeRandomly();
     tree->setCorner0Position(0, 0);
-
-    for (int i = 0; i < 0; i++) {
-        tree->insertEmptyNodeRandomly();
-    }
-
-    TraversalTaskPrintIdAndIdentity *task = new TraversalTaskPrintIdAndIdentity();
-    tree->traverseAll(task);
-
-    tree->placeMacrosAssumingNoSwitch();
-
-    // Display
-    Floorplan *floorplan = new Floorplan(macros, macroNodes, tree);
-    //displayFloorplan(floorplan);
-    FloorplanWindow *window = FloorplanWindow::createInstance(floorplan);
-    window->setWindowSize(1024, 768);
-    window->setXYRangeByFloorplan();
-    window->initialize();
-    while (true) {
-        int dummy = 0;
-        for (int i = 0; i < 100000; i++) {
-            dummy += 1;
-        }
-        tree->removeAndInsertLeftNodeRandomly();
-        tree->removeAndInsertRightNodeRandomly();
-        //tree->swapNodesRandomly();
-        tree->moveCornerRandomly();
-        //tree->insertEmptyNodeRandomly();
-        //tree->removeEmptyNodeRandomly();
-        //tree->changeRandomEmptyNodeWidth();
-        //tree->changeRandomMacroNodeVerticalDisplacementRandomly();
-        //tree->changeCorner0PositionRandomly();
-        tree->placeMacrosAssumingNoSwitch();
-        //std::cout << " " << macros->at(0)->getXStart() << "\n";
-        //std::cout << " " << floorplan->getMacros()->at(0)->getXStart() << ".\n";
-        window->runMainLoopEvent();
-    }
-
-    deleteMacrosMacroNodesAndTree(macros, macroNodes, tree);
+    return new Floorplan(macros, macroNodes, tree);
 }
-
-void testICPTree() {
-    //testICPTree_intialize01();
-    //testICPTree_intialize02();
-    //testICPTree_placeMacrosNoNormalNorSwitch();
-    testICPTree_placeMacrosRandomlyNoSwitch();
-}
-
-// private
 
 void displayFloorplan(Floorplan *floorplan) {
     FloorplanWindow *window = FloorplanWindow::createInstance(floorplan);

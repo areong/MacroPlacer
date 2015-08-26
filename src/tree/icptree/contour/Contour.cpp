@@ -146,7 +146,7 @@ void Contour::legalizeMacrosToABottomContour(Contour *bottomContour) {
             MacroNode *macroNode = thisEdge->getMacroNode();
             Macro *macro = macroNode->getMacro();
             setMacroYEnd(macro, newThisEdgeY);
-            macroNode->addToVerticalDisplacement(yDifference); // The sign of yDifference is for interiorContours.
+            //macroNode->addToVerticalDisplacement(yDifference); // The sign of yDifference is for interiorContours.
             Edge *macroNodeBottomEdge = getMacroNodeBottomEdge(macroNode);
             if (macroNodeBottomEdge != 0) {
                 setEdgeYStart(macroNodeBottomEdge, getMacroYStart(macro)); // bottomContour.setEdgeYEnd for bottomEdge. (Though strange usage)
@@ -207,7 +207,7 @@ void Contour::legalizeMacrosToARightContour(Contour *rightContour) {
             MacroNode *macroNode = thisEdge->getMacroNode();
             Macro *macro = macroNode->getMacro();
             setMacroYEnd(macro, newThisEdgeY);
-            macroNode->addToVerticalDisplacement(yDifference); // The sign of yDifference is for interiorContours.
+            //macroNode->addToVerticalDisplacement(yDifference); // The sign of yDifference is for interiorContours.
             Edge *macroNodeBottomEdge = getMacroNodeBottomEdge(macroNode);
             if (macroNodeBottomEdge != 0) {
                 setEdgeYStart(macroNodeBottomEdge, getMacroYStart(macro)); // Set bottomEdge's yEnd
@@ -273,7 +273,7 @@ void Contour::legalizeMacrosToALeftContour(Contour *leftContour) {
             MacroNode *macroNode = thisEdge->getMacroNode();
             Macro *macro = macroNode->getMacro();
             setMacroYEnd(macro, newThisEdgeY);
-            macroNode->addToVerticalDisplacement(yDifference); // The sign of yDifference is for interiorContours.
+            //macroNode->addToVerticalDisplacement(yDifference); // The sign of yDifference is for interiorContours.
             Edge *macroNodeBottomEdge = getMacroNodeBottomEdge(macroNode);
             if (macroNodeBottomEdge != 0) {
                 setEdgeYStart(macroNodeBottomEdge, getMacroYStart(macro)); // Set bottomEdge's yEnd

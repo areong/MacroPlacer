@@ -27,6 +27,10 @@ std::vector<MacroNode *> *Floorplan::getMacroNodes() {
     return macroNodes;
 }
 
+void Floorplan::setICPTree(ICPTree *icpTree) {
+    this->icpTree = icpTree;
+}
+
 ICPTree *Floorplan::getICPTree() {
     return icpTree;
 }

@@ -12,6 +12,10 @@ public:
     */
     static void run_srand();
     /*
+    Return random double in [0, 1).
+    */
+    static double random();
+    /*
     Return random integer in [start, end).
 
     CAUTION: end > start

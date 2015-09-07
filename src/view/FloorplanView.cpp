@@ -1,4 +1,5 @@
 #include "view/FloorplanView.h"
+#include "model/Bin.h"
 #include "model/Floorplan.h"
 #include "tree/icptree/ICPTree.h"
 //#include "tree/icptree/MacroNode.h"
@@ -23,13 +24,26 @@ FloorplanView::~FloorplanView() {
 }
 
 void FloorplanView::display() {
+    // Bins with Macros
+    for (int i = 0; i < floorplan->getBinsRows()->size(); ++i) {
+        for (int j = 0; j < floorplan->getBinsRows()->at(i)->size(); ++j) {
+            Bin *bin = floorplan->getBinsRows()->at(i)->at(j);
+            if (bin->getPreplacedMacros()->empty() && bin->getMovableMacros()->empty()) {
+                continue;
+            }
+            window->drawRectangle((float) bin->getXStart(), (float) bin->getXEnd(),
+                (float) bin->getYStart(), (float) bin->getYEnd(),
+                0.3, 0.1, 0, 0, 0, 0);        
+        }
+    }
     // Bounding box
     window->drawRectangle(floorplan->getMinX(), floorplan->getMaxX(),
         floorplan->getMinY(), floorplan->getMaxY(),
-        0, 0, 0, 0.6, 0.6, 0.6);
+        0, 0, 0, 0.6, 0.6, 0.6, true);
     TraversalTaskDrawMacroNode *task = new TraversalTaskDrawMacroNode(window);
     floorplan->getICPTree()->traverseAll(task);
     delete task;
+
     //// Empty Macros
     //std::vector<MacroNode *> *emptyMacroNodes = floorplan->getICPTree()->getEmptyNodes();
     //for (int i = 0; i < emptyMacroNodes->size(); i++) {

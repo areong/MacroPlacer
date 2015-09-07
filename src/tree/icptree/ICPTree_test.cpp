@@ -32,6 +32,16 @@ Create a Floorplan with random Macros, MacroNodes and ICPTree.
 */
 Floorplan *createFloorplanRandomly();
 
+/*
+Create a Floorplan with random Macros, MacroNodes and ICPTree.
+Please call these three lines before calling this function:
+    std::vector<Macro *> *macros = new std::vector<Macro *>();
+    std::vector<MacroNode *> *macroNodes = new std::vector<MacroNode *>();
+    ICPTree *tree = new ICPTree();
+*/
+Floorplan *createFloorplanRandomly(std::vector<Macro *> *macros,
+    std::vector<MacroNode *> *macroNodes, ICPTree *icpTree);
+
 void displayFloorplan(Floorplan *floorplan);
 
 void deleteMacrosMacroNodesAndTree(std::vector<Macro *> *macros, 
@@ -473,7 +483,7 @@ void testICPTree_placeMacrosNoNormalNorSwitch() {
     }
 
     // Display
-    Floorplan *floorplan = new Floorplan(macros, macroNodes, tree);
+    Floorplan *floorplan = new Floorplan(macros, tree);
     //displayFloorplan(floorplan);
     FloorplanWindow *window = FloorplanWindow::createInstance(floorplan);
     window->setWindowSize(1024, 768);
@@ -507,10 +517,13 @@ void testICPTree_placeMacrosNoNormalNorSwitch() {
 }
 
 void testICPTree_placeMacrosRandomlyNoSwitch() {
-    Floorplan *floorplan = createFloorplanRandomly();
-    std::vector<Macro *> *macros = floorplan->getMacros();
-    ICPTree *tree = floorplan->getICPTree();
-    std::vector<MacroNode *> *macroNodes = floorplan->getMacroNodes();
+    std::vector<Macro *> *macros = new std::vector<Macro *>();
+    std::vector<MacroNode *> *macroNodes = new std::vector<MacroNode *>();
+    ICPTree *tree = new ICPTree();
+    Floorplan *floorplan = createFloorplanRandomly(macros, macroNodes, tree);
+    //std::vector<Macro *> *macros = floorplan->getMacros();
+    //ICPTree *tree = floorplan->getICPTree();
+    //std::vector<MacroNode *> *macroNodes = floorplan->getMacroNodes();
 
     for (int i = 0; i < 0; i++) {
         tree->insertEmptyNodeRandomly();
@@ -552,6 +565,7 @@ void testICPTree_placeMacrosRandomlyNoSwitch() {
 
 void testICPTree_anneal() {
     Floorplan *floorplan = createFloorplanRandomly();
+    floorplan->createBins(-400, -400, 400, 400, 40, 40);
     floorplan->getICPTree()->placeMacrosAssumingNoSwitch(); // Place at first to calculate cost.
     FloorplanState *floorplanState = new FloorplanState(floorplan);
     std::cout << "boundingBoxArea: " << floorplanState->getICPTree()->getBoundingBoxArea() << "\n";
@@ -655,20 +669,25 @@ void testICPTree() {
 
 Floorplan *createFloorplanRandomly() {
     std::vector<Macro *> *macros = new std::vector<Macro *>();
+    ICPTree *icpTree = new ICPTree();
+    std::vector<MacroNode *> *macroNodes = new std::vector<MacroNode *>();
+    return createFloorplanRandomly(macros, macroNodes, icpTree);
+}
+
+Floorplan *createFloorplanRandomly(std::vector<Macro *> *macros,
+    std::vector<MacroNode *> *macroNodes, ICPTree *icpTree) {
     for (int i = 0; i < 40; i++) {
         macros->push_back(new Macro(Utils::randint(1, 20), Utils::randint(1, 20)));
     }
-    ICPTree *tree = new ICPTree();
-    std::vector<MacroNode *> *macroNodes = new std::vector<MacroNode *>();
     for (int i = 0; i < macros->size(); i++) {
         MacroNode *macroNode = new MacroNode(macros->at(i));
         macroNode->setVerticalDisplacement(0);//Utils::randint(-50, 51));
         macroNodes->push_back(macroNode);
-        tree->addNode(macroNode);
+        icpTree->addNode(macroNode);
     }
-    tree->initializeRandomly();
-    tree->setCorner0Position(0, 0);
-    return new Floorplan(macros, macroNodes, tree);
+    icpTree->initializeRandomly();
+    icpTree->setCorner0Position(0, 0);
+    return new Floorplan(macros, icpTree);
 }
 
 void displayFloorplan(Floorplan *floorplan) {

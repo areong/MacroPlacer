@@ -36,9 +36,13 @@ public:
 
     // Tools
 
+    /*
+    @param noFill True than the rectangle will not be filled but stay hollow.
+                  Only the outine will be drawn.
+    */
     void drawRectangle(int xStart, int xEnd, int yStart, int yEnd,
         float fillR, float fillG, float fillB,
-        float outlineR, float outlineG, float outlineB);
+        float outlineR, float outlineG, float outlineB, bool noFill=false);
 
 protected:
     int windowWidth;

@@ -1,5 +1,6 @@
 #include "sa/CostFunctionGroup.h"
 #include "sa/Operation.h"
+#include "sa/State.h"
 
 CostFunctionGroup::CostFunctionGroup() {
     costFunctions = new std::vector<CostFunction *>();
@@ -46,12 +47,15 @@ void CostFunctionGroup::normalizeWeights() {
 
 void CostFunctionGroup::normalizeCosts(State *state, Operation *operation, int numMoves) {
     // Assign the averageCosts as the initial cost.
+    state->doBeforeCalculatingCost();
     for (int i = 0; i < averageCosts->size(); i++) {
         averageCosts->at(i) = costFunctions->at(i)->calculateCost(state);
     }
     // Calculate the average cost of each CostFunction.
     for (int iMove = 0; iMove < numMoves; iMove++) {
         operation->operate(state);
+        state->doAfterBeingOperated();
+        state->doBeforeCalculatingCost();
         for (int i = 0; i < averageCosts->size(); i++) {
             averageCosts->at(i) += costFunctions->at(i)->calculateCost(state);
         }

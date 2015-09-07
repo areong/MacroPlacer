@@ -14,5 +14,4 @@ void MoveCornerRandomly::operate(State *state) {
     FloorplanState *floorplanState = dynamic_cast<FloorplanState *>(state);
     ICPTree *icpTree = floorplanState->getICPTree();
     icpTree->moveCornerRandomly();
-    icpTree->placeMacrosAssumingNoSwitch();
 }

@@ -70,9 +70,11 @@ void Window::runMainLoopEvent() {
 
 void Window::drawRectangle(int xStart, int xEnd, int yStart, int yEnd,
     float fillR, float fillG, float fillB,
-    float outlineR, float outlineG, float outlineB) {
-    glColor3f(fillR, fillG, fillB);
-    glRectf(xStart, yStart, xEnd, yEnd);
+    float outlineR, float outlineG, float outlineB, bool noFill) {
+    if (!noFill) {
+        glColor3f(fillR, fillG, fillB);
+        glRectf(xStart, yStart, xEnd, yEnd);
+    }
     glColor3f(outlineR, outlineG, outlineB);
     glBegin(GL_LINE_LOOP);
     glVertex3f(xStart, yStart, 0);

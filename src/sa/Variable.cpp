@@ -16,6 +16,14 @@ double Variable::getValue() {
     return x;
 }
 
+void Variable::doAfterBeingOperated() {
+
+}
+
+void Variable::doBeforeCalculatingCost() {
+
+}
+
 State *Variable::copy() {
     return new Variable(x);
 }

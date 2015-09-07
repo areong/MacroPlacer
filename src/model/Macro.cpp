@@ -1,15 +1,6 @@
 #include "model/Macro.h"
 
-Macro::Macro() {
-    width = 1;
-    height = 1;
-    xStart = 0;
-    xEnd = 1;
-    yStart = 0;
-    yEnd = 1;
-}
-
-Macro::Macro(int width, int height) {
+Macro::Macro(int width, int height, std::string name) : Module(name) {
     this->width = width;
     this->height = height;
     xStart = 0;
@@ -74,8 +65,57 @@ int Macro::getYEnd() {
     return yEnd;
 }
 
+double Macro::getPinsOriginX() {
+    switch(rotation) {
+    case 0:
+        return xStart;
+    case 1:
+        return xEnd;
+    case 2:
+        return xEnd;
+    case 3:
+        return xStart;
+    default:
+        return xStart;
+    }
+}
+
+double Macro::getPinsOriginY() {
+    switch(rotation) {
+    case 0:
+        return yStart;
+    case 1:
+        return yStart;
+    case 2:
+        return yEnd;
+    case 3:
+        return yEnd;
+    default:
+        return yStart;
+    }
+}
+
+void Macro::rotate(bool counterclockwise) {
+    Module::rotate(counterclockwise);
+    double temp = width;
+    width = height;
+    height = temp;
+}
+
+double Macro::calculateAreaUnderRectangle(double xStart, double yStart, double xEnd, double yEnd) {
+    double minX = (this->xStart > xStart) ? this->xStart : xStart;
+    double minY = (this->yStart > yStart) ? this->yStart : yStart;
+    double maxX = (this->xEnd < xEnd) ? this->xEnd : xEnd;
+    double maxY = (this->yEnd < yEnd) ? this->yEnd : yEnd;
+    if (maxX > minX && maxY > minY) {
+        return (maxX - minX) * (maxY - minY);
+    } else {
+        return 0;
+    }
+}
+
 Macro *Macro::copy() {
-    Macro *macro = new Macro(width, height);
+    Macro *macro = new Macro(width, height, getName());
     macro->setXStart(xStart);
     macro->setYStart(yStart);
     return macro;

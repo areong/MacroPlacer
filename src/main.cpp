@@ -1,3 +1,4 @@
+#include "model/Floorplan_test.h"
 #include "sa/SimulatedAnnealing_test.h"
 #include "tree/binarytree/BinaryTree_test.h"
 #include "tree/icptree/ICPTree_test.h"
@@ -14,5 +15,6 @@ int main(int argc, char **argv) {
     //testContour();
     //testFloorplanWindow();
     //testSimulatedAnnealing();
+    //testFloorplan();
     return 0;
 }

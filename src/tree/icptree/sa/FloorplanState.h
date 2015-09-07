@@ -22,6 +22,14 @@ public:
     ICPTree *getICPTree();
     /*
     @Override
+    */
+    void doAfterBeingOperated();
+    /*
+    @Override
+    */
+    void doBeforeCalculatingCost();
+    /*
+    @Override
     Copy the ICPTree, but remain the floorplan.
     */
     State *copy();

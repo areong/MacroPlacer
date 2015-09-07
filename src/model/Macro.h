@@ -1,13 +1,11 @@
 #ifndef MODEL_MACRO_H_
 #define MODEL_MACRO_H_
 
-/*
-Not complete.
-*/
-class Macro {
+#include "model/Module.h"
+
+class Macro : public Module {
 public:
-    Macro();
-    Macro(int width, int height);
+    Macro(int width=1, int height=1, std::string name="");
     ~Macro();
     void setWidth(int width);
     int getWidth();
@@ -21,6 +19,23 @@ public:
     int getYStart();
     void setYEnd(int yEnd);
     int getYEnd();
+    /*
+    @Override
+    */
+    double getPinsOriginX();
+    /*
+    @Override
+    */
+    double getPinsOriginY();
+    /*
+    @Override
+    Swap width and height.
+    */
+    void rotate(bool counterclockwise);
+    double calculateAreaUnderRectangle(double xStart, double yStart, double xEnd, double yEnd);
+    /*
+    Does not copy pins because it is not necessary.
+    */
     Macro *copy();
 
 private:

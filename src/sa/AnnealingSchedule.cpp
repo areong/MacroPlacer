@@ -3,6 +3,7 @@
 #include "sa/CostFunction.h"
 #include "sa/Operation.h"
 #include "sa/SimulatedAnnealing.h"
+#include "sa/State.h"
 
 AnnealingSchedule::AnnealingSchedule() {
     simulatedAnnealing = 0;
@@ -22,10 +23,13 @@ void AnnealingSchedule::initializeTemperature(State *state, int numMoves, double
     CostFunction *costFunction = simulatedAnnealing->getCostFunction();
     Operation *operation = simulatedAnnealing->getOperation();
     double averagePositiveCostChange = 0;
+    state->doBeforeCalculatingCost();
     double previousCost = costFunction->calculateCost(state);
     int countPositiveCostChange = 0;
     for (int iMove = 0; iMove < numMoves; iMove++) {
         operation->operate(state);
+        state->doAfterBeingOperated();
+        state->doBeforeCalculatingCost();
         double currentCost = costFunction->calculateCost(state);
         double costChange = currentCost - previousCost;
         if (costChange > 0) {

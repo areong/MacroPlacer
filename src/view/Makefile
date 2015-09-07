@@ -5,6 +5,7 @@ INC = -I ${PATH_TO_SRC}
 HEADERS_FLOORPLANVIEW = \
 	${PATH_TO_SRC}view/View.h\
 	${PATH_TO_SRC}view/FloorplanView.h\
+	${PATH_TO_SRC}model/Bin.h\
 	${PATH_TO_SRC}model/Floorplan.h\
 	${PATH_TO_SRC}tree/icptree/ICPTree.h\
 	${PATH_TO_SRC}view/TraversalTaskDrawMacroNode.h\

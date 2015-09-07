@@ -14,5 +14,4 @@ void InsertEmptyNodeRandomly::operate(State *state) {
     FloorplanState *floorplanState = dynamic_cast<FloorplanState *>(state);
     ICPTree *icpTree = floorplanState->getICPTree();
     icpTree->insertEmptyNodeRandomly();
-    icpTree->placeMacrosAssumingNoSwitch();
 }

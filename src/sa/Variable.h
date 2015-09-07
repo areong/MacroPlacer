@@ -15,6 +15,14 @@ public:
     /*
     @Override
     */
+    virtual void doAfterBeingOperated();
+    /*
+    @Override
+    */
+    virtual void doBeforeCalculatingCost();
+    /*
+    @Override
+    */
     State *copy();
 
 private:

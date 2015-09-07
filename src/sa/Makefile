@@ -6,7 +6,8 @@ HEADERS_ANNEALINGSCHEDULE = \
 	${PATH_TO_SRC}sa/AnnealingSchedule.h\
 	${PATH_TO_SRC}sa/CostFunction.h\
 	${PATH_TO_SRC}sa/Operation.h\
-	${PATH_TO_SRC}sa/SimulatedAnnealing.h
+	${PATH_TO_SRC}sa/SimulatedAnnealing.h\
+	${PATH_TO_SRC}sa/State.h
 
 HEADERS_ANNEALINGSCHEDULERATIODECREASE = \
 	${PATH_TO_SRC}sa/AnnealingSchedule.h\
@@ -16,7 +17,8 @@ HEADERS_COSTFUNCTIONGROUP = \
 	${PATH_TO_SRC}sa/CostFunction.h\
 	${PATH_TO_SRC}sa/CostFunctionGroup.h\
 	${PATH_TO_SRC}sa/Operation.h\
-	${PATH_TO_SRC}sa/SimulatedAnnealing.h
+	${PATH_TO_SRC}sa/SimulatedAnnealing.h\
+	${PATH_TO_SRC}sa/State.h
 
 HEADERS_DECREASEVARIABLE = \
 	${PATH_TO_SRC}sa/Operation.h\

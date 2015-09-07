@@ -18,6 +18,8 @@ void RefreshWindow::onUpdate() {
     FloorplanState *bestFloorplanState = dynamic_cast<FloorplanState *>(simulatedAnnealing->getBestState());
     ICPTree *bestICPTree = bestFloorplanState->getICPTree();
     bestICPTree->placeMacrosAssumingNoSwitch();
+    floorplan->clearBinsMovableMacros();
+    floorplan->addMovableMacrosToBins();
     floorplan->setICPTree(bestICPTree);
     window->runMainLoopEvent();
 }

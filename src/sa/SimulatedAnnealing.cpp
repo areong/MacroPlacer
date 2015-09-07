@@ -58,6 +58,7 @@ void SimulatedAnnealing::anneal(State *state, int numMovesPerTemperature, double
     }
     bestState = state;
     double lowestCost = 1e8;
+    state->doBeforeCalculatingCost();
     double previousCost = costFunction->calculateCost(state);
     while (true) {
         int countRejection = 0;
@@ -65,6 +66,8 @@ void SimulatedAnnealing::anneal(State *state, int numMovesPerTemperature, double
         for (int iMove = 0; iMove < numMovesPerTemperature; iMove++) {
             State *newState = state->copy();
             operation->operate(newState);
+            newState->doAfterBeingOperated();
+            newState->doBeforeCalculatingCost();
             double newCost = costFunction->calculateCost(newState);
             double costChange = newCost - previousCost;
             averageCostChange += costChange;
@@ -105,6 +108,8 @@ double SimulatedAnnealing::getAverageCostChange() {
 State *SimulatedAnnealing::getBestState() {
     return bestState;
 }
+
+// Private
 
 void SimulatedAnnealing::startTiming(double timeLimit) {
     timeStart = clock();

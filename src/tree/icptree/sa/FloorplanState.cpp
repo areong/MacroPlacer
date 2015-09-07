@@ -32,6 +32,16 @@ ICPTree *FloorplanState::getICPTree() {
     return icpTree;
 }
 
+void FloorplanState::doAfterBeingOperated() {
+    icpTree->placeMacrosAssumingNoSwitch();
+}
+
+void FloorplanState::doBeforeCalculatingCost() {
+    floorplan->clearBinsMovableMacros();
+    floorplan->addMovableMacrosToBins();
+    floorplan->updatePinsPosition();
+}
+
 State *FloorplanState::copy() {
     return new FloorplanState(floorplan, dynamic_cast<ICPTree *>(icpTree->copy()));
 }

@@ -11,10 +11,10 @@ int main(int argc, char **argv) {
     Utils::run_srand();
     //testBinaryTree();
     //testUtils();
-    testICPTree();
+    testICPTree(argc, argv);
     //testContour();
     //testFloorplanWindow();
     //testSimulatedAnnealing();
-    //testFloorplan();
+    //testFloorplan(argc, argv);
     return 0;
 }

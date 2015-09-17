@@ -11,7 +11,7 @@
 
 #include <iostream>
 
-ICPTree::ICPTree() {
+ICPTree::ICPTree(std::vector<Macro *> *macros) {
     corner0XStart = 0;
     corner0YStart = 0;
     changeRangeOfEmptyNodeWidth = 10;
@@ -31,6 +31,14 @@ ICPTree::ICPTree() {
     minY = 0;
     boundingBoxArea = 1;
     interiorRegionArea = 0;
+
+    if (macros != 0) {
+        for (int i = 0; i < macros->size(); i++) {
+            MacroNode *macroNode = new MacroNode(macros->at(i));
+            macroNode->setVerticalDisplacement(0);
+            addNode(macroNode);
+        }
+    }
 }
 
 ICPTree::~ICPTree() {

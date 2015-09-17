@@ -1,8 +1,11 @@
 #include "model/Floorplan_test.h"
+#include <iostream>
 #include <vector>
 #include "model/Bin.h"
+#include "model/Cell.h"
 #include "model/Floorplan.h"
 #include "model/Macro.h"
+#include "model/Terminal.h"
 #include "utils/Utils.h"
 #include "view/FloorplanWindow.h"
 
@@ -33,6 +36,45 @@ void testFloorplan_addMacrosToBins() {
     window->runMainLoop();
 }
 
-void testFloorplan() {
-    testFloorplan_addMacrosToBins();
+void testFloorplan_readAux(int argc, char **argv) {
+    if (argc < 2) {
+        return;
+    }
+    Floorplan *floorplan = Floorplan::createFromAuxFiles(argv[1]);
+    std::cout << floorplan->getPreplacedMacros()->size() << ", "
+              << floorplan->getMovableMacros()->size() << ", "
+              << floorplan->getCells()->size() << ", "
+              << floorplan->getTerminals()->size() << ", "
+              << floorplan->getNets()->size() << "\n";
+
+    int countNonAtZeroTerminals = 0;
+    for (int i = 0; i < floorplan->getTerminals()->size(); ++i) {
+        if (floorplan->getTerminals()->at(i)->getX() != 0 &&
+            floorplan->getTerminals()->at(i)->getY() != 0) {
+            countNonAtZeroTerminals += 1;
+        }
+    }
+    std::cout << countNonAtZeroTerminals << "\n";
+
+    int countPins = 0;
+    for (int i = 0; i < floorplan->getPreplacedMacros()->size(); ++i) {
+        countPins += floorplan->getPreplacedMacros()->at(i)->getPins()->size();
+    }
+    for (int i = 0; i < floorplan->getMovableMacros()->size(); ++i) {
+        countPins += floorplan->getMovableMacros()->at(i)->getPins()->size();
+    }
+    for (int i = 0; i < floorplan->getCells()->size(); ++i) {
+        countPins += floorplan->getCells()->at(i)->getPins()->size();
+    }
+    for (int i = 0; i < floorplan->getTerminals()->size(); ++i) {
+        countPins += floorplan->getTerminals()->at(i)->getPins()->size();
+    }
+    std::cout << countPins << "\n";
+
+    delete floorplan;
+}
+
+void testFloorplan(int argc, char **argv) {
+    //testFloorplan_addMacrosToBins();
+    testFloorplan_readAux(argc, argv);
 }

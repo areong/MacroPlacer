@@ -4,6 +4,7 @@
 #include "tree/binarytree/BinaryTree.h"
 #include <vector>
 
+class Macro;
 class MacroNode;
 class Contour;
 
@@ -14,7 +15,11 @@ Maybe a refractoring can be done to force using MacroNode.
 */
 class ICPTree : public BinaryTree {
 public:
-    ICPTree();
+    /*
+    @param macros If not zero, create MacroNodes from the macros and
+                  add the MacroNodes to the ICPTree by ICPTree.addNode().
+    */
+    ICPTree(std::vector<Macro *> *macros=0);
     ~ICPTree();
     /*
     @Override

@@ -7,6 +7,8 @@ class Cell : public Module {
 public:
     Cell(int width, int height, std::string name);
     ~Cell();
+    int getWidth();
+    int getHeight();
     /*
     @Override
     */

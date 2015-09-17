@@ -3,6 +3,8 @@
 
 void testFloorplan_addMacrosToBins();
 
-void testFloorplan();
+void testFloorplan_readAux(int argc, char **argv);
+
+void testFloorplan(int argc, char **argv);
 
 #endif

@@ -47,6 +47,11 @@ public:
     If the name does not match, returns 0.
     */
     Net *getNetByName(std::string name);
+    std::vector<Macro *> *getPreplacedMacros();
+    std::vector<Macro *> *getMovableMacros();
+    std::vector<Cell *> *getCells();
+    std::vector<Terminal *> *getTerminals();
+    std::vector<Net *> *getNets();
     /*
     Calculate the position range of Terminals and preplacedMacros
     and then call createBins(double, double, double, double, double, double).
@@ -74,14 +79,31 @@ public:
     Update the position of Pins of movableMacros.
     */
     void updatePinsPosition();
-    void setRoutabilityWeightForHPWL(double weight);
+    void setRoutabilityWeightOfHpwl(double weight);
     double getRoutabilityWeight();
+    /*
+    Calculate the total area of Cells.
+    */
+    int calculateCellsArea();
     int calculateMacrosAreaUnderRectangle(double xStart, double yStart, double xEnd, double yEnd);
     int calculateAreaOutOfBinsUnderRectangle(double xStart, double yStart, double xEnd, double yEnd);
+    /*
+    Calculate the sum of hpwl of all Nets except for those Nets that do not have
+    macroPins nor terminalPins. I.e., Nets with cellPins only are ignored.
+    */
+    double calculateNetsHpwl();
+    double calculateNetsRoutabilityHpwl();
     int getMaxX();
     int getMinX();
     int getMaxY();
     int getMinY();
+
+    /*
+    Create a Floorplan from a .aux file and other related files.
+    The files follows 2015 ICCAD Contest format.
+    If read unsuccessful, return 0.
+    */
+    static Floorplan *createFromAuxFiles(const char *auxFilename);
     
 private:
     std::vector<Macro *> *preplacedMacros;

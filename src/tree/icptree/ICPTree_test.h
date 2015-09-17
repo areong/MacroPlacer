@@ -9,8 +9,8 @@ void testICPTree_placeMacrosNoNormalNorSwitch();
 
 void testICPTree_placeMacrosRandomlyNoSwitch();
 
-void testICPTree_anneal();
+void testICPTree_anneal(int argc, char **argv);
 
-void testICPTree();
+void testICPTree(int argc, char **argv);
 
 #endif

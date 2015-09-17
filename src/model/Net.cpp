@@ -36,7 +36,19 @@ void Net::addTerminalPin(Pin *pin) {
     terminalPins->push_back(pin);
 }
 
-double Net::calculateHPWL() {
+std::vector<Pin *> *Net::getMacroPins() {
+    return macroPins;
+}
+
+std::vector<Pin *> *Net::getCellPins() {
+    return cellPins;
+}
+
+std::vector<Pin *> *Net::getTerminalPins() {
+    return terminalPins;
+}
+
+double Net::calculateHpwl() {
     minPinsX = 1e8;
     minPinsY = 1e8;
     maxPinsX = -1e8;
@@ -57,11 +69,18 @@ double Net::calculateHPWL() {
         if (pinY < minPinsY) minPinsY = pinY;
         if (pinY > maxPinsY) maxPinsY = pinY;
     }
-    return maxPinsX - minPinsX + maxPinsY - minPinsY;
+    if (maxPinsX < minPinsX || maxPinsY - minPinsY) {
+        return 0;
+    } else {
+        return maxPinsX - minPinsX + maxPinsY - minPinsY;
+    }
 }
 
-double Net::calculateRoutabilityHPWL() {
-    double hpwl = calculateHPWL();
+double Net::calculateRoutabilityHpwl() {
+    double hpwl = calculateHpwl();
+    if (hpwl == 0) {
+        return 0;
+    }
     double totalArea = (maxPinsX - minPinsX) * (maxPinsY - minPinsY);
     double macrosArea = floorplan->calculateMacrosAreaUnderRectangle(minPinsX,
         minPinsY, maxPinsX, maxPinsY);

@@ -9,6 +9,14 @@ Cell::~Cell() {
 
 }
 
+int Cell::getWidth() {
+    return width;
+}
+
+int Cell::getHeight() {
+    return height;
+}
+
 double Cell::getPinsOriginX() {
     return 0;
 }

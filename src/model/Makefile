@@ -14,15 +14,20 @@ HEADERS_FLOORPLAN = \
 	${PATH_TO_SRC}model/Bin.h\
 	${PATH_TO_SRC}model/Cell.h\
 	${PATH_TO_SRC}model/Macro.h\
+	${PATH_TO_SRC}model/Module.h\
 	${PATH_TO_SRC}model/Net.h\
+	${PATH_TO_SRC}model/Pin.h\
 	${PATH_TO_SRC}model/Terminal.h\
-	${PATH_TO_SRC}tree/icptree/ICPTree.h
+	${PATH_TO_SRC}tree/icptree/ICPTree.h\
+	${PATH_TO_SRC}utils/Utils.h
 
 HEADERS_FLOORPLAN_TEST = \
 	${PATH_TO_SRC}model/Floorplan_test.h\
 	${PATH_TO_SRC}model/Bin.h\
+	${PATH_TO_SRC}model/Cell.h\
 	${PATH_TO_SRC}model/Floorplan.h\
 	${PATH_TO_SRC}model/Macro.h\
+	${PATH_TO_SRC}model/Terminal.h\
 	${PATH_TO_SRC}utils/Utils.h\
 	${PATH_TO_SRC}view/FloorplanWindow.h
 

@@ -27,6 +27,7 @@ public:
     @return If no Pin matches, return 0.
     */
     Pin *getPinByOffset(double offsetX, double offsetY);
+    std::vector<Pin *> *getPins();
     /*
     Return the x component of the origin of the Pins' offsets.
     */

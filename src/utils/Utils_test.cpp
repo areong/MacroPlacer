@@ -11,6 +11,12 @@ void testUtils() {
         std::cout << ints->at(i) << " ";
     std::cout << "\n";
     std::cout << "randbool(): " << Utils::randbool() << std::endl;
-
     delete ints;
+
+    std::vector<std::string> *stringTokens = Utils::splitString("o0\t8 12\tc r\t4", "\t");
+    for (int i = 0; i < stringTokens->size(); ++i) {
+        std::cout << stringTokens->at(i) << ", ";
+    }
+    std::cout << "\n";
+    delete stringTokens;
 }

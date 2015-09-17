@@ -89,6 +89,12 @@ HEADERS_SWAPNODESRANDOMLY = \
 	${PATH_TO_SRC}tree/icptree/ICPTree.h\
 	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h
 
+HEADERS_TOTALWIRELENGTH = \
+	${PATH_TO_SRC}sa/CostFunction.h\
+	${PATH_TO_SRC}tree/icptree/sa/TotalWirelength.h\
+	${PATH_TO_SRC}model/Floorplan.h\
+	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h
+
 all:
 	make AspectRatio.o
 	make BoundingBoxArea.o
@@ -104,6 +110,7 @@ all:
 	make RemoveAndInsertRightNodeRandomly.o
 	make RemoveEmptyNodeRandomly.o
 	make SwapNodesRandomly.o
+	make TotalWirelength.o
 AspectRatio.o: AspectRatio.cpp ${HEADERS_ASPECTRATIO}
 	${CC} -c AspectRatio.cpp ${INC}
 BoundingBoxArea.o: BoundingBoxArea.cpp ${HEADERS_BOUNDINGBOXAREA}
@@ -132,3 +139,5 @@ RemoveEmptyNodeRandomly.o: RemoveEmptyNodeRandomly.cpp ${HEADERS_REMOVEEMPTYNODE
 	${CC} -c RemoveEmptyNodeRandomly.cpp ${INC}
 SwapNodesRandomly.o: SwapNodesRandomly.cpp ${HEADERS_SWAPNODESRANDOMLY}
 	${CC} -c SwapNodesRandomly.cpp ${INC}
+TotalWirelength.o: TotalWirelength.cpp ${HEADERS_TOTALWIRELENGTH}
+	${CC} -c TotalWirelength.cpp ${INC}

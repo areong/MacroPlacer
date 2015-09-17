@@ -18,8 +18,20 @@ public:
     void addMacroPin(Pin *pin);
     void addCellPin(Pin *pin);
     void addTerminalPin(Pin *pin);
-    double calculateHPWL();
-    double calculateRoutabilityHPWL();
+    std::vector<Pin *> *getMacroPins();
+    std::vector<Pin *> *getCellPins();
+    std::vector<Pin *> *getTerminalPins();
+    /*
+    Calculate hpwl of macroPins and terminalPins. The cellPins are ignored.
+    If there are no macroPins nor terminalPins, return 0.
+    */
+    double calculateHpwl();
+    /*
+    Calculate routability-weighted hpwl of macroPins and terminalPins.
+    The cellPins are ignored.
+    If there are no macroPins nor terminalPins, return 0.
+    */
+    double calculateRoutabilityHpwl();
 
 private:
     Floorplan *floorplan;

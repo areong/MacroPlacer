@@ -33,6 +33,10 @@ Pin *Module::getPinByOffset(double offsetX, double offsetY) {
     return 0;
 }
 
+std::vector<Pin *> *Module::getPins() {
+    return pins;
+}
+
 void Module::updatePinsPosition() {
     double pinsOriginX = getPinsOriginX();
     double pinsOriginY = getPinsOriginY();

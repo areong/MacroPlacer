@@ -40,6 +40,7 @@ HEADERS_ICPTREE_TEST = \
 	${PATH_TO_SRC}tree/icptree/sa/RemoveAndInsertRightNodeRandomly.h\
 	${PATH_TO_SRC}tree/icptree/sa/RemoveEmptyNodeRandomly.h\
 	${PATH_TO_SRC}tree/icptree/sa/SwapNodesRandomly.h\
+	${PATH_TO_SRC}tree/icptree/sa/TotalWirelength.h\
 	${PATH_TO_SRC}utils/Utils.h\
 	${PATH_TO_SRC}view/FloorplanWindow.h
 

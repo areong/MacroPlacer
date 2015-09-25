@@ -100,3 +100,5 @@ TemperatureListener.o: TemperatureListener.cpp ${HEADERS_TEMPERATURELISTENER}
 	${CC} -c TemperatureListener.cpp ${INC}
 Variable.o: Variable.cpp ${HEADERS_VARIABLE}
 	${CC} -c Variable.cpp ${INC}
+clean:
+	rm *.o

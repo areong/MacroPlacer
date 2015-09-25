@@ -10,9 +10,10 @@ class BinaryTree {
 public:
     BinaryTree();
     /*
-    Delete all Nodes in the tree.
+    Delete the BinaryTree.
+    Also delete all Nodes in the BinaryTree.
     */
-    ~BinaryTree();
+    virtual ~BinaryTree();
     /*
     Please add all Nodes before operating on them, including setRoot, insert, remove and swap.
     If Node.id is smaller than zero (the default value), BinaryTree will assign a new id to the Node.
@@ -56,7 +57,7 @@ public:
     /*
     Remove a Node by swapping with its leftNode or rightNode recursively
     until no child exists, and then detaching the Node.
-    @param  replaceWithRightNode    If true, swap with leftNode, or swap with
+    @param  replaceWithLeftNode    If true, swap with leftNode, or swap with
                                     rightNode unless there is no leftNode.
     @return True if remove successfully; false if unsuccessfully.
             In BinaryTree, this method always returns true.
@@ -112,10 +113,12 @@ public:
     */
     virtual BinaryTree *createBinaryTree();
     /*
-    Copy the tree and the Nodes added to the tree.
-    For a subclass of BinaryTree, call BinaryTree::copy() inside copy().
-    If an object of a BinaryTree's subclass is composed of objects of Node's subclass, the Node's
-    subclass's copy will be called.
+    Copy the BinaryTree. Also copy the Nodes of the BinaryTree.
+    
+    For any subclass of BinaryTree, say it DerivedTree:
+    In DerivedTree.copy(), PLEASE call BinaryTree::copy().
+    If DerivedTree.nodes is actually composed of DerivedNodes, then when copying
+    the Nodes, DerivedNode.copy() is guaranteed be called.
     */
     virtual BinaryTree *copy();
     /*

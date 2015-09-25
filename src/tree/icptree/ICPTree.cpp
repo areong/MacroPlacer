@@ -62,23 +62,30 @@ void ICPTree::initializeMacroNodesOnBranchesRandomly() {
     // Set the root as a CornerNode.
     MacroNode *root = dynamic_cast<MacroNode *>(getRoot());
     root->setAsCornerNode();
-    // Traverse left Nodes, count the number of MacroNodes.
+    // Traverse left Nodes, set them as BranchNodes,
+    // and count the MacroNodes on branches.
     int numNonEmptyMacroNodesOnBranches = 0;
-    MacroNode *current = root;  // Assume root is not 0.
+    MacroNode *current = root;
     while (true) {
         numNonEmptyMacroNodesOnBranches += 1;
         if (current->hasLeftNode()) {
             current = dynamic_cast<MacroNode *>(current->getLeftNode());
+            current->setAsBranchNode();
         } else {
             break;
         }
     }
     // If numNonEmptyMacroNodesOnBranches is less then four,
-    // insert empty Node at the leftMostNode (for now it is current)
-    // and set the leftNodes of root as CornerNodes.
+    // select enough not-on-branch MacroNodes, or NormalNodes, and insert at
+    // current as leftNodes, and set all MacroNodes on branches as CornerNodes.
     if (numNonEmptyMacroNodesOnBranches < 4) {
         for (int i = numNonEmptyMacroNodesOnBranches; i < 4; i++) {
-            insertEmptyNode(current);
+            MacroNode *selectedNormalNode = dynamic_cast<MacroNode *>(getNodeRandomly());
+            if (!selectedNormalNode->isNormalNode()) {
+                selectedNormalNode = dynamic_cast<MacroNode *>(getNodeRandomly());
+            }
+            removeNode(selectedNormalNode, false);
+            insertLeftNode(selectedNormalNode, current);
         }
         current = dynamic_cast<MacroNode *>(root->getLeftNode());
         for (int i = 1; i < 4; i++) {
@@ -95,8 +102,6 @@ void ICPTree::initializeMacroNodesOnBranchesRandomly() {
             if (whichIth < 3 && i == iths->at(whichIth)) {
                 current->setAsCornerNode();
                 whichIth += 1;
-            } else {
-                current->setAsBranchNode();
             }
             current = dynamic_cast<MacroNode *>(current->getLeftNode());
         }

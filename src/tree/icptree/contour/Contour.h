@@ -40,7 +40,7 @@ public:
     Do not delete the other Edges, which are created by MacroNodes and
     will be deleted by the MacroNodes.
     */
-    ~Contour();
+    virtual ~Contour();
     /*
     MUST CALL THIS METHOD
     Call this method right after constructor to create head and tail.

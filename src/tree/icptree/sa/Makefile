@@ -141,3 +141,5 @@ SwapNodesRandomly.o: SwapNodesRandomly.cpp ${HEADERS_SWAPNODESRANDOMLY}
 	${CC} -c SwapNodesRandomly.cpp ${INC}
 TotalWirelength.o: TotalWirelength.cpp ${HEADERS_TOTALWIRELENGTH}
 	${CC} -c TotalWirelength.cpp ${INC}
+clean:
+	rm *.o

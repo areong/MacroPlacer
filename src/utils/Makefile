@@ -16,3 +16,5 @@ Utils.o: Utils.cpp ${HEADERS_UTILS}
 	${CC} -c Utils.cpp ${INC}
 Utils_test.o: Utils_test.cpp ${HEADERS_UTILS_TEST}
 	${CC} -c Utils_test.cpp ${INC}
+clean:
+	rm *.o

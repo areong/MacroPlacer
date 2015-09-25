@@ -11,16 +11,9 @@ BinaryTree::BinaryTree() {
 }
 
 BinaryTree::~BinaryTree() {
-    // If there exists any Node,
-    // collect all Nodes by traversing from the root and delete them.
-    if (nodes->size() > 0) {
-        TraversalTaskCollectAllNodes *task = new TraversalTaskCollectAllNodes();
-        traverseAll(task);
-        std::vector<Node *> *allNodes = task->getNodes();
-        for (int i = 0; i < allNodes->size(); i++) {
-            delete allNodes->at(i);
-        }
-        delete task;
+    // Delete all Nodes added.
+    for (int i = 0; i < nodes->size(); ++i) {
+        delete nodes->at(i);
     }
     delete nodes;
     delete head;
@@ -343,66 +336,6 @@ BinaryTree *BinaryTree::copy() {
             }
         }
     }
-    // Collect all non-added Nodes (Node.id < 0)
-    // by traversingAll().
-    // It is possible that some Nodes in the tree is not added by BinaryTree.addNode()
-    // so this step is necessary.
-    // ASSUME the root is added by BinaryTree.addNode(),
-    // or the following "Connect" part will fail, since the parentNode of the root
-    // cannot be get by BinaryTree.getNodeById().
-    TraversalTaskCollectNonAddedNodes *task = new TraversalTaskCollectNonAddedNodes();
-    traverseAll(task);
-    std::vector<Node *> *oldNonAddedNodes = task->getNodes();
-    // Copy
-    std::vector<Node *> *newNonAddedNodes = new std::vector<Node *>();
-    for (int i = 0; i < oldNonAddedNodes->size(); i++) {
-        newNonAddedNodes->push_back(oldNonAddedNodes->at(i)->copy());
-    }
-    // Connect
-    for (int i = 0; i < oldNonAddedNodes->size(); i++) {
-        Node *oldNode = oldNonAddedNodes->at(i);
-        Node *newNode = newNonAddedNodes->at(i);
-        // Parent Node
-        Node *oldParentNode = oldNode->getParentNode(); // Always exists.
-        Node *newParentNode;
-        if (oldParentNode->getId() >= 0) {   // Is added
-            newParentNode = binaryTree->getNodeById(oldParentNode->getId());
-        } else {    // Not added
-            newParentNode = newNonAddedNodes->at(getIndexOf(oldNonAddedNodes, oldParentNode));
-        }
-        newNode->setParentNode(newParentNode);
-        if (oldNode->isLeftNode()) {
-            newParentNode->setLeftNode(newNode);
-        } else {
-            newParentNode->setRightNode(newNode);
-        }
-        // Left Node
-        Node *oldLeftNode = oldNode->getLeftNode();
-        if (oldLeftNode != 0) {
-            Node *newLeftNode;
-            if (oldLeftNode->getId() >= 0) {
-                newLeftNode = binaryTree->getNodeById(oldLeftNode->getId());
-            } else {
-                newLeftNode = newNonAddedNodes->at(getIndexOf(oldNonAddedNodes, oldLeftNode));
-            }
-            newNode->setLeftNode(newLeftNode);
-            newLeftNode->setParentNode(newNode);
-        }
-        // Right Node
-        Node *oldRightNode = oldNode->getRightNode();
-        if (oldRightNode != 0) {
-            Node *newRightNode;
-            if (oldRightNode->getId() >= 0) {
-                newRightNode = binaryTree->getNodeById(oldRightNode->getId());
-            } else {
-                newRightNode = newNonAddedNodes->at(getIndexOf(oldNonAddedNodes, oldRightNode));
-            }
-            newNode->setRightNode(newRightNode);
-            newRightNode->setParentNode(newNode);
-        }
-    }
-    delete newNonAddedNodes;
-    delete task;
     return binaryTree;
 }
 

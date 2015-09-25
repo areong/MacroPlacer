@@ -83,3 +83,5 @@ TraversalTaskCollectNonAddedNodes.o: TraversalTaskCollectNonAddedNodes.cpp ${HEA
 	${CC} -c TraversalTaskCollectNonAddedNodes.cpp ${INC}
 TraversalTaskPrintId.o: TraversalTaskPrintId.cpp ${HEADERS_TRAVERSALTASKPRINTID}
 	${CC} -c TraversalTaskPrintId.cpp ${INC}
+clean:
+	rm *.o

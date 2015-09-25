@@ -71,3 +71,5 @@ RightContour.o: RightContour.cpp ${HEADERS_RIGHTCONTOUR}
 	${CC} -c RightContour.cpp ${INC}
 LeftContour.o:  LeftContour.cpp ${HEADERS_LEFTCONTOUR}
 	${CC} -c LeftContour.cpp ${INC}
+clean:
+	rm *.o

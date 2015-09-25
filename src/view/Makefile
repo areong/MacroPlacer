@@ -60,3 +60,5 @@ View.o: View.cpp ${HEADERS_VIEW}
 	${CC} -c View.cpp ${INC}
 Window.o: Window.cpp ${HEADERS_WINDOW}
 	${CC} -c Window.cpp ${INC}
+clean:
+	rm *.o

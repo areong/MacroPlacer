@@ -6,6 +6,8 @@
 #include "tree/binarytree/NextNodesBehaviorRightFirst.h"
 #include "tree/binarytree/TraversalTaskPrintId.h"
 
+void test();
+
 void testBinaryTree_basic() {
     // Create Nodes.
     std::vector<Node *> *nodes = new std::vector<Node *>();
@@ -134,10 +136,51 @@ void testBinaryTree_swapRandomly() {
     binaryTree->initializeRandomly();
 
     // Test memory leak.
-    for (int i = 0; i < 100000; i++) {
-        BinaryTree *newBinaryTree = binaryTree->copy();
-        delete binaryTree;
-        binaryTree = newBinaryTree;
+    //for (int i = 0; i < 100000; i++) {
+    //    BinaryTree *newBinaryTree = binaryTree->copy();
+    //    delete binaryTree;
+    //    binaryTree = newBinaryTree;
+    //}
+
+    // Test NextNodesBehaviorRightFirst memory leak.
+    //std::vector<NextNodesBehaviorRightFirst *> *manyNodes = new std::vector<NextNodesBehaviorRightFirst *>();
+    //for (int i = 0; i < 10000000; ++i) {
+    //    //manyNodes->push_back(new NextNodesBehaviorRightFirst());
+    //    NextNodesBehaviorRightFirst *n = new NextNodesBehaviorRightFirst();
+    //    manyNodes->push_back(n);
+    //    //delete n;
+    //    //manyNodes->push_back(0);
+    //}
+    //for (int i = 0; i < manyNodes->size(); ++i) {
+    //    delete manyNodes->at(i);
+    //}
+    //delete manyNodes;
+
+    //NextNodesBehaviorRightFirst *manyNodes[1000000];
+    //for (int i = 0; i < 1000000; ++i) {
+    //    manyNodes[i] = new NextNodesBehaviorRightFirst();
+    //}
+    //for (int i = 0; i < 1000000; ++i) {
+    //    delete manyNodes[i];
+    //}
+    //delete[] manyNodes;
+
+    // Test copy memory leak.
+    Node *node = new Node();
+    for (int i = 0; i < 1000000; ++i) {
+        //Node *oldNode = node;
+        //node = node->copy();
+        //delete oldNode;
+        BinaryTree *oldBinaryTree = binaryTree;
+        binaryTree = binaryTree->copy();
+        delete oldBinaryTree;
+    }
+
+    //test();
+
+    int a = 0;
+    for (int i = 0; i < 1000000000; ++i) {
+        a += 1;
     }
 
     //while (true) {
@@ -145,6 +188,19 @@ void testBinaryTree_swapRandomly() {
     //}
 }
 
+void test() {
+    std::vector<NextNodesBehaviorRightFirst *> manyNodes;
+    for (int i = 0; i < 10000000; ++i) {
+        //manyNodes.push_back(new NextNodesBehaviorRightFirst());
+        manyNodes.push_back(0);
+    }
+    for (int i = 0; i < manyNodes.size(); ++i) {
+        //delete manyNodes[i];
+    }
+    manyNodes.clear();
+}
+
 void testBinaryTree() {
+    //testBinaryTree_basic();
     testBinaryTree_swapRandomly();
 }

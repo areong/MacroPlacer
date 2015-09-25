@@ -8,7 +8,7 @@ class NextNodesBehavior;
 class Node {
 public:
     Node(int id=-1);
-    ~Node();
+    virtual ~Node();
     /*
     BinaryTree assign id to its Nodes to make copying and deleting BinaryTree
     more easier.

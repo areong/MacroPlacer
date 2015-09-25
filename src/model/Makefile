@@ -80,3 +80,5 @@ Pin.o: Pin.cpp ${HEADERS_PIN}
 	${CC} -c Pin.cpp ${INC}
 Terminal.o: Terminal.cpp ${HEADERS_TERMINAL}
 	${CC} -c Terminal.cpp ${INC}
+clean:
+	rm *.o

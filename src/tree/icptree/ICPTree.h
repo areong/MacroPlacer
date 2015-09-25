@@ -33,6 +33,9 @@ public:
     Set the root as a CornerNode. Traverse all left Nodes and randomly
     select three Nodes and set them as CornerNodes. Set the other Nodes
     on branches as BranchNodes. The rest are NormalNodes by default.
+    If there are less than four MacroNodes on branches, remove some
+    NormalNodes and insert at the left-most MacroNode as leftNodes.
+    ASSUME there are at least four MacroNodes added to the ICPTree.
     */
     void initializeMacroNodesOnBranchesRandomly();
     /*

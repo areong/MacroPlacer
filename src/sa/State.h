@@ -3,6 +3,7 @@
 
 class State {
 public:
+    virtual ~State() {}
     /*
     Called each time after the State is operated by some Operation in
         CostFunctionGroup.normalizeCosts(),

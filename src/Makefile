@@ -35,3 +35,13 @@ placer: main.o ${OBJ}
 	${CC} main.o ${OBJ} ${LIBS} -o placer
 main.o: main.cpp ${HEADERS_MAIN}
 	${CC} -c main.cpp
+clean:
+	cd model; make clean
+	cd sa; make clean
+	cd tree/binarytree; make clean
+	cd tree/icptree; make clean
+	cd tree/icptree/contour; make clean
+	cd tree/icptree/sa; make clean
+	cd utils; make clean
+	cd view; make clean
+	rm *.o placer

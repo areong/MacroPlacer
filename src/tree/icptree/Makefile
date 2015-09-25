@@ -89,3 +89,5 @@ TraversalTaskPrintIdAndIdentity.o: TraversalTaskPrintIdAndIdentity.cpp ${HEADERS
 	${CC} -c TraversalTaskPrintIdAndIdentity.cpp ${INC}
 TraversalTaskSetNotCovered.o: TraversalTaskSetNotCovered.cpp ${HEADERS_TRAVERSALTASKSETNOTCOVERED}
 	${CC} -c TraversalTaskSetNotCovered.cpp ${INC}
+clean:
+	rm *.o

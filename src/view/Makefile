@@ -29,8 +29,10 @@ HEADERS_MACROVIEW = \
 HEADERS_TRAVERSALTASKDRAWMACRONODE = \
 	${PATH_TO_SRC}tree/binarytree/TraversalTask.h\
 	${PATH_TO_SRC}view/TraversalTaskDrawMacroNode.h\
+	${PATH_TO_SRC}model/Macro.h\
 	${PATH_TO_SRC}tree/icptree/MacroNode.h\
-	${PATH_TO_SRC}view/MacroView.h
+	${PATH_TO_SRC}view/MacroView.h\
+	${PATH_TO_SRC}view/Window.h
 
 HEADERS_VIEW = \
 	${PATH_TO_SRC}view/View.h

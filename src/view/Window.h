@@ -43,6 +43,8 @@ public:
     void drawRectangle(int xStart, int xEnd, int yStart, int yEnd,
         float fillR, float fillG, float fillB,
         float outlineR, float outlineG, float outlineB, bool noFill=false);
+    void drawLine(float xStart, float yStart, float xEnd, float yEnd,
+        float r, float g, float b);
 
 protected:
     int windowWidth;

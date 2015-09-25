@@ -77,9 +77,18 @@ void Window::drawRectangle(int xStart, int xEnd, int yStart, int yEnd,
     }
     glColor3f(outlineR, outlineG, outlineB);
     glBegin(GL_LINE_LOOP);
-    glVertex3f(xStart, yStart, 0);
-    glVertex3f(xEnd, yStart, 0);
-    glVertex3f(xEnd, yEnd, 0);
-    glVertex3f(xStart, yEnd, 0);
+    glVertex2f(xStart, yStart);
+    glVertex2f(xEnd, yStart);
+    glVertex2f(xEnd, yEnd);
+    glVertex2f(xStart, yEnd);
+    glEnd();
+}
+
+void Window::drawLine(float xStart, float yStart, float xEnd, float yEnd,
+    float r, float g, float b) {
+    glColor3f(r, g, b);
+    glBegin(GL_LINES);
+    glVertex2f(xStart, yStart);
+    glVertex2f(xEnd, yEnd);
     glEnd();
 }

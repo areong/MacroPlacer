@@ -65,6 +65,31 @@ public:
     */
     void addToVerticalDisplacement(int displacement);
     int getVerticalDisplacement();
+    /*
+    If use spacing (by calling useSpacing(true)), spacing will be left
+    when setting the Macro's position by calling setMacroXStart() or others.
+    The spacing is ASSUMED to be non-negative.
+    */
+    void setSpacing(int spacing);
+    int getSpacing();
+    /*
+    The direction of the spacing. 0, 1, 2, and 3 means the spacing is
+    to the top, right, bottom and left of the Macro.
+    For other values, do nothing.
+    */
+    void setSpacingDirection(int spacingDirection);
+    int getSpacingDirection();
+    void useSpacing(bool use);
+    bool isUsingSpacing();
+
+    /*
+    The following four methods consider the spacing and then set position.
+    */
+    void setMacroXStart(int xStart);
+    void setMacroXEnd(int xEnd);
+    void setMacroYStart(int yStart);
+    void setMacroYEnd(int yEnd);
+
     void setCovered(bool covered);
     bool isCovered();
     /*
@@ -111,6 +136,17 @@ private:
 
     Macro *macro;
     int verticalDisplacement;
+
+    int spacing;
+    /*
+    0, 1, 2, 3 means the spacing is to the top, right, bottom, left of the Macro.
+    */
+    int spacingDirection;
+    int topSpacing;
+    int rightSpacing;
+    int bottomSpacing;
+    int leftSpacing;
+    bool usingSpacing;
 
     void updateBranchNodeNextNodesBehavior();
 

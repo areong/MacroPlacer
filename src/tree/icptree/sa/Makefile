@@ -26,6 +26,12 @@ HEADERS_CHANGERANDOMEMPTYNODEWIDTHRANDOMLY = \
 	${PATH_TO_SRC}tree/icptree/ICPTree.h\
 	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h
 
+HEADERS_CHANGERANDOMMACRONODESPACINGRANDOMLY = \
+	${PATH_TO_SRC}sa/Operation.h\
+	${PATH_TO_SRC}tree/icptree/sa/ChangeRandomMacroNodeSpacingRandomly.h\
+	${PATH_TO_SRC}tree/icptree/ICPTree.h\
+	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h
+
 HEADERS_CHANGERANDOMMACRONODEVERTICALDISPLACEMENTRANDOMLY = \
 	${PATH_TO_SRC}sa/Operation.h\
 	${PATH_TO_SRC}tree/icptree/sa/ChangeRandomMacroNodeVerticalDisplacementRandomly.h\
@@ -100,6 +106,7 @@ all:
 	make BoundingBoxArea.o
 	make ChangeCorner0PositionRandomly.o
 	make ChangeRandomEmptyNodeWidthRandomly.o
+	make ChangeRandomMacroNodeSpacingRandomly.o
 	make ChangeRandomMacroNodeVerticalDisplacementRandomly.o
 	make FloorplanState.o
 	make InsertEmptyNodeRandomly.o
@@ -119,6 +126,8 @@ ChangeCorner0PositionRandomly.o: ChangeCorner0PositionRandomly.cpp ${HEADERS_CHA
 	${CC} -c ChangeCorner0PositionRandomly.cpp ${INC}
 ChangeRandomEmptyNodeWidthRandomly.o: ChangeRandomEmptyNodeWidthRandomly.cpp ${HEADERS_CHANGERANDOMEMPTYNODEWIDTHRANDOMLY}
 	${CC} -c ChangeRandomEmptyNodeWidthRandomly.cpp ${INC}
+ChangeRandomMacroNodeSpacingRandomly.o: ChangeRandomMacroNodeSpacingRandomly.cpp ${HEADERS_CHANGERANDOMMACRONODESPACINGRANDOMLY}
+	${CC} -c ChangeRandomMacroNodeSpacingRandomly.cpp ${INC}
 ChangeRandomMacroNodeVerticalDisplacementRandomly.o: ChangeRandomMacroNodeVerticalDisplacementRandomly.cpp ${HEADERS_CHANGERANDOMMACRONODEVERTICALDISPLACEMENTRANDOMLY}
 	${CC} -c ChangeRandomMacroNodeVerticalDisplacementRandomly.cpp ${INC}
 FloorplanState.o: FloorplanState.cpp ${HEADERS_FLOORPLANSTATE}

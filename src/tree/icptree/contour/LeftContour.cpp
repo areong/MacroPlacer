@@ -72,6 +72,22 @@ int LeftContour::getMacroHeight(Macro *macro) {
     return macro->getWidth();
 }
 
+void LeftContour::setMacroNodeMacroXStart(MacroNode *macroNode, int xStart) {
+    macroNode->setMacroYStart(xStart);
+}
+
+void LeftContour::setMacroNodeMacroXEnd(MacroNode *macroNode, int xEnd) {
+    macroNode->setMacroYEnd(xEnd);
+}
+
+void LeftContour::setMacroNodeMacroYStart(MacroNode *macroNode, int yStart) {
+    macroNode->setMacroXEnd(yStart);
+}
+
+void LeftContour::setMacroNodeMacroYEnd(MacroNode *macroNode, int yEnd) {
+    macroNode->setMacroXStart(yEnd);
+}
+
 Edge *LeftContour::createTopEdge(int xStart, int xEnd, int y) {
     return Edge::createLeftEdge(xStart, xEnd, y);
 }

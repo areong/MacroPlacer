@@ -163,6 +163,10 @@ public:
     virtual int getMacroYEnd(Macro *macro) = 0;
     virtual int getMacroWidth(Macro *macro) = 0;
     virtual int getMacroHeight(Macro *macro) = 0;
+    virtual void setMacroNodeMacroXStart(MacroNode *macroNode, int xStart) = 0;
+    virtual void setMacroNodeMacroXEnd(MacroNode *macroNode, int xEnd) = 0;
+    virtual void setMacroNodeMacroYStart(MacroNode *macroNode, int yStart) = 0;
+    virtual void setMacroNodeMacroYEnd(MacroNode *macroNode, int yEnd) = 0;
     virtual Edge *createTopEdge(int xStart, int xEnd, int y) = 0;
     virtual Edge *createMacroNodeTopEdge(MacroNode *macroNode) = 0;
     virtual Edge *getMacroNodeTopEdge(MacroNode *macroNode) = 0;

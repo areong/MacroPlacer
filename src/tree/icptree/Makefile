@@ -30,6 +30,7 @@ HEADERS_ICPTREE_TEST = \
 	${PATH_TO_SRC}tree/icptree/sa/BoundingBoxArea.h\
 	${PATH_TO_SRC}tree/icptree/sa/ChangeCorner0PositionRandomly.h\
 	${PATH_TO_SRC}tree/icptree/sa/ChangeRandomEmptyNodeWidthRandomly.h\
+	${PATH_TO_SRC}tree/icptree/sa/ChangeRandomMacroNodeSpacingRandomly.h\
 	${PATH_TO_SRC}tree/icptree/sa/ChangeRandomMacroNodeVerticalDisplacementRandomly.h\
 	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h\
 	${PATH_TO_SRC}tree/icptree/sa/InsertEmptyNodeRandomly.h\
@@ -70,6 +71,11 @@ HEADERS_TRAVERSALTASKSETNOTCOVERED = \
 	${PATH_TO_SRC}tree/icptree/TraversalTaskSetNotCovered.h\
 	${PATH_TO_SRC}tree/icptree/MacroNode.h
 
+HEADERS_TRAVERSALTASKSETNOTUSINGSPACING = \
+	${PATH_TO_SRC}tree/binarytree/TraversalTask.h\
+	${PATH_TO_SRC}tree/icptree/TraversalTaskSetNotUsingSpacing.h\
+	${PATH_TO_SRC}tree/icptree/MacroNode.h
+
 all:
 	make ICPTree.o
 	make ICPTree_test.o
@@ -77,6 +83,7 @@ all:
 	make TraversalTaskPlaceNormalMacros.o
 	make TraversalTaskPrintIdAndIdentity.o
 	make TraversalTaskSetNotCovered.o
+	make TraversalTaskSetNotUsingSpacing.o
 ICPTree.o: ICPTree.cpp ${HEADERS_ICPTREE}
 	${CC} -c ICPTree.cpp ${INC}
 ICPTree_test.o: ICPTree_test.cpp ${HEADERS_ICPTREE}
@@ -89,5 +96,7 @@ TraversalTaskPrintIdAndIdentity.o: TraversalTaskPrintIdAndIdentity.cpp ${HEADERS
 	${CC} -c TraversalTaskPrintIdAndIdentity.cpp ${INC}
 TraversalTaskSetNotCovered.o: TraversalTaskSetNotCovered.cpp ${HEADERS_TRAVERSALTASKSETNOTCOVERED}
 	${CC} -c TraversalTaskSetNotCovered.cpp ${INC}
+TraversalTaskSetNotUsingSpacing.o: TraversalTaskSetNotUsingSpacing.cpp ${HEADERS_TRAVERSALTASKSETNOTUSINGSPACING}
+	${CC} -c TraversalTaskSetNotUsingSpacing.cpp ${INC}
 clean:
 	rm *.o

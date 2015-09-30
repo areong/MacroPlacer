@@ -72,6 +72,22 @@ int BottomContour::getMacroHeight(Macro *macro) {
     return macro->getHeight();
 }
 
+void BottomContour::setMacroNodeMacroXStart(MacroNode *macroNode, int xStart) {
+    macroNode->setMacroXEnd(xStart);
+}
+
+void BottomContour::setMacroNodeMacroXEnd(MacroNode *macroNode, int xEnd) {
+    macroNode->setMacroXStart(xEnd);
+}
+
+void BottomContour::setMacroNodeMacroYStart(MacroNode *macroNode, int yStart) {
+    macroNode->setMacroYEnd(yStart);
+}
+
+void BottomContour::setMacroNodeMacroYEnd(MacroNode *macroNode, int yEnd) {
+    macroNode->setMacroYStart(yEnd);
+}
+
 Edge *BottomContour::createTopEdge(int xStart, int xEnd, int y) {
     return Edge::createBottomEdge(xStart, xEnd, y);
 }

@@ -72,6 +72,22 @@ int RightContour::getMacroHeight(Macro *macro) {
     return macro->getWidth();
 }
 
+void RightContour::setMacroNodeMacroXStart(MacroNode *macroNode, int xStart) {
+    macroNode->setMacroYEnd(xStart);
+}
+
+void RightContour::setMacroNodeMacroXEnd(MacroNode *macroNode, int xEnd) {
+    macroNode->setMacroYStart(xEnd);
+}
+
+void RightContour::setMacroNodeMacroYStart(MacroNode *macroNode, int yStart) {
+    macroNode->setMacroXStart(yStart);
+}
+
+void RightContour::setMacroNodeMacroYEnd(MacroNode *macroNode, int yEnd) {
+    macroNode->setMacroXEnd(yEnd);
+}
+
 Edge *RightContour::createTopEdge(int xStart, int xEnd, int y) {
     return Edge::createRightEdge(xStart, xEnd, y);
 }

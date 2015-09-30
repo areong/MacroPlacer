@@ -12,6 +12,13 @@ MacroNode::MacroNode() {
     empty = false;
     macro = 0;
     verticalDisplacement = 0;
+    spacing = 0;
+    spacingDirection = 1;
+    topSpacing = 0;
+    rightSpacing = 0;
+    bottomSpacing = 0;
+    leftSpacing = 0;
+    usingSpacing = false;
     covered = false;
     topEdge = 0;
     rightEdge = 0;
@@ -209,6 +216,110 @@ int MacroNode::getVerticalDisplacement() {
     return verticalDisplacement;
 }
 
+void MacroNode::setSpacing(int spacing) {
+    this->spacing = spacing;
+    switch (spacingDirection) {
+    case 0:
+        topSpacing = spacing;
+        break;
+    case 1:
+        rightSpacing = spacing;
+        break;
+    case 2:
+        bottomSpacing = spacing;
+        break;
+    case 3:
+        leftSpacing = spacing;
+        break;
+    default:
+        break;
+    }
+}
+
+int MacroNode::getSpacing() {
+    return spacing;
+}
+
+void MacroNode::setSpacingDirection(int spacingDirection) {
+    switch (this->spacingDirection) {
+    case 0:
+        topSpacing = 0;
+        break;
+    case 1:
+        rightSpacing = 0;
+        break;
+    case 2:
+        bottomSpacing = 0;
+        break;
+    case 3:
+        leftSpacing = 0;
+        break;
+    default:
+        break;
+    }
+    this->spacingDirection = spacingDirection;
+    switch (spacingDirection) {
+    case 0:
+        topSpacing = spacing;
+        break;
+    case 1:
+        rightSpacing = spacing;
+        break;
+    case 2:
+        bottomSpacing = spacing;
+        break;
+    case 3:
+        leftSpacing = spacing;
+        break;
+    default:
+        break;
+    }
+}
+
+int MacroNode::getSpacingDirection() {
+    return spacingDirection;
+}
+
+void MacroNode::useSpacing(bool use) {
+    usingSpacing = use;
+}
+
+bool MacroNode::isUsingSpacing() {
+    return usingSpacing;
+}
+
+void MacroNode::setMacroXStart(int xStart) {
+    if (usingSpacing) {
+        macro->setXStart(xStart + leftSpacing);
+    } else {
+        macro->setXStart(xStart);
+    }
+}
+
+void MacroNode::setMacroXEnd(int xEnd) {
+    if (usingSpacing) {
+        macro->setXEnd(xEnd - rightSpacing);
+    } else {
+        macro->setXEnd(xEnd);
+    }
+}
+
+void MacroNode::setMacroYStart(int yStart) {
+    if (usingSpacing) {
+        macro->setYStart(yStart + bottomSpacing);
+    } else {
+        macro->setYStart(yStart);
+    }
+}
+
+void MacroNode::setMacroYEnd(int yEnd) {
+    if (usingSpacing) {
+        macro->setYEnd(yEnd - topSpacing);
+    } else {
+        macro->setYEnd(yEnd);
+    }
+}
+
 void MacroNode::setCovered(bool covered) {
     this->covered = covered;
 }
@@ -225,6 +336,8 @@ Node *MacroNode::copy() {
     MacroNode *node = dynamic_cast<MacroNode *>(Node::copy());
     node->setAttributes(packingForward, identity, empty);
     node->setVerticalDisplacement(verticalDisplacement);
+    node->setSpacing(spacing);
+    node->setSpacingDirection(spacingDirection);
     if (empty) {
         if (macro != 0) {
             node->setMacro(macro->copy());
@@ -266,7 +379,12 @@ void MacroNode::updateBranchNodeNextNodesBehavior() {
 
 Edge *MacroNode::createTopEdge() {
     delete topEdge;
-    topEdge = Edge::createTopEdge(macro->getXStart(), macro->getXEnd(), macro->getYEnd());
+    if (usingSpacing) {
+        topEdge = Edge::createTopEdge(macro->getXStart() - leftSpacing,
+            macro->getXEnd() + rightSpacing, macro->getYEnd() + topSpacing);
+    } else {
+        topEdge = Edge::createTopEdge(macro->getXStart(), macro->getXEnd(), macro->getYEnd());
+    }
     topEdge->setMacroNode(this);
     return topEdge;
 }
@@ -277,7 +395,12 @@ Edge *MacroNode::getTopEdge() {
 
 Edge *MacroNode::createRightEdge() {
     delete rightEdge;
-    rightEdge = Edge::createRightEdge(macro->getYEnd(), macro->getYStart(), macro->getXEnd());
+    if (usingSpacing) {
+        rightEdge = Edge::createRightEdge(macro->getYEnd() + topSpacing,
+            macro->getYStart() - bottomSpacing, macro->getXEnd() + rightSpacing);
+    } else {
+        rightEdge = Edge::createRightEdge(macro->getYEnd(), macro->getYStart(), macro->getXEnd());
+    }
     rightEdge->setMacroNode(this);
     return rightEdge;
 }
@@ -288,7 +411,12 @@ Edge *MacroNode::getRightEdge() {
 
 Edge *MacroNode::createBottomEdge() {
     delete bottomEdge;
-    bottomEdge = Edge::createBottomEdge(macro->getXEnd(), macro->getXStart(), macro->getYStart());
+    if (usingSpacing) {
+        bottomEdge = Edge::createBottomEdge(macro->getXEnd() + rightSpacing,
+            macro->getXStart() - leftSpacing, macro->getYStart() - bottomSpacing);
+    } else {
+        bottomEdge = Edge::createBottomEdge(macro->getXEnd(), macro->getXStart(), macro->getYStart());
+    }
     bottomEdge->setMacroNode(this);
     return bottomEdge;
 }
@@ -299,7 +427,12 @@ Edge *MacroNode::getBottomEdge() {
 
 Edge *MacroNode::createLeftEdge() {
     delete leftEdge;
-    leftEdge = Edge::createLeftEdge(macro->getYStart(), macro->getYEnd(), macro->getXStart());
+    if (usingSpacing) {
+        leftEdge = Edge::createLeftEdge(macro->getYStart() - bottomSpacing,
+            macro->getYEnd() + topSpacing, macro->getXStart() - leftSpacing);
+    } else {
+        leftEdge = Edge::createLeftEdge(macro->getYStart(), macro->getYEnd(), macro->getXStart());
+    }
     leftEdge->setMacroNode(this);
     return leftEdge;
 }

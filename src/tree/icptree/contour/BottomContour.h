@@ -62,6 +62,22 @@ public:
     /*
     @Override
     */
+    void setMacroNodeMacroXStart(MacroNode *macroNode, int xStart);
+    /*
+    @Override
+    */
+    void setMacroNodeMacroXEnd(MacroNode *macroNode, int xEnd);
+    /*
+    @Override
+    */
+    void setMacroNodeMacroYStart(MacroNode *macroNode, int yStart);
+    /*
+    @Override
+    */
+    void setMacroNodeMacroYEnd(MacroNode *macroNode, int yEnd);
+    /*
+    @Override
+    */
     Edge *createTopEdge(int xStart, int xEnd, int y);
     /*
     @Override

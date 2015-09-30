@@ -14,6 +14,7 @@
 #include "tree/icptree/sa/BoundingBoxArea.h"
 #include "tree/icptree/sa/ChangeCorner0PositionRandomly.h"
 #include "tree/icptree/sa/ChangeRandomEmptyNodeWidthRandomly.h"
+#include "tree/icptree/sa/ChangeRandomMacroNodeSpacingRandomly.h"
 #include "tree/icptree/sa/ChangeRandomMacroNodeVerticalDisplacementRandomly.h"
 #include "tree/icptree/sa/FloorplanState.h"
 #include "tree/icptree/sa/InsertEmptyNodeRandomly.h"
@@ -644,9 +645,11 @@ void testICPTree_anneal(int argc, char **argv) {
     RemoveEmptyNodeRandomly *removeEmptyNodeRandomly = new RemoveEmptyNodeRandomly();
     ChangeCorner0PositionRandomly *changeCorner0PositionRandomly = new ChangeCorner0PositionRandomly();
     ChangeRandomEmptyNodeWidthRandomly *changeRandomEmptyNodeWidthRandomly = new ChangeRandomEmptyNodeWidthRandomly();
+    ChangeRandomMacroNodeSpacingRandomly *changeRandomMacroNodeSpacingRandomly = new ChangeRandomMacroNodeSpacingRandomly();
     ChangeRandomMacroNodeVerticalDisplacementRandomly *changeRandomMacroNodeVerticalDisplacementRandomly = new ChangeRandomMacroNodeVerticalDisplacementRandomly();
     floorplan->getICPTree()->setChangeRangeOfEmptyNodeWidth(1);
     floorplan->getICPTree()->setChangeRangeOfVerticalDisplacement(1); // 100
+    floorplan->getICPTree()->setChangeRangeOfSpacing(1);
     floorplan->getICPTree()->setChangeRangeOfCorner0Position(100);
     OperationSet *operationSet = new OperationSet();
     operationSet->addOperation(removeAndInsertLeftNodeRandomly);
@@ -655,8 +658,9 @@ void testICPTree_anneal(int argc, char **argv) {
     //operationSet->addOperation(insertEmptyNodeRandomly);
     //operationSet->addOperation(removeEmptyNodeRandomly);
     //operationSet->addOperation(changeRandomEmptyNodeWidthRandomly);
-    //operationSet->addOperation(changeCorner0PositionRandomly);
     operationSet->addOperation(changeRandomMacroNodeVerticalDisplacementRandomly);
+    operationSet->addOperation(changeRandomMacroNodeSpacingRandomly);
+    //operationSet->addOperation(changeCorner0PositionRandomly);
 
     //for (int i = 0; i < 1000; i++) {
     //    operationSet->operate(floorplanState);

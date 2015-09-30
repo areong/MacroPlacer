@@ -80,7 +80,7 @@ void Contour::removeEdge(Edge *edge) {
 void Contour::placeMacroOnTailByVerticalDisplacementWithPackingForward(MacroNode *macroNode) {
     Macro *macro = macroNode->getMacro();
     setMacroYStart(macro, addToY(getOriginY(), macroNode->getVerticalDisplacement()));
-    setMacroXStart(macro, getEdgeXStart(tail));
+    setMacroNodeMacroXStart(macroNode, getEdgeXStart(tail)); // Consider spacing.
     Edge *insertedEdge = createMacroNodeTopEdge(macroNode);
     setEdgeXStart(tail, getEdgeXEnd(insertedEdge));
     insertEdge(insertedEdge, tail->getFrontEdge());
@@ -92,7 +92,7 @@ void Contour::placeMacroOnTailByVerticalDisplacementWithPackingForward(MacroNode
 
 void Contour::placeMacroOnHeadWithoutChangingMacroYStartWithPackingBackward(MacroNode *macroNode) {
     Macro *macro = macroNode->getMacro();
-    setMacroXEnd(macro, getEdgeXEnd(head));
+    setMacroNodeMacroXEnd(macroNode, getEdgeXEnd(head));    // Consider spacing.
     Edge *insertedEdge = createMacroNodeTopEdge(macroNode);
     setEdgeXEnd(head, getEdgeXStart(insertedEdge));
     insertEdge(insertedEdge, head);

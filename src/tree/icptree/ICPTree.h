@@ -168,6 +168,10 @@ public:
     */
     void setChangeRangeOfVerticalDisplacement(int changeRange);
     /*
+    MacroNode.spacing will change by ±changeRange and keep non-negative.
+    */
+    void setChangeRangeOfSpacing(int changeRange);
+    /*
     When calling ICPTree.changeCorner0PositionRandomly(),
     corner 0's x and y will change by ±changeRange.
     */
@@ -181,6 +185,7 @@ public:
     is a CornerNode, set to zero.
     */
     void changeRandomMacroNodeVerticalDisplacementRandomly();
+    void changeRandomMacroNodeSpacingRandomly();
     void changeCorner0PositionRandomly();
     void rotateRandomMacroRandomly();
     /*
@@ -225,6 +230,7 @@ private:
 
     int changeRangeOfEmptyNodeWidth;
     int changeRangeOfVerticalDisplacement;
+    int changeRangeOfSpacing;
     int changeRangeOfCorner0Position;
 
     Contour *exteriorTopContour;
@@ -282,6 +288,18 @@ private:
     Call MacroNode.isCovered(false) for all MacroNodes.
     */
     void setAllMacroNodesNotCovered();
+    /*
+    Call MacroNode.useSpacing(false) for all MacroNodes.
+    */
+    void setAllMacroNodesNotUsingSpacing();
+    /*
+    For all MacroNodes on branches, set their spacingDirection by the branches.
+    Also set them to use spacing.
+    For Corner 1, 2, 3 and the left-most MacroNode, do not set.
+    PLEASE call setAllMacroNodesNotUsingSpacing() before for the best result.
+    ASSUME there is no SwitchNode.
+    */
+    void setMacroNodesOnBranchesSpacingDirection();
     /*
     Called at the end of placing Macros to calculate the x y range of Macros.
     Assume no Switch is used (calculation is a little bit simpler than with Switch).

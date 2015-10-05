@@ -1,6 +1,6 @@
 #include "tree/icptree/sa/MoveCornerRandomly.h"
 #include "tree/icptree/ICPTree.h"
-#include "tree/icptree/sa/FloorplanState.h"
+#include "model/sa/FloorplanState.h"
 
 MoveCornerRandomly::MoveCornerRandomly() {
 

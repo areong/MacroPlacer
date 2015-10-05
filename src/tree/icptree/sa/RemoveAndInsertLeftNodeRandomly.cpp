@@ -1,6 +1,6 @@
 #include "tree/icptree/sa/RemoveAndInsertLeftNodeRandomly.h"
+#include "model/sa/FloorplanState.h"
 #include "tree/icptree/ICPTree.h"
-#include "tree/icptree/sa/FloorplanState.h"
 
 RemoveAndInsertLeftNodeRandomly::RemoveAndInsertLeftNodeRandomly() {
 

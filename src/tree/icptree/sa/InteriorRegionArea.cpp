@@ -1,6 +1,6 @@
 #include "tree/icptree/sa/InteriorRegionArea.h"
 #include "tree/icptree/ICPTree.h"
-#include "tree/icptree/sa/FloorplanState.h"
+#include "model/sa/FloorplanState.h"
 
 InteriorRegionArea::InteriorRegionArea(int targetArea) {
     this->targetArea = targetArea;

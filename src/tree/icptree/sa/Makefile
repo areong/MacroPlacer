@@ -5,101 +5,95 @@ INC = -I ${PATH_TO_SRC}
 HEADERS_ASPECTRATIO = \
 	${PATH_TO_SRC}sa/CostFunction.h\
 	${PATH_TO_SRC}tree/icptree/sa/AspectRatio.h\
-	${PATH_TO_SRC}tree/icptree/ICPTree.h\
-	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h
+	${PATH_TO_SRC}model/sa/FloorplanState.h\
+	${PATH_TO_SRC}tree/icptree/ICPTree.h
 
 HEADERS_BOUNDINGBOXAREA = \
 	${PATH_TO_SRC}sa/CostFunction.h\
 	${PATH_TO_SRC}tree/icptree/sa/BoundingBoxArea.h\
-	${PATH_TO_SRC}tree/icptree/ICPTree.h\
-	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h
+	${PATH_TO_SRC}model/sa/FloorplanState.h\
+	${PATH_TO_SRC}tree/icptree/ICPTree.h
 
 HEADERS_CHANGECORNER0POSITIONRANDOMLY = \
 	${PATH_TO_SRC}sa/Operation.h\
 	${PATH_TO_SRC}tree/icptree/sa/ChangeCorner0PositionRandomly.h\
-	${PATH_TO_SRC}tree/icptree/ICPTree.h\
-	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h
+	${PATH_TO_SRC}model/sa/FloorplanState.h\
+	${PATH_TO_SRC}tree/icptree/ICPTree.h
 
 HEADERS_CHANGERANDOMEMPTYNODEWIDTHRANDOMLY = \
 	${PATH_TO_SRC}sa/Operation.h\
 	${PATH_TO_SRC}tree/icptree/sa/ChangeRandomEmptyNodeWidthRandomly.h\
-	${PATH_TO_SRC}tree/icptree/ICPTree.h\
-	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h
+	${PATH_TO_SRC}model/sa/FloorplanState.h\
+	${PATH_TO_SRC}tree/icptree/ICPTree.h
 
 HEADERS_CHANGERANDOMMACRONODESPACINGRANDOMLY = \
 	${PATH_TO_SRC}sa/Operation.h\
 	${PATH_TO_SRC}tree/icptree/sa/ChangeRandomMacroNodeSpacingRandomly.h\
-	${PATH_TO_SRC}tree/icptree/ICPTree.h\
-	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h
+	${PATH_TO_SRC}model/sa/FloorplanState.h\
+	${PATH_TO_SRC}tree/icptree/ICPTree.h
 
 HEADERS_CHANGERANDOMMACRONODEVERTICALDISPLACEMENTRANDOMLY = \
 	${PATH_TO_SRC}sa/Operation.h\
 	${PATH_TO_SRC}tree/icptree/sa/ChangeRandomMacroNodeVerticalDisplacementRandomly.h\
-	${PATH_TO_SRC}tree/icptree/ICPTree.h\
-	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h
-
-HEADERS_FLOORPLANSTATE = \
-	${PATH_TO_SRC}sa/State.h\
-	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h\
-	${PATH_TO_SRC}model/Floorplan.h\
+	${PATH_TO_SRC}model/sa/FloorplanState.h\
 	${PATH_TO_SRC}tree/icptree/ICPTree.h
 
 HEADERS_INSERTEMPTYNODERANDOMLY = \
 	${PATH_TO_SRC}sa/Operation.h\
 	${PATH_TO_SRC}tree/icptree/sa/InsertEmptyNodeRandomly.h\
-	${PATH_TO_SRC}tree/icptree/ICPTree.h\
-	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h
+	${PATH_TO_SRC}model/sa/FloorplanState.h\
+	${PATH_TO_SRC}tree/icptree/ICPTree.h
 
 HEADERS_INTERIORREGIONAREA = \
 	${PATH_TO_SRC}sa/CostFunction.h\
 	${PATH_TO_SRC}tree/icptree/sa/InteriorRegionArea.h\
-	${PATH_TO_SRC}tree/icptree/ICPTree.h\
-	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h
+	${PATH_TO_SRC}model/sa/FloorplanState.h\
+	${PATH_TO_SRC}tree/icptree/ICPTree.h
 
 HEADERS_MOVECORNERRANDOMLY = \
 	${PATH_TO_SRC}sa/Operation.h\
 	${PATH_TO_SRC}tree/icptree/sa/MoveCornerRandomly.h\
-	${PATH_TO_SRC}tree/icptree/ICPTree.h\
-	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h
+	${PATH_TO_SRC}model/sa/FloorplanState.h\
+	${PATH_TO_SRC}tree/icptree/ICPTree.h
 
 HEADERS_REFRESHWINDOW = \
 	${PATH_TO_SRC}sa/TemperatureListener.h\
 	${PATH_TO_SRC}tree/icptree/sa/RefreshWindow.h\
 	${PATH_TO_SRC}model/Floorplan.h\
+	${PATH_TO_SRC}model/sa/FloorplanState.h\
 	${PATH_TO_SRC}tree/icptree/ICPTree.h\
-	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h\
 	${PATH_TO_SRC}sa/SimulatedAnnealing.h\
 	${PATH_TO_SRC}view/Window.h
 
 HEADERS_REMOVEANDINSERTLEFTNODERANDOMLY = \
 	${PATH_TO_SRC}sa/Operation.h\
 	${PATH_TO_SRC}tree/icptree/sa/RemoveAndInsertLeftNodeRandomly.h\
-	${PATH_TO_SRC}tree/icptree/ICPTree.h\
-	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h
+	${PATH_TO_SRC}model/sa/FloorplanState.h\
+	${PATH_TO_SRC}tree/icptree/ICPTree.h
 
 HEADERS_REMOVEANDINSERTRIGHTNODERANDOMLY = \
 	${PATH_TO_SRC}sa/Operation.h\
 	${PATH_TO_SRC}tree/icptree/sa/RemoveAndInsertRightNodeRandomly.h\
-	${PATH_TO_SRC}tree/icptree/ICPTree.h\
-	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h
+	${PATH_TO_SRC}model/sa/FloorplanState.h\
+	${PATH_TO_SRC}tree/icptree/ICPTree.h
 
 HEADERS_REMOVEEMPTYNODERANDOMLY = \
 	${PATH_TO_SRC}sa/Operation.h\
 	${PATH_TO_SRC}tree/icptree/sa/RemoveEmptyNodeRandomly.h\
-	${PATH_TO_SRC}tree/icptree/ICPTree.h\
-	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h
+	${PATH_TO_SRC}model/sa/FloorplanState.h\
+	${PATH_TO_SRC}tree/icptree/ICPTree.h
 
 HEADERS_SWAPNODESRANDOMLY = \
 	${PATH_TO_SRC}sa/Operation.h\
 	${PATH_TO_SRC}tree/icptree/sa/SwapNodesRandomly.h\
-	${PATH_TO_SRC}tree/icptree/ICPTree.h\
-	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h
+	${PATH_TO_SRC}model/sa/FloorplanState.h\
+	${PATH_TO_SRC}tree/icptree/ICPTree.h
 
 HEADERS_TOTALWIRELENGTH = \
 	${PATH_TO_SRC}sa/CostFunction.h\
 	${PATH_TO_SRC}tree/icptree/sa/TotalWirelength.h\
 	${PATH_TO_SRC}model/Floorplan.h\
-	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h
+	${PATH_TO_SRC}model/sa/FloorplanState.h
 
 all:
 	make AspectRatio.o
@@ -108,7 +102,6 @@ all:
 	make ChangeRandomEmptyNodeWidthRandomly.o
 	make ChangeRandomMacroNodeSpacingRandomly.o
 	make ChangeRandomMacroNodeVerticalDisplacementRandomly.o
-	make FloorplanState.o
 	make InsertEmptyNodeRandomly.o
 	make InteriorRegionArea.o
 	make MoveCornerRandomly.o
@@ -130,8 +123,6 @@ ChangeRandomMacroNodeSpacingRandomly.o: ChangeRandomMacroNodeSpacingRandomly.cpp
 	${CC} -c ChangeRandomMacroNodeSpacingRandomly.cpp ${INC}
 ChangeRandomMacroNodeVerticalDisplacementRandomly.o: ChangeRandomMacroNodeVerticalDisplacementRandomly.cpp ${HEADERS_CHANGERANDOMMACRONODEVERTICALDISPLACEMENTRANDOMLY}
 	${CC} -c ChangeRandomMacroNodeVerticalDisplacementRandomly.cpp ${INC}
-FloorplanState.o: FloorplanState.cpp ${HEADERS_FLOORPLANSTATE}
-	${CC} -c FloorplanState.cpp ${INC}
 InsertEmptyNodeRandomly.o: InsertEmptyNodeRandomly.cpp ${HEADERS_INSERTEMPTYNODERANDOMLY}
 	${CC} -c InsertEmptyNodeRandomly.cpp ${INC}
 InteriorRegionArea.o: InteriorRegionArea.cpp ${HEADERS_INTERIORREGIONAREA}

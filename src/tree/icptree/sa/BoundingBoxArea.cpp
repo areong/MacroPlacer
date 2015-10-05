@@ -1,6 +1,6 @@
 #include "tree/icptree/sa/BoundingBoxArea.h"
+#include "model/sa/FloorplanState.h"
 #include "tree/icptree/ICPTree.h"
-#include "tree/icptree/sa/FloorplanState.h"
 
 BoundingBoxArea::BoundingBoxArea(int targetArea) {
     this->targetArea = targetArea;

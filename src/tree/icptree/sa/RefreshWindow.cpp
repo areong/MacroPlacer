@@ -1,7 +1,7 @@
 #include "tree/icptree/sa/RefreshWindow.h"
 #include "model/Floorplan.h"
+#include "model/sa/FloorplanState.h"
 #include "tree/icptree/ICPTree.h"
-#include "tree/icptree/sa/FloorplanState.h"
 #include "sa/SimulatedAnnealing.h"
 #include "view/Window.h"
 

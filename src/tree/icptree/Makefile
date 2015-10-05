@@ -21,6 +21,7 @@ HEADERS_ICPTREE_TEST = \
 	${PATH_TO_SRC}model/Macro.h\
 	${PATH_TO_SRC}model/Floorplan.h\
 	${PATH_TO_SRC}model/sa/CountOfMovableMacrosOutsideDesiredRegion.h\
+	${PATH_TO_SRC}model/sa/FloorplanState.h\
 	${PATH_TO_SRC}sa/AnnealingScheduleRatioDecrease.h\
 	${PATH_TO_SRC}sa/CostFunctionGroup.h\
 	${PATH_TO_SRC}sa/OperationSet.h\
@@ -34,7 +35,6 @@ HEADERS_ICPTREE_TEST = \
 	${PATH_TO_SRC}tree/icptree/sa/ChangeRandomEmptyNodeWidthRandomly.h\
 	${PATH_TO_SRC}tree/icptree/sa/ChangeRandomMacroNodeSpacingRandomly.h\
 	${PATH_TO_SRC}tree/icptree/sa/ChangeRandomMacroNodeVerticalDisplacementRandomly.h\
-	${PATH_TO_SRC}tree/icptree/sa/FloorplanState.h\
 	${PATH_TO_SRC}tree/icptree/sa/InsertEmptyNodeRandomly.h\
 	${PATH_TO_SRC}tree/icptree/sa/InteriorRegionArea.h\
 	${PATH_TO_SRC}tree/icptree/sa/MoveCornerRandomly.h\

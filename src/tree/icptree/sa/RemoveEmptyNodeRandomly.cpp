@@ -1,6 +1,6 @@
 #include "tree/icptree/sa/RemoveEmptyNodeRandomly.h"
+#include "model/sa/FloorplanState.h"
 #include "tree/icptree/ICPTree.h"
-#include "tree/icptree/sa/FloorplanState.h"
 
 RemoveEmptyNodeRandomly::RemoveEmptyNodeRandomly() {
 

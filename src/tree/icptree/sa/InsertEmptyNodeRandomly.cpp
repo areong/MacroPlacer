@@ -1,6 +1,6 @@
 #include "tree/icptree/sa/InsertEmptyNodeRandomly.h"
 #include "tree/icptree/ICPTree.h"
-#include "tree/icptree/sa/FloorplanState.h"
+#include "model/sa/FloorplanState.h"
 
 InsertEmptyNodeRandomly::InsertEmptyNodeRandomly() {
 

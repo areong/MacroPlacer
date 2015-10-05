@@ -1,4 +1,4 @@
-#include "tree/icptree/sa/FloorplanState.h"
+#include "model/sa/FloorplanState.h"
 #include "model/Floorplan.h"
 #include "tree/icptree/ICPTree.h"
 

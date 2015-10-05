@@ -1,6 +1,6 @@
 #include "tree/icptree/sa/TotalWirelength.h"
 #include "model/Floorplan.h"
-#include "tree/icptree/sa/FloorplanState.h"
+#include "model/sa/FloorplanState.h"
 
 TotalWirelength::TotalWirelength() {
 

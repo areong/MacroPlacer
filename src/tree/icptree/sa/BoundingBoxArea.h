@@ -8,12 +8,15 @@ The State should be a FloorplanState.
 */
 class BoundingBoxArea : public CostFunction {
 public:
-    BoundingBoxArea();
+    BoundingBoxArea(int targetArea);
     ~BoundingBoxArea();
     /*
     @Override
     */
     double calculateCost(State *state);
+
+private:
+    int targetArea;
 };
 
 #endif

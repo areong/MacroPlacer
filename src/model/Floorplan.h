@@ -72,6 +72,14 @@ public:
     PLEASE DELETE the returned vector.
     */
     std::vector<Bin *> *getBinsUnderRectangle(double xStart, double yStart, double xEnd, double yEnd);
+    /*
+    Set the desired region, where Macros are prefered to be placed.
+    Since the region will be converted to Bins,
+    MAKE SURE that the region is inside the Bins and
+    the region boundary is at leat one Bin from the Bins boundary.
+    Call it after calling createBins().
+    */
+    void setDesiredRegion(double xStart, double yStart, double xEnd, double yEnd);
     void addPreplacedMacrosToBins();
     void clearBinsMovableMacros();
     void addMovableMacrosToBins();
@@ -81,6 +89,10 @@ public:
     void updatePinsPosition();
     void setRoutabilityWeightOfHpwl(double weight);
     double getRoutabilityWeight();
+    /*
+    Calculate the total area of both preplaced and movable Macros.
+    */
+    int calculateMacrosArea();
     /*
     Calculate the total area of Cells.
     */
@@ -93,6 +105,12 @@ public:
     */
     double calculateNetsHpwl();
     double calculateNetsRoutabilityHpwl();
+    /*
+    More movable Macros outside the desired region and farther the Macros from the region,
+    higher the count. It is a weighted count.
+    The desired region is set by setDesiredRegion().
+    */
+    double countMovableMacrosOutsideDesiredRegion();
     int getMaxX();
     int getMinX();
     int getMaxY();
@@ -137,6 +155,17 @@ private:
     double binHeight;
     int numBinsRows;
     int numBinsCols;
+
+    /*
+    Desired region. xxxEnd means the range excludes the value.
+    */
+    int desiredRegionBinIStart;
+    int desiredRegionBinIEnd;
+    int desiredRegionBinJStart;
+    int desiredRegionBinJEnd;
+    std::vector<int> *iDistancesToDesiredRegion;
+    std::vector<int> *jDistancesToDesiredRegion;
+    int longestDistanceToDesiredRegion;
 
     double routabilityWeight;
 

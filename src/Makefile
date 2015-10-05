@@ -1,6 +1,7 @@
 CC = g++
 OBJ = \
 	model/*.o\
+	model/sa/*.o\
 	sa/*.o\
 	tree/binarytree/*.o\
 	tree/icptree/*.o\
@@ -22,6 +23,7 @@ LIBS = -lGL -lglut
 
 all:
 	cd model; make all
+	cd model/sa; make all
 	cd sa; make all
 	cd tree/binarytree; make all
 	cd tree/icptree; make all
@@ -37,6 +39,7 @@ main.o: main.cpp ${HEADERS_MAIN}
 	${CC} -c main.cpp
 clean:
 	cd model; make clean
+	cd model/sa; make clean
 	cd sa; make clean
 	cd tree/binarytree; make clean
 	cd tree/icptree; make clean

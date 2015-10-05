@@ -4,6 +4,7 @@
 #include "tree/icptree/TraversalTaskPlaceNormalMacros.h"
 #include "tree/icptree/TraversalTaskSetNotCovered.h"
 #include "tree/icptree/TraversalTaskSetNotUsingSpacing.h"
+#include "tree/icptree/contour/Edge.h"
 #include "tree/icptree/contour/TopContour.h"
 #include "tree/icptree/contour/BottomContour.h"
 #include "tree/icptree/contour/RightContour.h"
@@ -725,7 +726,7 @@ int ICPTree::getInteriorRegionArea() {
     return interiorRegionArea;
 }
 
-int ICPTree::getBoundingBoxAspectRatio() {
+double ICPTree::getBoundingBoxAspectRatio() {
     return (double) (maxY - minY) / (double) (maxX - minX);
 }
 
@@ -1026,10 +1027,10 @@ void ICPTree::calculateInteriorRegionArea() {
     extendedMacroArea += (macro->getXStart() - minX) * currentNode->getSpacing();
     interiorRegionArea -= extendedMacroArea;
     // Left branch
+    int corner0YStart = root->getMacro()->getYStart();
     if (currentNode->hasLeftNode()) {
         currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
         macro = currentNode->getMacro();
-        int corner0YStart = root->getMacro()->getYStart();
         while (macro->getYStart() < corner0YStart) {
             int macroHeight = macro->getHeight();
             int validMacroHight = macroHeight;
@@ -1050,5 +1051,12 @@ void ICPTree::calculateInteriorRegionArea() {
                 break;
             }
         }
+    }
+    // Regard interiorRightContour.head as part of the left boundary of the
+    // interior region.
+    if (interiorRightContour->getHead()->getYStart() < corner0YStart) {
+        extendedMacroArea = (corner0YStart - interiorRightContour->getHead()->getYStart()) *
+            (interiorRightContour->getHead()->getXEnd() - minX);
+        interiorRegionArea -= extendedMacroArea;
     }
 }

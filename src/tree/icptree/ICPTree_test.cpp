@@ -3,6 +3,7 @@
 #include <vector>
 #include "model/Macro.h"
 #include "model/Floorplan.h"
+#include "model/sa/CountOfMovableMacrosOutsideDesiredRegion.h"
 #include "sa/AnnealingScheduleRatioDecrease.h"
 #include "sa/CostFunctionGroup.h"
 #include "sa/OperationSet.h"
@@ -632,7 +633,8 @@ void testICPTree_anneal(int argc, char **argv) {
 
     Floorplan *floorplan = createFloorplanRandomly();
     floorplan->createBins(-400, -400, 400, 400, 40, 40);
-    //floorplan->createBins(-10000, -10000, 10000, 10000, 1000, 1000);
+    //floorplan->createBins(-10000, -10000, 20000, 20000, 1000, 1000);
+    floorplan->setDesiredRegion(0, 0, 100, 100);
     floorplan->getICPTree()->placeMacrosAssumingNoSwitch(); // Place at first to calculate cost.
     FloorplanState *floorplanState = new FloorplanState(floorplan);
     std::cout << "boundingBoxArea: " << floorplanState->getICPTree()->getBoundingBoxArea() << "\n";
@@ -650,7 +652,7 @@ void testICPTree_anneal(int argc, char **argv) {
     floorplan->getICPTree()->setChangeRangeOfEmptyNodeWidth(1);
     floorplan->getICPTree()->setChangeRangeOfVerticalDisplacement(1); // 100
     floorplan->getICPTree()->setChangeRangeOfSpacing(1);
-    floorplan->getICPTree()->setChangeRangeOfCorner0Position(100);
+    floorplan->getICPTree()->setChangeRangeOfCorner0Position(1);
     OperationSet *operationSet = new OperationSet();
     operationSet->addOperation(removeAndInsertLeftNodeRandomly);
     operationSet->addOperation(removeAndInsertRightNodeRandomly);
@@ -660,24 +662,28 @@ void testICPTree_anneal(int argc, char **argv) {
     //operationSet->addOperation(changeRandomEmptyNodeWidthRandomly);
     operationSet->addOperation(changeRandomMacroNodeVerticalDisplacementRandomly);
     operationSet->addOperation(changeRandomMacroNodeSpacingRandomly);
-    //operationSet->addOperation(changeCorner0PositionRandomly);
+    operationSet->addOperation(changeCorner0PositionRandomly);
 
     //for (int i = 0; i < 1000; i++) {
     //    operationSet->operate(floorplanState);
     //}
 
     // CostFunctions
-    BoundingBoxArea *boundingBoxArea = new BoundingBoxArea();
     int targetInteriorRegionArea = 6000;
-    //int targetInteriorRegionArea = (int) (floorplan->calculateCellsArea() * 2); // 6000
+    //int targetInteriorRegionArea = (int) (floorplan->calculateCellsArea());
     InteriorRegionArea *interiorRegionArea = new InteriorRegionArea(targetInteriorRegionArea);
+    int targetBoundingBoxArea = floorplan->calculateMacrosArea() + targetInteriorRegionArea;
+    std::cout << "targetBoundingBoxArea: " << targetBoundingBoxArea << "\n";
+    BoundingBoxArea *boundingBoxArea = new BoundingBoxArea(targetBoundingBoxArea);
     AspectRatio *aspectRatio = new AspectRatio(1);
     TotalWirelength *totalWirelength = new TotalWirelength();
+    CountOfMovableMacrosOutsideDesiredRegion *countOfMovableMacrosOutsideDesiredRegion = new CountOfMovableMacrosOutsideDesiredRegion();
     CostFunctionGroup *costFunctionGroup = new CostFunctionGroup();
     costFunctionGroup->addCostFunction(boundingBoxArea, 1);
     costFunctionGroup->addCostFunction(interiorRegionArea, 1);
     costFunctionGroup->addCostFunction(aspectRatio, 1);
     //costFunctionGroup->addCostFunction(totalWirelength, 1);
+    costFunctionGroup->addCostFunction(countOfMovableMacrosOutsideDesiredRegion, 1);
     costFunctionGroup->normalizeWeights();
     costFunctionGroup->normalizeCosts(floorplanState, operationSet, 1000);
 
@@ -727,11 +733,15 @@ void testICPTree_anneal(int argc, char **argv) {
     //    window->runMainLoopEvent();
     //}
 
-    simulatedAnnealing->anneal(floorplanState, 1000, 0.000001, 0.95, 12);
+    simulatedAnnealing->anneal(floorplanState, 1000, 0.000001, 0.99, 12);
     FloorplanState *bestFloorplanState = dynamic_cast<FloorplanState *>(simulatedAnnealing->getBestState());
     std::cout << "finalTemperature: " << annealingScheduleRatioDecrease->getTemperature() << "\n";
+    bestFloorplanState->doAfterBeingOperated();
+    bestFloorplanState->doBeforeCalculatingCost();
     std::cout << "boundingBoxArea: " << bestFloorplanState->getICPTree()->getBoundingBoxArea() << "\n";
     std::cout << "interiorRegionArea: " << bestFloorplanState->getICPTree()->getInteriorRegionArea() << "\n";
+    std::cout << "aspectRatio: " << bestFloorplanState->getICPTree()->getBoundingBoxAspectRatio() << "\n";
+    std::cout << "countOutside: " << bestFloorplanState->getFloorplan()->countMovableMacrosOutsideDesiredRegion() << "\n";
 }
 
 void testICPTree(int argc, char **argv) {

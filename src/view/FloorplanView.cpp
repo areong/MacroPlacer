@@ -28,12 +28,15 @@ void FloorplanView::display() {
     for (int i = 0; i < floorplan->getBinsRows()->size(); ++i) {
         for (int j = 0; j < floorplan->getBinsRows()->at(i)->size(); ++j) {
             Bin *bin = floorplan->getBinsRows()->at(i)->at(j);
-            if (bin->getPreplacedMacros()->empty() && bin->getMovableMacros()->empty()) {
-                continue;
-            }
+            //if (bin->getPreplacedMacros()->empty() && bin->getMovableMacros()->empty()) {
+            //    continue;
+            //}
+            //if (i >= 21 && i < 31 && j >= 21 && j < 31) {
+            if (i >= 10 && i < 13 && j >= 10 && j < 13) {
             window->drawRectangle((float) bin->getXStart(), (float) bin->getXEnd(),
                 (float) bin->getYStart(), (float) bin->getYEnd(),
                 0.3, 0.1, 0, 0, 0, 0);        
+            }
         }
     }
     // Bounding box

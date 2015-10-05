@@ -9,6 +9,7 @@ HEADERS_ICPTREE = \
 	${PATH_TO_SRC}tree/icptree/MacroNode.h\
 	${PATH_TO_SRC}tree/icptree/TraversalTaskPlaceNormalMacros.h\
 	${PATH_TO_SRC}tree/icptree/TraversalTaskSetNotCovered.h\
+	${PATH_TO_SRC}tree/icptree/contour/Edge.h\
 	${PATH_TO_SRC}tree/icptree/contour/TopContour.h\
 	${PATH_TO_SRC}tree/icptree/contour/BottomContour.h\
 	${PATH_TO_SRC}tree/icptree/contour/RightContour.h\
@@ -19,6 +20,7 @@ HEADERS_ICPTREE_TEST = \
 	${PATH_TO_SRC}tree/icptree/ICPTree_test.h\
 	${PATH_TO_SRC}model/Macro.h\
 	${PATH_TO_SRC}model/Floorplan.h\
+	${PATH_TO_SRC}model/sa/CountOfMovableMacrosOutsideDesiredRegion.h\
 	${PATH_TO_SRC}sa/AnnealingScheduleRatioDecrease.h\
 	${PATH_TO_SRC}sa/CostFunctionGroup.h\
 	${PATH_TO_SRC}sa/OperationSet.h\

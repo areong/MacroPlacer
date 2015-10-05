@@ -11,8 +11,9 @@ public:
     ~Bin();
     void addPreplacedMacro(Macro *macro);
     std::vector<Macro *> *getPreplacedMacros();
-    void addMovableMacro(Macro *macro);
+    void addMovableMacro(Macro *macro, double count);
     std::vector<Macro *> *getMovableMacros();
+    double getCountOfMovableMacros();
     void clearMovableMacros();
     double getXStart();
     double getYStart();
@@ -26,6 +27,8 @@ private:
     double yEnd;
     std::vector<Macro *> *preplacedMacros;
     std::vector<Macro *> *movableMacros;
+
+    double countOfMovableMacros;
 };
 
 #endif

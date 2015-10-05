@@ -214,7 +214,7 @@ public:
     /*
     Please call ICPTree.placeMacrosAssumingNoSwitch() beforehand.
     */
-    int getBoundingBoxAspectRatio();
+    double getBoundingBoxAspectRatio();
     /*
     @Override
     */

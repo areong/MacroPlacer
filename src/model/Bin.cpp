@@ -7,6 +7,8 @@ Bin::Bin(double xStart, double yStart, double xEnd, double yEnd) {
     this->yEnd = yEnd;
     preplacedMacros = new std::vector<Macro *>();
     movableMacros = new std::vector<Macro *>();
+
+    countOfMovableMacros = 0;
 }
 
 Bin::~Bin() {
@@ -22,16 +24,22 @@ std::vector<Macro *> *Bin::getPreplacedMacros() {
     return preplacedMacros;
 }
 
-void Bin::addMovableMacro(Macro *macro) {
+void Bin::addMovableMacro(Macro *macro, double count) {
     movableMacros->push_back(macro);
+    countOfMovableMacros += count;
 }
 
 std::vector<Macro *> *Bin::getMovableMacros() {
     return movableMacros;
 }
 
+double Bin::getCountOfMovableMacros() {
+    return countOfMovableMacros;
+}
+
 void Bin::clearMovableMacros() {
     movableMacros->clear();
+    countOfMovableMacros = 0;
 }
 
 double Bin::getXStart() {

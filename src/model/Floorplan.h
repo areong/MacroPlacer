@@ -53,13 +53,19 @@ public:
     std::vector<Terminal *> *getTerminals();
     std::vector<Net *> *getNets();
     /*
-    Calculate the position range of Terminals and preplacedMacros
-    and then call createBins(double, double, double, double, double, double).
+    Calculate the range of immovables.
+    It is called by createFromAuxFiles().
+    */
+    void calculateMinMaxImmovablesXY();
+    /*
+    Use the expanded range of immovables in
+    calling createBins(double, double, double, double, double, double).
     */
     void createBins(double binWidth, double binHeight);
     /*
     Create Bins with the four inputs are the range of Bins.
     The Bins are still empty. Call addxxxMacrosToBins() to add Macros.
+    CALL IT OR FloorplanWindow cannot display.
     */
     void createBins(double xStart, double yStart, double xEnd, double yEnd, double binWidth, double binHeight);
     std::vector<std::vector<Bin *> *> *getBinsRows();
@@ -111,10 +117,18 @@ public:
     The desired region is set by setDesiredRegion().
     */
     double countMovableMacrosOutsideDesiredRegion();
-    int getMaxX();
     int getMinX();
-    int getMaxY();
     int getMinY();
+    int getMaxX();
+    int getMaxY();
+    double getMinImmovablesX();
+    double getMinImmovablesY();
+    double getMaxImmovablesX();
+    double getMaxImmovablesY();
+    int getDesiredRegionBinIStart();
+    int getDesiredRegionBinIEnd();
+    int getDesiredRegionBinJStart();
+    int getDesiredRegionBinJEnd();
 
     /*
     Output the preplaced, movable Macros, Terminals and Cells to a .pl file
@@ -126,6 +140,7 @@ public:
     Create a Floorplan from a .aux file and other related files.
     The files follows 2015 ICCAD Contest format.
     If read unsuccessful, return 0.
+    It calls calculateMinMaxImmovablesXY().
     */
     static Floorplan *createFromAuxFiles(const char *auxFilename);
     

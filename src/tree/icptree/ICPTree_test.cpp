@@ -625,25 +625,25 @@ void testICPTree_placeMacrosRandomlyNoSwitch() {
 }
 
 void testICPTree_anneal(int argc, char **argv) {
-    //if (argc < 2) {
-    //    return;
-    //}
-    //Floorplan *floorplan = Floorplan::createFromAuxFiles(argv[1]);
-    //ICPTree *icpTree = new ICPTree(floorplan->getMovableMacros());
-    //floorplan->setICPTree(icpTree);
+    if (argc < 2) {
+        return;
+    }
+    Floorplan *floorplan = Floorplan::createFromAuxFiles(argv[1]);
+    ICPTree *icpTree = new ICPTree(floorplan->getMovableMacros());
+    floorplan->setICPTree(icpTree);
 
-    Floorplan *floorplan = createFloorplanRandomly();
-    ICPTree *icpTree = floorplan->getICPTree();
+    //Floorplan *floorplan = createFloorplanRandomly();
+    //ICPTree *icpTree = floorplan->getICPTree();
 
-    int targetInteriorRegionArea = 6000;
-    //int targetInteriorRegionArea = (int) (floorplan->calculateCellsArea());
+    //int targetInteriorRegionArea = 6000;
+    int targetInteriorRegionArea = (int) (floorplan->calculateCellsArea());
 
-    icpTree->initializeBalancedICPTreeRandomly(0, 0, 100, 100, targetInteriorRegionArea);
-    //icpTree->initializeBalancedICPTreeRandomly(500, 500, 11000, 11000, targetInteriorRegionArea);
-    floorplan->createBins(-100, -100, 200, 200, 25, 25);
-    //floorplan->createBins(-10000, -10000, 20000, 20000, 1000, 1000);
-    floorplan->setDesiredRegion(0, 0, 100, 100);
-    //floorplan->setDesiredRegion(500, 500, 11000, 11000);
+    //icpTree->initializeBalancedICPTreeRandomly(0, 0, 100, 100, targetInteriorRegionArea);
+    icpTree->initializeBalancedICPTreeRandomly(500, 500, 11000, 11000, targetInteriorRegionArea);
+    //floorplan->createBins(-100, -100, 200, 200, 25, 25);
+    floorplan->createBins(-10000, -10000, 20000, 20000, 1000, 1000);
+    //floorplan->setDesiredRegion(0, 0, 100, 100);
+    floorplan->setDesiredRegion(500, 500, 11000, 11000);
     floorplan->getICPTree()->placeMacrosAssumingNoSwitch(); // Place at first to calculate cost.
     //displayFloorplan(floorplan);
     FloorplanState *floorplanState = new FloorplanState(floorplan);
@@ -660,9 +660,9 @@ void testICPTree_anneal(int argc, char **argv) {
     ChangeRandomMacroNodeSpacingRandomly *changeRandomMacroNodeSpacingRandomly = new ChangeRandomMacroNodeSpacingRandomly();
     ChangeRandomMacroNodeVerticalDisplacementRandomly *changeRandomMacroNodeVerticalDisplacementRandomly = new ChangeRandomMacroNodeVerticalDisplacementRandomly();
     floorplan->getICPTree()->setChangeRangeOfEmptyNodeWidth(1);
-    floorplan->getICPTree()->setChangeRangeOfVerticalDisplacement(1); // 1000
-    floorplan->getICPTree()->setChangeRangeOfSpacing(1);
-    floorplan->getICPTree()->setChangeRangeOfCorner0Position(1);
+    floorplan->getICPTree()->setChangeRangeOfVerticalDisplacement(100); // 1000
+    floorplan->getICPTree()->setChangeRangeOfSpacing(100);
+    floorplan->getICPTree()->setChangeRangeOfCorner0Position(100);
     OperationSet *operationSet = new OperationSet();
     operationSet->addOperation(removeAndInsertLeftNodeRandomly);
     operationSet->addOperation(removeAndInsertRightNodeRandomly);
@@ -690,7 +690,7 @@ void testICPTree_anneal(int argc, char **argv) {
     costFunctionGroup->addCostFunction(boundingBoxArea, 1);
     costFunctionGroup->addCostFunction(interiorRegionArea, 1);
     costFunctionGroup->addCostFunction(aspectRatio, 1);
-    //costFunctionGroup->addCostFunction(totalWirelength, 1);
+    costFunctionGroup->addCostFunction(totalWirelength, 1);
     costFunctionGroup->addCostFunction(countOfMovableMacrosOutsideDesiredRegion, 1);
     costFunctionGroup->normalizeWeights();
     FloorplanState *copiedFloorplanState = dynamic_cast<FloorplanState *>(floorplanState->copy());

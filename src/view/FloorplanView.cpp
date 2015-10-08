@@ -31,22 +31,33 @@ void FloorplanView::display() {
             //if (bin->getPreplacedMacros()->empty() && bin->getMovableMacros()->empty()) {
             //    continue;
             //}
-            //if (i >= 10 && i < 22 && j >= 10 && j < 22) {
-            if (i >= 4 && i < 9 && j >= 4 && j < 9) {
+            if (i >= floorplan->getDesiredRegionBinIStart() &&
+                i < floorplan->getDesiredRegionBinIEnd() &&
+                j >= floorplan->getDesiredRegionBinJStart() &&
+                j < floorplan->getDesiredRegionBinJEnd()) {
             window->drawRectangle((float) bin->getXStart(), (float) bin->getXEnd(),
                 (float) bin->getYStart(), (float) bin->getYEnd(),
                 0.3, 0.1, 0, 0, 0, 0);        
             }
         }
     }
-    // Bounding box
+
+    // Bounding box of immovables
+    window->drawRectangle(floorplan->getMinImmovablesX(), floorplan->getMaxImmovablesX(),
+        floorplan->getMinImmovablesY(), floorplan->getMaxImmovablesY(),
+        0, 0, 0, 0.6, 0.2, 0.2, true);
+    
+    // Bounding box of Floorplan
     //window->drawRectangle(floorplan->getMinX(), floorplan->getMaxX(),
     //    floorplan->getMinY(), floorplan->getMaxY(),
     //    0, 0, 0, 0.6, 0.6, 0.6, true);
+    
+    // Bounding box of ICPTree
     ICPTree *icpTree = floorplan->getICPTree();
     window->drawRectangle(icpTree->getMinX(), icpTree->getMaxX(),
         icpTree->getMinY(), icpTree->getMaxY(),
         0, 0, 0, 0.6, 0.6, 0.6, true);
+
     TraversalTaskDrawMacroNode *task = new TraversalTaskDrawMacroNode(window);
     floorplan->getICPTree()->traverseAll(task);
     delete task;

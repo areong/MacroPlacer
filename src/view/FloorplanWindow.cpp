@@ -24,8 +24,8 @@ FloorplanWindow::~FloorplanWindow() {
 }
 
 void FloorplanWindow::setXYRangeByFloorplan() {
-    setXYRange(floorplan->getMinX(), floorplan->getMaxX(), floorplan->getMinY(),
-        floorplan->getMaxY());
+    setXYRange(floorplan->getMinBinsX(), floorplan->getMaxBinsX(),
+        floorplan->getMinBinsY(), floorplan->getMaxBinsY());
 }
 
 void FloorplanWindow::display() {

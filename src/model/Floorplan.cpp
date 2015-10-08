@@ -182,7 +182,7 @@ std::vector<Net *> *Floorplan::getNets() {
     return nets;
 }
 
-void Floorplan::createBins(double binWidth, double binHeight) {
+void Floorplan::calculateMinMaxImmovablesXY() {
     minImmovablesX = 1e8;
     minImmovablesY = 1e8;
     maxImmovablesX = -1e8;
@@ -220,6 +220,9 @@ void Floorplan::createBins(double binWidth, double binHeight) {
             maxImmovablesY = macro->getYEnd();
         }
     }
+}
+
+void Floorplan::createBins(double binWidth, double binHeight) {
     double immovablesRegionWidth = maxImmovablesX - minImmovablesX;
     double immovablesRegionHeight = maxImmovablesY - minImmovablesY;
     double expandRatio = 2;
@@ -342,10 +345,6 @@ void Floorplan::setDesiredRegion(double xStart, double yStart, double xEnd, doub
     if (desiredRegionBinJEnd > numBinsCols) {
         desiredRegionBinJEnd = numBinsCols;
     }
-    std::cout << desiredRegionBinIStart << ", "
-              << desiredRegionBinIEnd << ", "
-              << desiredRegionBinJStart << ", "
-              << desiredRegionBinJEnd << "\n";
     // Calculate the distance of Bins.
     delete iDistancesToDesiredRegion;
     delete jDistancesToDesiredRegion;
@@ -369,14 +368,6 @@ void Floorplan::setDesiredRegion(double xStart, double yStart, double xEnd, doub
     for (int j = desiredRegionBinJEnd; j < numBinsCols; ++j) {
         jDistancesToDesiredRegion->push_back(j - desiredRegionBinJEnd + 1);
     }
-    for (int i = 0; i < iDistancesToDesiredRegion->size(); ++i) {
-        std::cout << iDistancesToDesiredRegion->at(i) << ", ";
-    }
-    std::cout << "\n";
-    for (int j = 0; j < jDistancesToDesiredRegion->size(); ++j) {
-        std::cout << jDistancesToDesiredRegion->at(j) << ", ";
-    }
-    std::cout << "\n";
     // Find the longest distance.
     longestDistanceToDesiredRegion = 0;
     for (int i = 0; i < iDistancesToDesiredRegion->size(); ++i) {
@@ -555,24 +546,52 @@ double Floorplan::countMovableMacrosOutsideDesiredRegion() {
     return weightedSumOfCount;
 }
 
-int Floorplan::getMaxX() {
-    //return icpTree->getMaxX();
-    return maxBinsX;
-}
-
 int Floorplan::getMinX() {
-    //return icpTree->getMinX();
-    return minBinsX;
-}
-
-int Floorplan::getMaxY() {
-    //return icpTree->getMaxY();
-    return maxBinsY;
+    return (icpTree->getMinX() < minImmovablesX) ? icpTree->getMinX() : minImmovablesX;
 }
 
 int Floorplan::getMinY() {
-    //return icpTree->getMinY();
-    return minBinsY;
+    return (icpTree->getMinY() < minImmovablesY) ? icpTree->getMinY() : minImmovablesY;
+}
+
+int Floorplan::getMaxX() {
+    return (icpTree->getMaxX() > maxImmovablesX) ? icpTree->getMaxX() : maxImmovablesX;
+}
+
+int Floorplan::getMaxY() {
+    return (icpTree->getMaxY() > maxImmovablesY) ? icpTree->getMaxY() : maxImmovablesY;
+}
+
+double Floorplan::getMinImmovablesX() {
+    return minImmovablesX;
+}
+
+double Floorplan::getMinImmovablesY() {
+    return minImmovablesY;
+}
+
+double Floorplan::getMaxImmovablesX() {
+    return maxImmovablesX;
+}
+
+double Floorplan::getMaxImmovablesY() {
+    return maxImmovablesY;
+}
+
+int Floorplan::getDesiredRegionBinIStart() {
+    return desiredRegionBinIStart;
+}
+
+int Floorplan::getDesiredRegionBinIEnd() {
+    return desiredRegionBinIEnd;
+}
+
+int Floorplan::getDesiredRegionBinJStart() {
+    return desiredRegionBinJStart;
+}
+
+int Floorplan::getDesiredRegionBinJEnd() {
+    return desiredRegionBinJEnd;
 }
 
 void Floorplan::outputPlForPrototyping(const char *plFilename) {
@@ -798,6 +817,8 @@ Floorplan *Floorplan::createFromAuxFiles(const char *auxFilename) {
     } else {
         return 0;
     }
+
+    floorplan->calculateMinMaxImmovablesXY();
 
     return floorplan;
 }

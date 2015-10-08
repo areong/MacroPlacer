@@ -3,6 +3,8 @@
 Macro::Macro(int width, int height, std::string name) : Module(name) {
     this->width = width;
     this->height = height;
+    calculateArea();
+    calculateAspectRatio();
     xStart = 0;
     xEnd = 1;
     yStart = 0;
@@ -15,6 +17,8 @@ Macro::~Macro() {
 
 void Macro::setWidth(int width) {
     this->width = width;
+    calculateArea();
+    calculateAspectRatio();
 }
 
 int Macro::getWidth() {
@@ -23,10 +27,28 @@ int Macro::getWidth() {
 
 void Macro::setHeight(int height) {
     this->height = height;
+    calculateArea();
+    calculateAspectRatio();
 }
 
 int Macro::getHeight() {
     return height;
+}
+
+void Macro::calculateArea() {
+    area = width * height;
+}
+
+int Macro::getArea() {
+    return area;
+}
+
+void Macro::calculateAspectRatio() {
+    aspectRatio = (double) height / (double) width;
+}
+
+double Macro::getAspectRatio() {
+    return aspectRatio;
 }
 
 void Macro::setXStart(int xStart) {

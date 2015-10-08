@@ -56,6 +56,18 @@ bool Utils::randbool() {
         return false;
 }
 
+int Utils::getIndexOfLargestInVector(std::vector<int> *numbers) {
+    int index = 0;
+    int max = -1e8;
+    for (int i = 0; i < numbers->size(); ++i) {
+        if (numbers->at(i) > max) {
+            max = numbers->at(i);
+            index = i;
+        }
+    }
+    return index;
+}
+
 std::vector<std::string> *Utils::splitString(std::string source, std::string splitter) {
     // http://www.cplusplus.com/reference/string/string/c_str/
 

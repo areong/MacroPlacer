@@ -31,8 +31,8 @@ void FloorplanView::display() {
             //if (bin->getPreplacedMacros()->empty() && bin->getMovableMacros()->empty()) {
             //    continue;
             //}
-            //if (i >= 21 && i < 31 && j >= 21 && j < 31) {
-            if (i >= 10 && i < 13 && j >= 10 && j < 13) {
+            //if (i >= 10 && i < 22 && j >= 10 && j < 22) {
+            if (i >= 4 && i < 9 && j >= 4 && j < 9) {
             window->drawRectangle((float) bin->getXStart(), (float) bin->getXEnd(),
                 (float) bin->getYStart(), (float) bin->getYEnd(),
                 0.3, 0.1, 0, 0, 0, 0);        
@@ -40,8 +40,12 @@ void FloorplanView::display() {
         }
     }
     // Bounding box
-    window->drawRectangle(floorplan->getMinX(), floorplan->getMaxX(),
-        floorplan->getMinY(), floorplan->getMaxY(),
+    //window->drawRectangle(floorplan->getMinX(), floorplan->getMaxX(),
+    //    floorplan->getMinY(), floorplan->getMaxY(),
+    //    0, 0, 0, 0.6, 0.6, 0.6, true);
+    ICPTree *icpTree = floorplan->getICPTree();
+    window->drawRectangle(icpTree->getMinX(), icpTree->getMaxX(),
+        icpTree->getMinY(), icpTree->getMaxY(),
         0, 0, 0, 0.6, 0.6, 0.6, true);
     TraversalTaskDrawMacroNode *task = new TraversalTaskDrawMacroNode(window);
     floorplan->getICPTree()->traverseAll(task);

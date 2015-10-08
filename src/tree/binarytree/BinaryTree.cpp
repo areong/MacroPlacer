@@ -27,6 +27,10 @@ void BinaryTree::addNode(Node *node) {
     nodes->at(node->getId()) = node;
 }
 
+int BinaryTree::getNumNodes() {
+    return nodes->size();
+}
+
 Node *BinaryTree::getNodeById(int id) {
     return nodes->at(id);
 }

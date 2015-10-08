@@ -38,6 +38,10 @@ public:
     */
     static bool randbool();
     /*
+    Return the index of the first largest value in the vector.
+    */
+    static int getIndexOfLargestInVector(std::vector<int> *numbers);
+    /*
     Split a string to a vector of strings.
     PLEASE DELETE the returned vector.
     @return A vector of strings.

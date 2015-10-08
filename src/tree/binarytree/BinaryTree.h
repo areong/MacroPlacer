@@ -22,6 +22,7 @@ public:
     will replace the older Node with the newly added Node.
     */
     void addNode(Node *node);
+    int getNumNodes();
     /*
     @param  id  An integer not smaller than zero.
     */

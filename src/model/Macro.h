@@ -5,12 +5,19 @@
 
 class Macro : public Module {
 public:
+    /*
+    ASSUME width > 0.
+    */
     Macro(int width=1, int height=1, std::string name="");
     ~Macro();
     void setWidth(int width);
     int getWidth();
     void setHeight(int height);
     int getHeight();
+    void calculateArea();
+    int getArea();
+    void calculateAspectRatio();
+    double getAspectRatio();
     void setXStart(int xStart);
     int getXStart();
     void setXEnd(int xEnd);
@@ -41,6 +48,8 @@ public:
 private:
     int width;
     int height;
+    int area;
+    double aspectRatio;
     int xStart;
     int xEnd;
     int yStart;

@@ -1,4 +1,5 @@
 #include "tree/icptree/ICPTree.h"
+#include <cmath>
 #include "model/Macro.h"
 #include "tree/icptree/MacroNode.h"
 #include "tree/icptree/TraversalTaskPlaceNormalMacros.h"
@@ -112,6 +113,221 @@ void ICPTree::initializeMacroNodesOnBranchesRandomly() {
     }
 }
 
+void ICPTree::initializeBalancedICPTreeRandomly(int xStart, int yStart, int xEnd, int yEnd, int targetInteriorRegionArea) {
+    // What does a balanced ICPTree look like:
+    //    ---------------------------------------  <-- desiredRegionYEnd
+    //    |      |         top subtree          |
+    //    |      |Corner0                Corner1|
+    //    |      |------------------------------|
+    //  left subtree                     |      |
+    //    |      |    interior region    |      |
+    //    |      |                       |  right subtree
+    //    |------------------------------|      |
+    //    |Corner3                       |Corner2
+    //    |         bottom subtree       |      |
+    //    ---------------------------------------
+    //                                   <------> macros thickness
+    desiredRegionXStart = xStart;
+    desiredRegionYStart = yStart;
+    desiredRegionXEnd = xEnd;
+    desiredRegionYEnd = yEnd;
+    // == Step 1 ==
+    // Calculate the position of interior region and then the position
+    // of Corner0 and the area of the four subtrees.
+    // interiorRegionArea = (desiredRegionWidth - 2x) * (desiredRegionHeight - 2x),
+    // 4x^2 - 2 (bW + bH) x + bW * bH - iRA = 0
+    int desiredRegionWidth = desiredRegionXEnd - desiredRegionXStart;
+    int desiredRegionHeight = desiredRegionYEnd - desiredRegionYStart;
+    int a = 4;
+    int b = -2 * (desiredRegionWidth + desiredRegionHeight);
+    int c = desiredRegionWidth * desiredRegionHeight - targetInteriorRegionArea;
+    int macrosThickness = (int) ((-b - sqrt(b * b - 4 * a * c)) / (double) (2 * a)); // Assume solution exists. Minus sqrt is correct.
+    int interiorRegionXStart = desiredRegionXStart + macrosThickness;
+    int interiorRegionYStart = desiredRegionYStart + macrosThickness;
+    int interiorRegionXEnd = desiredRegionXEnd - macrosThickness;
+    int interiorRegionYEnd = desiredRegionYEnd - macrosThickness;
+    int interiorRegionWidth = interiorRegionXEnd - interiorRegionXStart;
+    int interiorRegionHeight = interiorRegionYEnd - interiorRegionYStart;
+    // Prepare vectors to collect selected MacroNodes.
+    std::vector<MacroNode *> *availableNodes = new std::vector<MacroNode *>();
+    std::vector<MacroNode *> *topSubtreeNodes = new std::vector<MacroNode *>();
+    std::vector<MacroNode *> *rightSubtreeNodes = new std::vector<MacroNode *>();
+    std::vector<MacroNode *> *bottomSubtreeNodes = new std::vector<MacroNode *>();
+    std::vector<MacroNode *> *leftSubtreeNodes = new std::vector<MacroNode *>();
+    for (int i = 0; i < getNumNodes(); ++i) {
+        MacroNode *macroNode = dynamic_cast<MacroNode *>(getNodeById(i));
+        availableNodes->push_back(macroNode);
+    }
+    // Set Corner0.
+    MacroNode *macroNode = selectMacroNodeRandomly(availableNodes, topSubtreeNodes);
+    setRoot(macroNode);
+    macroNode->setAsCornerNode();
+    setCorner0Position(interiorRegionXStart, interiorRegionYEnd);
+    // == Step 2 ==
+    // Select on-branch MacroNodes.
+    // Insert a leftNode to the root first.
+    // Assign Corner when the Macro position exceed the interior region.
+    // Sum the Macro area for each subtree.
+    // Count the CornerNodes to check whether there are four.
+    int currentBranchNumber = 0; // Indicates top, right, bottom or left.
+    int currentBranchLength = macroNode->getMacro()->getWidth();
+    int currentBranchLengthLimit = interiorRegionWidth;
+    int topSubtreeArea = macroNode->getMacro()->getArea();
+    int rightSubtreeArea = 0;
+    int bottomSubtreeArea = 0;
+    int leftSubtreeArea = 0;
+    int countCornerNodes = 1;
+    MacroNode *currentNode = macroNode; // Root
+    insertLeftNode(selectMacroNodeRandomly(availableNodes, topSubtreeNodes), currentNode);
+    currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+    while (true) {
+        // Add the width or height of currentNode and add area.
+        switch (currentBranchNumber) {
+        case 0:
+            currentBranchLength += currentNode->getMacro()->getWidth();
+            topSubtreeArea += currentNode->getMacro()->getArea();
+            break;
+        case 1:
+            currentBranchLength += currentNode->getMacro()->getHeight();
+            rightSubtreeArea += currentNode->getMacro()->getArea();
+            break;
+        case 2:
+            currentBranchLength += currentNode->getMacro()->getWidth();
+            bottomSubtreeArea += currentNode->getMacro()->getArea();
+            break;
+        case 3:
+            currentBranchLength += currentNode->getMacro()->getHeight();
+            leftSubtreeArea += currentNode->getMacro()->getArea();
+            break;
+        default:
+            break;
+        }
+        currentNode->setSpacing(0);
+        currentNode->setVerticalDisplacement(0);
+        // Assign Corner or not.
+        if (currentBranchLength > currentBranchLengthLimit) {
+            currentBranchNumber += 1;
+            if (currentBranchNumber > 3) { // Finish selecting on-branch MacroNodes.
+                break;
+            }
+            currentNode->setAsCornerNode();
+            countCornerNodes += 1;
+            currentBranchLength = 0;
+            switch (currentBranchNumber) {
+            case 1:
+                currentBranchLengthLimit = interiorRegionHeight;
+                break;
+            case 2:
+                currentBranchLengthLimit = interiorRegionWidth;
+                break;
+            case 3:
+                currentBranchLengthLimit = interiorRegionHeight;
+                break;
+            default:
+                break;
+            }
+        } else {
+            currentNode->setAsBranchNode();
+        }
+        // Insert leftNode if available,
+        // and add to the vector corresponding to the subtree.
+        if (availableNodes->size() > 0) {
+            switch (currentBranchNumber) {
+            case 0:
+                insertLeftNode(selectMacroNodeRandomly(availableNodes, topSubtreeNodes), currentNode);
+                break;
+            case 1:
+                insertLeftNode(selectMacroNodeRandomly(availableNodes, rightSubtreeNodes), currentNode);
+                break;
+            case 2:
+                insertLeftNode(selectMacroNodeRandomly(availableNodes, bottomSubtreeNodes), currentNode);
+                break;
+            case 3:
+                insertLeftNode(selectMacroNodeRandomly(availableNodes, leftSubtreeNodes), currentNode);
+                break;
+            default:
+                break;
+            }
+        } else {
+            break; // Finish selecting on-branch MacroNodes.
+        }
+        currentNode = dynamic_cast<MacroNode *>(currentNode->getLeftNode());
+    }
+    // Check whether there are four CornerNodes. If not, assign some as Corner
+    // starting from the left-most MacroNode.
+    if (countCornerNodes < 4) {
+        MacroNode *currentNodeFromTheLeftMost = currentNode;
+        while (countCornerNodes < 4) {
+            if (!currentNodeFromTheLeftMost->isCornerNode()) {
+                currentNodeFromTheLeftMost->setAsCornerNode();
+                countCornerNodes += 1;
+            }
+            currentNodeFromTheLeftMost = dynamic_cast<MacroNode *>(currentNodeFromTheLeftMost->getParentNode());
+        }
+    }
+    // == Step 3 ==
+    // Insert the other MacroNodes as NormalNodes.
+    // Calculate the max area of the four subtrees.
+    // In order to make the total area of the four subtrees match
+    // the max area, choose the subtree with most area difference
+    // to insert the selected MacroNode (resembles the greedy method
+    // for the knapsack problem).
+    int topSubtreeMaxArea = macrosThickness * (interiorRegionWidth + macrosThickness);
+    int rightSubtreeMaxArea = macrosThickness * (interiorRegionHeight + macrosThickness);
+    int bottomSubtreeMaxArea = topSubtreeMaxArea;
+    int leftSubtreeMaxArea = rightSubtreeMaxArea;
+    while (availableNodes->size() > 0) {
+        // Choose the subtree with the largest area difference.
+        std::vector<int> *areaDifferences = new std::vector<int>();
+        areaDifferences->push_back(topSubtreeMaxArea - topSubtreeArea);
+        areaDifferences->push_back(rightSubtreeMaxArea - rightSubtreeArea);
+        areaDifferences->push_back(bottomSubtreeMaxArea - bottomSubtreeArea);
+        areaDifferences->push_back(leftSubtreeMaxArea - leftSubtreeArea);
+        int subtreeNumber = Utils::getIndexOfLargestInVector(areaDifferences);
+        delete areaDifferences;
+        // Select a MacroNode from the subtree.
+        // Then select an available MacroNode. (DO NOT CHANGE THE ORDER OF THESE TWO!)
+        // Update subtree area.
+        MacroNode *position;
+        switch (subtreeNumber) {
+        case 0:
+            position = topSubtreeNodes->at(Utils::randint(0, topSubtreeNodes->size()));
+            macroNode = selectMacroNodeRandomly(availableNodes, topSubtreeNodes);
+            topSubtreeArea += macroNode->getMacro()->getArea();
+            break;
+        case 1:
+            position = rightSubtreeNodes->at(Utils::randint(0, rightSubtreeNodes->size()));
+            macroNode = selectMacroNodeRandomly(availableNodes, rightSubtreeNodes);
+            rightSubtreeArea += macroNode->getMacro()->getArea();
+            break;
+        case 2:
+            position = bottomSubtreeNodes->at(Utils::randint(0, bottomSubtreeNodes->size()));
+            macroNode = selectMacroNodeRandomly(availableNodes, bottomSubtreeNodes);
+            bottomSubtreeArea += macroNode->getMacro()->getArea();
+            break;
+        case 3:
+            position = leftSubtreeNodes->at(Utils::randint(0, leftSubtreeNodes->size())); // There is at least one MacroNode in the left subtree.
+            macroNode = selectMacroNodeRandomly(availableNodes, leftSubtreeNodes);
+            leftSubtreeArea += macroNode->getMacro()->getArea();
+            break;
+        default:
+            break;
+        }
+        // Insert as leftNode or rightNode according to the position's identity
+        // and the Macro's aspect ratio.
+        if (!position->isNormalNode()) {
+            insertRightNode(macroNode, position);
+        } else {
+            insertMacroNodeByMacroAspectRatio(macroNode, position, subtreeNumber);
+        }   
+    }
+    delete availableNodes;
+    delete topSubtreeNodes;
+    delete rightSubtreeNodes;
+    delete bottomSubtreeNodes;
+    delete leftSubtreeNodes;
+}
+
 void ICPTree::insertLeftNode(Node *node, Node *position) {
     BinaryTree::insertLeftNode(node, position);
     // Set idenitiy.
@@ -144,6 +360,23 @@ void ICPTree::insertRightNode(Node *node, Node *position) {
     MacroNode *macroNode = dynamic_cast<MacroNode *>(node);
     if (macroNode != 0)   // BinaryTree uses this method with Node.
         macroNode->setAsNormalNode();
+}
+
+void ICPTree::insertMacroNodeByMacroAspectRatio(MacroNode *macroNode, MacroNode *position, int subtreeNumber) {
+    double aspectRatio = macroNode->getMacro()->getAspectRatio();
+    double probability = aspectRatio / (1 + aspectRatio);
+    bool insertAsLeftNode = false;
+    if (Utils::random() < probability) {
+        insertAsLeftNode = true;
+    }
+    if (subtreeNumber == 1 || subtreeNumber == 3) { // For right and left subtree.
+        insertAsLeftNode ^= true;
+    }
+    if (insertAsLeftNode) {
+        insertLeftNode(macroNode, position);
+    } else {
+        insertRightNode(macroNode, position);
+    }
 }
 
 bool ICPTree::removeNode(Node *node, bool replaceWithLeftNode) {
@@ -741,6 +974,15 @@ BinaryTree *ICPTree::copy() {
     icpTree->setChangeRangeOfVerticalDisplacement(changeRangeOfVerticalDisplacement);
     icpTree->setChangeRangeOfEmptyNodeWidth(changeRangeOfEmptyNodeWidth);
     return icpTree;
+}
+
+MacroNode *ICPTree::selectMacroNodeRandomly(std::vector<MacroNode *> *availableNodes,
+    std::vector<MacroNode *> *selectedNodes) {
+    int index = Utils::randint(0, availableNodes->size());
+    MacroNode *macroNode = availableNodes->at(index);
+    availableNodes->erase(availableNodes->begin() + index);
+    selectedNodes->push_back(macroNode);
+    return macroNode;
 }
 
 void ICPTree::swapMacroNodesIdentity(MacroNode *node1, MacroNode *node2) {

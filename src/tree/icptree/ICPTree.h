@@ -39,6 +39,16 @@ public:
     */
     void initializeMacroNodesOnBranchesRandomly();
     /*
+    Initialize as a balanced ICPTree, in which the Macros distribute evenly
+    around the rectangular interior region and within the desired region if possible.
+    ASSUME the area of the desired region is not less then the target
+    interior region area.
+    ASSUME there are at least four MacroNodes added.
+    @param xStart The four integers are the range of the desired region.
+    @param targetInteriorRegionArea The area left at center.
+    */
+    void initializeBalancedICPTreeRandomly(int xStart, int yStart, int xEnd, int yEnd, int targetInteriorRegionArea);
+    /*
     @Override
     */
     void insertLeftNode(Node *node, Node *position);
@@ -46,6 +56,13 @@ public:
     @Override
     */
     void insertRightNode(Node *node, Node *position);
+    /*
+    Insert as leftNode or rightNode according to the MacroNode's Macro's aspect ratio
+    and which subtree the macroNode is inserted into.
+    For example, if a MacroNode whose Macro's aspect ratio is 2, and the MacroNode
+    is inserted to topSubtree, then the probability of inserting as leftNode is 2/3.
+    */
+    void insertMacroNodeByMacroAspectRatio(MacroNode *macroNode, MacroNode *position, int subtreeNumber);
     /*
     @Override
     Check if the MacroNode can be removed or not.
@@ -225,6 +242,11 @@ public:
     BinaryTree *copy();
 
 private:
+    int desiredRegionXStart;
+    int desiredRegionYStart;
+    int desiredRegionXEnd;
+    int desiredRegionYEnd;
+
     int corner0XStart;
     int corner0YStart;
 
@@ -248,6 +270,13 @@ private:
     int minY;
     int boundingBoxArea;
     int interiorRegionArea;
+
+    /*
+    Choose a MacroNode from availableNodes, erase it, push it into selectedNodes
+    and then return it.
+    */
+    MacroNode *selectMacroNodeRandomly(std::vector<MacroNode *> *availableNodes,
+        std::vector<MacroNode *> *selectedNodes);
 
     void swapMacroNodesIdentity(MacroNode *node1, MacroNode *node2);
     void swapMacroNodesPackingDirection(MacroNode *node1, MacroNode *node2);

@@ -557,6 +557,9 @@ void testICPTree_placeMacrosRandomlyNoSwitch() {
     std::vector<MacroNode *> *macroNodes = new std::vector<MacroNode *>();
     ICPTree *tree = new ICPTree();
     Floorplan *floorplan = createFloorplanRandomly(macros, macroNodes, tree);
+    //icpTree->initializeRandomly();
+    //icpTree->setCorner0Position(0, 0);
+    tree->initializeBalancedICPTreeRandomly(0, 0, 100, 100, 4000);
     floorplan->createBins(-400, -400, 400, 400, 40, 40);
     FloorplanState *floorplanState = new FloorplanState(floorplan);
     //std::vector<Macro *> *macros = floorplan->getMacros();
@@ -571,7 +574,7 @@ void testICPTree_placeMacrosRandomlyNoSwitch() {
     tree->traverseAll(task);
 
     // Test memory leak.
-    for (int i = 0; i < 100000; i++) {//00000; i++) {
+    for (int i = 0; i < 00000; i++) {//00000; i++) {
         //ICPTree *newICPTree = dynamic_cast<ICPTree *>(tree->copy());
         //delete tree;
         //tree = newICPTree;
@@ -627,15 +630,22 @@ void testICPTree_anneal(int argc, char **argv) {
     //}
     //Floorplan *floorplan = Floorplan::createFromAuxFiles(argv[1]);
     //ICPTree *icpTree = new ICPTree(floorplan->getMovableMacros());
-    //icpTree->initializeRandomly();
-    //icpTree->setCorner0Position(0, 0);
     //floorplan->setICPTree(icpTree);
 
     Floorplan *floorplan = createFloorplanRandomly();
-    floorplan->createBins(-400, -400, 400, 400, 40, 40);
+    ICPTree *icpTree = floorplan->getICPTree();
+
+    int targetInteriorRegionArea = 6000;
+    //int targetInteriorRegionArea = (int) (floorplan->calculateCellsArea());
+
+    icpTree->initializeBalancedICPTreeRandomly(0, 0, 100, 100, targetInteriorRegionArea);
+    //icpTree->initializeBalancedICPTreeRandomly(500, 500, 11000, 11000, targetInteriorRegionArea);
+    floorplan->createBins(-100, -100, 200, 200, 25, 25);
     //floorplan->createBins(-10000, -10000, 20000, 20000, 1000, 1000);
     floorplan->setDesiredRegion(0, 0, 100, 100);
+    //floorplan->setDesiredRegion(500, 500, 11000, 11000);
     floorplan->getICPTree()->placeMacrosAssumingNoSwitch(); // Place at first to calculate cost.
+    //displayFloorplan(floorplan);
     FloorplanState *floorplanState = new FloorplanState(floorplan);
     std::cout << "boundingBoxArea: " << floorplanState->getICPTree()->getBoundingBoxArea() << "\n";
 
@@ -650,7 +660,7 @@ void testICPTree_anneal(int argc, char **argv) {
     ChangeRandomMacroNodeSpacingRandomly *changeRandomMacroNodeSpacingRandomly = new ChangeRandomMacroNodeSpacingRandomly();
     ChangeRandomMacroNodeVerticalDisplacementRandomly *changeRandomMacroNodeVerticalDisplacementRandomly = new ChangeRandomMacroNodeVerticalDisplacementRandomly();
     floorplan->getICPTree()->setChangeRangeOfEmptyNodeWidth(1);
-    floorplan->getICPTree()->setChangeRangeOfVerticalDisplacement(1); // 100
+    floorplan->getICPTree()->setChangeRangeOfVerticalDisplacement(1); // 1000
     floorplan->getICPTree()->setChangeRangeOfSpacing(1);
     floorplan->getICPTree()->setChangeRangeOfCorner0Position(1);
     OperationSet *operationSet = new OperationSet();
@@ -669,8 +679,6 @@ void testICPTree_anneal(int argc, char **argv) {
     //}
 
     // CostFunctions
-    int targetInteriorRegionArea = 6000;
-    //int targetInteriorRegionArea = (int) (floorplan->calculateCellsArea());
     InteriorRegionArea *interiorRegionArea = new InteriorRegionArea(targetInteriorRegionArea);
     int targetBoundingBoxArea = floorplan->calculateMacrosArea() + targetInteriorRegionArea;
     std::cout << "targetBoundingBoxArea: " << targetBoundingBoxArea << "\n";
@@ -685,7 +693,9 @@ void testICPTree_anneal(int argc, char **argv) {
     //costFunctionGroup->addCostFunction(totalWirelength, 1);
     costFunctionGroup->addCostFunction(countOfMovableMacrosOutsideDesiredRegion, 1);
     costFunctionGroup->normalizeWeights();
-    costFunctionGroup->normalizeCosts(floorplanState, operationSet, 1000);
+    FloorplanState *copiedFloorplanState = dynamic_cast<FloorplanState *>(floorplanState->copy());
+    costFunctionGroup->normalizeCosts(copiedFloorplanState, operationSet, 1000);
+    delete copiedFloorplanState;
 
     AnnealingScheduleRatioDecrease *annealingScheduleRatioDecrease = new AnnealingScheduleRatioDecrease(0.9);
     SimulatedAnnealing *simulatedAnnealing = new SimulatedAnnealing();
@@ -693,8 +703,10 @@ void testICPTree_anneal(int argc, char **argv) {
     simulatedAnnealing->setCostFunction(costFunctionGroup);
     simulatedAnnealing->setAnnealingSchedule(annealingScheduleRatioDecrease);
 
-    annealingScheduleRatioDecrease->initializeTemperature(floorplanState, 1000, 0.85);
+    copiedFloorplanState = dynamic_cast<FloorplanState *>(floorplanState->copy());
+    annealingScheduleRatioDecrease->initializeTemperature(copiedFloorplanState, 1000, 0.85);
     std::cout << "initialTemperature: " << annealingScheduleRatioDecrease->getTemperature() << "\n";
+    delete copiedFloorplanState;
 
     //// Test memory leak.
     //ICPTree *icpTree = floorplan->getICPTree();
@@ -733,7 +745,9 @@ void testICPTree_anneal(int argc, char **argv) {
     //    window->runMainLoopEvent();
     //}
 
-    simulatedAnnealing->anneal(floorplanState, 1000, 0.000001, 0.99, 12);
+    floorplanState->getICPTree()->placeMacrosAssumingNoSwitch();
+    //displayFloorplan(floorplan);
+    simulatedAnnealing->anneal(floorplanState, 1000, 0.000001, 0.99, 1200);
     FloorplanState *bestFloorplanState = dynamic_cast<FloorplanState *>(simulatedAnnealing->getBestState());
     std::cout << "finalTemperature: " << annealingScheduleRatioDecrease->getTemperature() << "\n";
     bestFloorplanState->doAfterBeingOperated();
@@ -772,8 +786,6 @@ Floorplan *createFloorplanRandomly(std::vector<Macro *> *macros,
         macroNodes->push_back(macroNode);
         icpTree->addNode(macroNode);
     }
-    icpTree->initializeRandomly();
-    icpTree->setCorner0Position(0, 0);
     return new Floorplan(macros, icpTree);
 }
 

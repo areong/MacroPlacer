@@ -575,6 +575,39 @@ int Floorplan::getMinY() {
     return minBinsY;
 }
 
+void Floorplan::outputPlForPrototyping(const char *plFilename) {
+    std::ofstream plFile(plFilename);
+
+    // First line
+    plFile << "UCLA pl 1.0\n\n";
+
+    // Cells
+    for (int i = 0; i < cells->size(); ++i) {
+        plFile << cells->at(i)->getName() << "\t0\t0\t: N\n";
+    }
+
+    // Terminals
+    for (int i = 0; i < terminals->size(); ++i) {
+        plFile << terminals->at(i)->getName() << "\t"
+               << (int) terminals->at(i)->getX() << "\t"
+               << (int) terminals->at(i)->getY() << "\t: N /FIXED\n";
+    }
+
+    // Preplaced Macros
+    for (int i = 0; i < preplacedMacros->size(); ++i) {
+        plFile << preplacedMacros->at(i)->getName() << "\t"
+               << (int) preplacedMacros->at(i)->getXStart() << "\t"
+               << (int) preplacedMacros->at(i)->getYStart() << "\t: N /FIXED\n";
+    }
+
+    // Movable Macros
+    for (int i = 0; i < movableMacros->size(); ++i) {
+        plFile << movableMacros->at(i)->getName() << "\t0\t0\t: N\n";
+    }
+
+    plFile.close();
+}
+
 Floorplan *Floorplan::createFromAuxFiles(const char *auxFilename) {
     Floorplan *floorplan = 0;
 

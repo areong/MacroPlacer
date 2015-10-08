@@ -117,6 +117,12 @@ public:
     int getMinY();
 
     /*
+    Output the preplaced, movable Macros, Terminals and Cells to a .pl file
+    such that NTUplace3 can use it for prototyping.
+    */
+    void outputPlForPrototyping(const char *plFilename);
+
+    /*
     Create a Floorplan from a .aux file and other related files.
     The files follows 2015 ICCAD Contest format.
     If read unsuccessful, return 0.

@@ -594,6 +594,46 @@ int Floorplan::getDesiredRegionBinJEnd() {
     return desiredRegionBinJEnd;
 }
 
+void Floorplan::outputNodesForPrototyping(const char *nodesFilename) {
+    std::ofstream nodesFile(nodesFilename);
+
+    // First line
+    nodesFile << "UCLA nodes 1.0\n\n";
+
+    // Number of nodes and terminals
+    nodesFile << "NumNodes :\t" << preplacedMacros->size() + movableMacros->size() +
+        terminals->size() + cells->size() << "\n";
+    nodesFile << "NumTerminals :\t" << preplacedMacros->size() + terminals->size() << "\n";
+
+    // Cells
+    for (int i = 0; i < cells->size(); ++i) {
+        nodesFile << cells->at(i)->getName() << "\t"
+                  << cells->at(i)->getWidth() << "\t"
+                  << cells->at(i)->getHeight() << "\n";
+    }
+
+    // Terminals
+    for (int i = 0; i < terminals->size(); ++i) {
+        nodesFile << terminals->at(i)->getName() << "\t0\t0 terminal\n";
+    }
+
+    // Preplaced Macros
+    for (int i = 0; i < preplacedMacros->size(); ++i) {
+        nodesFile << preplacedMacros->at(i)->getName() << "\t"
+                  << preplacedMacros->at(i)->getWidth() << "\t"
+                  << preplacedMacros->at(i)->getHeight() << " terminal\n";
+    }
+
+    // Movable Macros
+    for (int i = 0; i < movableMacros->size(); ++i) {
+        nodesFile << movableMacros->at(i)->getName() << "\t"
+                  << movableMacros->at(i)->getWidth() << "\t"
+                  << movableMacros->at(i)->getHeight() << "\n";
+    }
+
+    nodesFile.close();
+}
+
 void Floorplan::outputPlForPrototyping(const char *plFilename) {
     std::ofstream plFile(plFilename);
 

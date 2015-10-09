@@ -131,6 +131,11 @@ public:
     int getDesiredRegionBinJEnd();
 
     /*
+    Output the preplaced, movable Macros, Terminals and Cells to a .nodes file
+    such that NTUplace3 can use it for prototyping.
+    */
+    void outputNodesForPrototyping(const char *nodesFilename);
+    /*
     Output the preplaced, movable Macros, Terminals and Cells to a .pl file
     such that NTUplace3 can use it for prototyping.
     */

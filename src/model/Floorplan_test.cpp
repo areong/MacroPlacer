@@ -84,8 +84,21 @@ void testFloorplan_outputForPrototyping(int argc, char **argv) {
     delete floorplan;
 }
 
+void testFloorplan_readPrototypeAndOutputItForEvaluation(int argc, char **argv) {
+    if (argc < 6) {
+        return;
+    }
+    Floorplan *floorplan = Floorplan::createFromAuxFiles(argv[1]);
+    floorplan->readPlOfPrototype(argv[2]);
+    floorplan->outputNodesForEvaluation(argv[3]);
+    floorplan->outputPlForEvaluation(argv[4]);
+    floorplan->outputFpFromPrototypeForEvaluation(argv[5]);
+    delete floorplan;
+}
+
 void testFloorplan(int argc, char **argv) {
     //testFloorplan_addMacrosToBins();
     //testFloorplan_readAux(argc, argv);
-    testFloorplan_outputForPrototyping(argc, argv);
+    //testFloorplan_outputForPrototyping(argc, argv);
+    testFloorplan_readPrototypeAndOutputItForEvaluation(argc, argv);
 }

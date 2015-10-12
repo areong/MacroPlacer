@@ -58,6 +58,9 @@ Floorplan::Floorplan(std::vector<Macro *> *movableMacros, ICPTree *icpTree) {
     longestDistanceToDesiredRegion = 0;
 
     this->icpTree = icpTree;
+
+    prototypeMacrosXStart = 0;
+    prototypeMacrosYStart = 0;
 }
 
 Floorplan::~Floorplan() {
@@ -594,7 +597,7 @@ int Floorplan::getDesiredRegionBinJEnd() {
     return desiredRegionBinJEnd;
 }
 
-void Floorplan::outputNodesForPrototyping(const char *nodesFilename) {
+void Floorplan::outputNodes(const char *nodesFilename, bool movableMacrosFixed) {
     std::ofstream nodesFile(nodesFilename);
 
     // First line
@@ -603,7 +606,11 @@ void Floorplan::outputNodesForPrototyping(const char *nodesFilename) {
     // Number of nodes and terminals
     nodesFile << "NumNodes :\t" << preplacedMacros->size() + movableMacros->size() +
         terminals->size() + cells->size() << "\n";
-    nodesFile << "NumTerminals :\t" << preplacedMacros->size() + terminals->size() << "\n";
+    int numTerminals = preplacedMacros->size() + terminals->size();
+    if (movableMacrosFixed) {
+        numTerminals += movableMacros->size();
+    }
+    nodesFile << "NumTerminals :\t" << numTerminals << "\n";
 
     // Cells
     for (int i = 0; i < cells->size(); ++i) {
@@ -625,16 +632,20 @@ void Floorplan::outputNodesForPrototyping(const char *nodesFilename) {
     }
 
     // Movable Macros
+    std::string ending = "\n";
+    if (movableMacrosFixed) {
+        ending = " terminal\n";
+    }
     for (int i = 0; i < movableMacros->size(); ++i) {
         nodesFile << movableMacros->at(i)->getName() << "\t"
                   << movableMacros->at(i)->getWidth() << "\t"
-                  << movableMacros->at(i)->getHeight() << "\n";
+                  << movableMacros->at(i)->getHeight() << ending;
     }
 
     nodesFile.close();
 }
 
-void Floorplan::outputPlForPrototyping(const char *plFilename) {
+void Floorplan::outputPl(const char *plFilename, bool movableMacrosFixed) {
     std::ofstream plFile(plFilename);
 
     // First line
@@ -660,11 +671,93 @@ void Floorplan::outputPlForPrototyping(const char *plFilename) {
     }
 
     // Movable Macros
+    std::string ending = "\n";
+    if (movableMacrosFixed) {
+        ending = " /FIXED\n";
+    }
     for (int i = 0; i < movableMacros->size(); ++i) {
-        plFile << movableMacros->at(i)->getName() << "\t0\t0\t: N\n";
+        plFile << movableMacros->at(i)->getName() << "\t0\t0\t: N" << ending;
     }
 
     plFile.close();
+}
+
+void Floorplan::outputNodesForPrototyping(const char *nodesFilename) {
+    outputNodes(nodesFilename, false);
+}
+
+void Floorplan::outputPlForPrototyping(const char *plFilename) {
+    outputPl(plFilename, false);
+}
+
+void Floorplan::readPlOfPrototype(const char *plFilename) {
+    // Create a map that maps Macros to indices.
+    std::map<Macro *, int> *indicesByMacro = new std::map<Macro *, int>();
+    for (int i = 0; i < movableMacros->size(); ++i) {
+        (*indicesByMacro)[movableMacros->at(i)] = i;
+    }
+
+    // Prepare to store the prototype.
+    delete prototypeMacrosXStart;
+    delete prototypeMacrosYStart;
+    prototypeMacrosXStart = new std::vector<int>();
+    prototypeMacrosYStart = new std::vector<int>();
+    for (int i = 0; i < movableMacros->size(); ++i) {
+        prototypeMacrosXStart->push_back(0);
+        prototypeMacrosYStart->push_back(0);
+    }
+
+    // Read file.
+    std::ifstream plFile(plFilename);
+    if (plFile.is_open()) {
+        std::string line;
+        // Ignore the first line.
+        std::getline(plFile, line);
+        while (std::getline(plFile, line)) {
+            std::vector<std::string> *tokens = Utils::splitString(line, "\t :\n\r");
+            if (tokens->size() < 3) {
+                continue;   // An empty line
+            }
+            if (tokens->at(0)[0] == '#') {
+                continue;   // Ignore comment.
+            }
+            std::string name = tokens->at(0);
+            Macro *macro = getMacroByName(name);
+            if (macro != 0) {
+                try {
+                    int index = indicesByMacro->at(macro);
+                    int x = atoi(tokens->at(1).c_str());
+                    int y = atoi(tokens->at(2).c_str());
+                    prototypeMacrosXStart->at(index) = x;
+                    prototypeMacrosYStart->at(index) = y;
+                } catch (const std::out_of_range& oor) {
+                }
+            }
+        }
+        plFile.close();
+    }
+    delete indicesByMacro;
+}
+
+void Floorplan::outputNodesForEvaluation(const char *nodesFilename) {
+    outputNodes(nodesFilename, true);
+}
+
+void Floorplan::outputPlForEvaluation(const char *plFilename) {
+    outputPl(plFilename, true);
+}
+
+void Floorplan::outputFpFromPrototypeForEvaluation(const char *fpFilename) {
+    std::ofstream fpFile(fpFilename);
+
+    // Movable Macros
+    for (int i = 0; i < movableMacros->size(); ++i) {
+        fpFile << movableMacros->at(i)->getName() << "\t"
+               << prototypeMacrosXStart->at(i) << "\t"
+               << prototypeMacrosYStart->at(i) << "\t: N /FIXED\n";
+    }
+
+    fpFile.close();
 }
 
 Floorplan *Floorplan::createFromAuxFiles(const char *auxFilename) {

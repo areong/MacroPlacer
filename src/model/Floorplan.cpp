@@ -549,6 +549,16 @@ double Floorplan::countMovableMacrosOutsideDesiredRegion() {
     return weightedSumOfCount;
 }
 
+double Floorplan::calculateMacrosDisplacement() {
+    double sumDisplacement = 0;
+    for (int i = 0; i < movableMacros->size(); ++i) {
+        double dx = movableMacros->at(i)->getXStart() - prototypeMacrosXStart->at(i);
+        double dy = movableMacros->at(i)->getYStart() - prototypeMacrosYStart->at(i);
+        sumDisplacement += dx * dx + dy * dy;
+    }
+    return sumDisplacement;
+}
+
 int Floorplan::getMinX() {
     return (icpTree->getMinX() < minImmovablesX) ? icpTree->getMinX() : minImmovablesX;
 }

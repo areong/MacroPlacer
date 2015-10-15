@@ -22,6 +22,7 @@ HEADERS_ICPTREE_TEST = \
 	${PATH_TO_SRC}model/Floorplan.h\
 	${PATH_TO_SRC}model/sa/CountOfMovableMacrosOutsideDesiredRegion.h\
 	${PATH_TO_SRC}model/sa/FloorplanState.h\
+	${PATH_TO_SRC}model/sa/MacrosDisplacement.h\
 	${PATH_TO_SRC}sa/AnnealingScheduleRatioDecrease.h\
 	${PATH_TO_SRC}sa/CostFunctionGroup.h\
 	${PATH_TO_SRC}sa/OperationSet.h\

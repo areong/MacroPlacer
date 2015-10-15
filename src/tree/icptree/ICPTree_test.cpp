@@ -5,6 +5,7 @@
 #include "model/Floorplan.h"
 #include "model/sa/CountOfMovableMacrosOutsideDesiredRegion.h"
 #include "model/sa/FloorplanState.h"
+#include "model/sa/MacrosDisplacement.h"
 #include "sa/AnnealingScheduleRatioDecrease.h"
 #include "sa/CostFunctionGroup.h"
 #include "sa/OperationSet.h"
@@ -625,12 +626,13 @@ void testICPTree_placeMacrosRandomlyNoSwitch() {
 }
 
 void testICPTree_anneal(int argc, char **argv) {
-    if (argc < 2) {
+    if (argc < 3) {
         return;
     }
     Floorplan *floorplan = Floorplan::createFromAuxFiles(argv[1]);
     ICPTree *icpTree = new ICPTree(floorplan->getMovableMacros());
     floorplan->setICPTree(icpTree);
+    floorplan->readPlOfPrototype(argv[2]);
 
     //Floorplan *floorplan = createFloorplanRandomly();
     //ICPTree *icpTree = floorplan->getICPTree();
@@ -686,12 +688,14 @@ void testICPTree_anneal(int argc, char **argv) {
     AspectRatio *aspectRatio = new AspectRatio(1);
     TotalWirelength *totalWirelength = new TotalWirelength();
     CountOfMovableMacrosOutsideDesiredRegion *countOfMovableMacrosOutsideDesiredRegion = new CountOfMovableMacrosOutsideDesiredRegion();
+    MacrosDisplacement *macrosDisplacement = new MacrosDisplacement();
     CostFunctionGroup *costFunctionGroup = new CostFunctionGroup();
     costFunctionGroup->addCostFunction(boundingBoxArea, 1);
     costFunctionGroup->addCostFunction(interiorRegionArea, 1);
     costFunctionGroup->addCostFunction(aspectRatio, 1);
-    costFunctionGroup->addCostFunction(totalWirelength, 1);
-    costFunctionGroup->addCostFunction(countOfMovableMacrosOutsideDesiredRegion, 1);
+    //costFunctionGroup->addCostFunction(totalWirelength, 1);
+    //costFunctionGroup->addCostFunction(countOfMovableMacrosOutsideDesiredRegion, 1);
+    costFunctionGroup->addCostFunction(macrosDisplacement, 1);
     costFunctionGroup->normalizeWeights();
     FloorplanState *copiedFloorplanState = dynamic_cast<FloorplanState *>(floorplanState->copy());
     costFunctionGroup->normalizeCosts(copiedFloorplanState, operationSet, 1000);

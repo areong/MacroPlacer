@@ -117,6 +117,12 @@ public:
     The desired region is set by setDesiredRegion().
     */
     double countMovableMacrosOutsideDesiredRegion();
+    /*
+    PLEASE read prototype first.
+    Calculate the sum of movableMacros' displacement from the prototype.
+    Use squared Euclidean distance.
+    */
+    double calculateMacrosDisplacement();
     int getMinX();
     int getMinY();
     int getMaxX();
